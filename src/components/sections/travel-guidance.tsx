@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import type { z } from 'zod';
-import { Loader2, Sparkles, Wand2 } from 'lucide-react';
+import { Loader2, Sparkles, Wand2, Plane } from 'lucide-react';
 
 import { getTravelGuidance } from '@/lib/actions';
 import { travelGuidanceSchema } from '@/lib/schema';
