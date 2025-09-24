@@ -1,8 +1,18 @@
+'use client';
+
+import { useEffect, useState } from "react";
+
 export default function Footer() {
+  const [year, setYear] = useState(new Date().getFullYear());
+
+  useEffect(() => {
+    setYear(new Date().getFullYear());
+  }, []);
+
   return (
     <footer className="bg-muted py-6">
       <div className="container mx-auto px-4 text-center text-sm text-muted-foreground">
-        <p>&copy; {new Date().getFullYear()} VetPet Haven. Todos los derechos reservados.</p>
+        <p>&copy; {year} VetPet Haven. Todos los derechos reservados.</p>
       </div>
     </footer>
   );
