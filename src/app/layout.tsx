@@ -16,17 +16,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es">
+    <html lang="es" className="scroll-smooth">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
       </head>
-      <body className={cn('font-body antialiased')}>
+      <body className={cn('font-body antialiased flex flex-col min-h-screen')}>
         <Header />
-        <div className="flex-grow">
+        <main className="flex-grow pt-20">
           {children}
-        </div>
+        </main>
         <Footer />
         <Toaster />
       </body>

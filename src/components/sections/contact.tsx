@@ -44,10 +44,10 @@ export default function Contact() {
   }
   
   return (
-    <section id="contacto" className="bg-background section-padding scroll-mt-header">
+    <section id="contacto" className="bg-background section-padding">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-primary">Contacto</h2>
+          <h1 className="text-4xl md:text-5xl font-bold text-primary">Contacto</h1>
           <p className="text-lg text-muted-foreground mt-2">Estamos aquí para ayudarte. ¡Ponte en contacto con nosotros!</p>
         </div>
         <Card className="shadow-lg">

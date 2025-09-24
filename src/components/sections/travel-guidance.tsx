@@ -53,12 +53,12 @@ export default function TravelGuidance() {
   }
 
   return (
-    <section id="viajes" className="bg-muted section-padding scroll-mt-header">
+    <section id="viajes" className="section-padding">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-primary">Trámites de Viajes Internacionales</h2>
+          <h1 className="text-4xl md:text-5xl font-bold text-primary">Trámites de Viajes Internacionales</h1>
           <p className="text-lg text-muted-foreground mt-2">
-            Obtén una guía personalizada de los requisitos para viajar con tu mascota.
+            Obtén una guía personalizada de los requisitos para viajar con tu mascota. Nuestra herramienta de IA te proporcionará información detallada sobre certificados, microchips y advertencias sanitarias para tu destino.
           </p>
         </div>
         <div className="grid lg:grid-cols-5 gap-12">
