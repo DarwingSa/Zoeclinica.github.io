@@ -103,18 +103,6 @@ export default {
        typography: (theme: (arg0: string) => any) => ({
         DEFAULT: {
           css: {
-            h1: {
-              fontWeight: '700',
-              fontFamily: theme('fontFamily.headline'),
-            },
-            h2: {
-              fontWeight: '600',
-               fontFamily: theme('fontFamily.headline'),
-            },
-            h3: {
-              fontWeight: '600',
-               fontFamily: theme('fontFamily.headline'),
-            },
             '--tw-prose-body': theme('colors.foreground / 0.8'),
             '--tw-prose-headings': theme('colors.foreground'),
             '--tw-prose-lead': theme('colors.foreground'),
@@ -125,6 +113,21 @@ export default {
             '--tw-prose-hr': theme('colors.border'),
             '--tw-prose-quotes': theme('colors.foreground'),
             '--tw-prose-quote-borders': theme('colors.primary'),
+            'p': {
+              'line-height': '1.7',
+            },
+            'h1': {
+              fontWeight: '700',
+              fontFamily: theme('fontFamily.headline'),
+            },
+            'h2': {
+              fontWeight: '600',
+               fontFamily: theme('fontFamily.headline'),
+            },
+            'h3': {
+              fontWeight: '600',
+               fontFamily: theme('fontFamily.headline'),
+            },
           },
         },
       }),
