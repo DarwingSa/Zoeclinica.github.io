@@ -9,18 +9,18 @@ html {
 @layer base {
   :root {
     --background: 0 0% 100%;
-    --foreground: 222 84% 5%;
+    --foreground: 224 7% 17%;
     --card: 0 0% 100%;
-    --card-foreground: 222 84% 5%;
+    --card-foreground: 224 7% 17%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222 84% 5%;
+    --popover-foreground: 224 7% 17%;
     --primary: 257 94% 65%;
     --primary-foreground: 210 40% 98%;
-    --secondary: 240 20% 98%;
+    --secondary: 255 100% 98%;
     --secondary-foreground: 222 47% 11%;
-    --muted: 240 20% 98%;
+    --muted: 255 100% 98%;
     --muted-foreground: 215 20% 65%;
-    --accent: 240 20% 96%;
+    --accent: 255 100% 98%;
     --accent-foreground: 222 47% 11%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 210 40% 98%;
@@ -67,6 +67,12 @@ html {
   }
   h1 {
     font-size: clamp(2.5rem, 5vw, 4.5rem);
+  }
+  h2 {
+    font-size: clamp(2rem, 4vw, 3rem);
+  }
+  h3 {
+    font-size: clamp(1.5rem, 3vw, 2rem);
   }
 }
 

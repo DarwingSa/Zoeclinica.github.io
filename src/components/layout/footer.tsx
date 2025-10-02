@@ -20,18 +20,18 @@ export default function Footer() {
   }, []);
 
   return (
-    <footer className="bg-secondary section-padding pb-8">
+    <footer className="bg-foreground text-background section-padding pb-8">
       <div className="container">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
           {/* Columna 1: Logo y descripción */}
           <div className="flex flex-col items-center text-center md:items-start md:text-left">
             <Link href="/" className="flex items-center gap-2 mb-4">
               <PawPrint className="h-8 w-8 text-primary" />
-              <span className="text-xl font-headline font-bold text-foreground tracking-tight">
+              <span className="text-xl font-headline font-bold tracking-tight">
                 VetPet Haven
               </span>
             </Link>
-            <p className="text-muted-foreground text-sm max-w-xs">
+            <p className="text-sm max-w-xs text-background/70">
               Cuidado veterinario de la más alta calidad para perros y gatos. Nuestra misión es garantizar su bienestar con un equipo apasionado y la mejor tecnología.
             </p>
           </div>
@@ -42,7 +42,7 @@ export default function Footer() {
             <ul className="space-y-2 text-center md:text-left">
               {navLinks.map((link) => (
                 <li key={link.href}>
-                  <Link href={link.href} className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                  <Link href={link.href} className="text-sm text-background/70 hover:text-primary transition-colors">
                     {link.label}
                   </Link>
                 </li>
@@ -53,7 +53,7 @@ export default function Footer() {
           {/* Columna 3: Información de Contacto */}
           <div>
             <h3 className="font-headline font-semibold text-lg mb-4 text-center md:text-left">Contacto</h3>
-            <ul className="space-y-3 text-sm text-muted-foreground text-center md:text-left">
+            <ul className="space-y-3 text-sm text-background/70 text-center md:text-left">
               <li className="flex items-center gap-3 justify-center md:justify-start">
                 <MapPin className="h-4 w-4 text-primary shrink-0" />
                 <span>Calle de la Veterinaria 123, 28001 Madrid</span>
@@ -74,7 +74,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="border-t mt-12 pt-6 text-center text-sm text-muted-foreground">
+        <div className="border-t border-background/20 mt-12 pt-6 text-center text-sm text-background/50">
           {year && <p>&copy; {year} VetPet Haven. Todos los derechos reservados.</p>}
         </div>
       </div>

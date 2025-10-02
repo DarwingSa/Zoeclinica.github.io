@@ -31,7 +31,7 @@ export default function RootLayout({
     <html lang="es" className="scroll-smooth">
       <body className={cn('font-body antialiased flex flex-col min-h-screen', inter.variable, poppins.variable)}>
         <Header />
-        <main className="flex-grow pt-20">
+        <main className="flex-grow">
           {children}
         </main>
         <Footer />
