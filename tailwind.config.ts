@@ -17,8 +17,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        body: ['Inter', 'sans-serif'],
-        headline: ['Inter', 'sans-serif'],
+        body: ['var(--font-inter)', 'sans-serif'],
+        headline: ['var(--font-poppins)', 'sans-serif'],
         code: ['monospace'],
       },
       colors: {
@@ -105,15 +105,18 @@ export default {
           css: {
             h1: {
               fontWeight: '700',
+              fontFamily: theme('fontFamily.headline'),
             },
             h2: {
               fontWeight: '600',
+               fontFamily: theme('fontFamily.headline'),
             },
             h3: {
               fontWeight: '600',
+               fontFamily: theme('fontFamily.headline'),
             },
             '--tw-prose-body': theme('colors.foreground / 0.8'),
-            '--tw-prose-headings': theme('colors.primary'),
+            '--tw-prose-headings': theme('colors.foreground'),
             '--tw-prose-lead': theme('colors.foreground'),
             '--tw-prose-links': theme('colors.primary'),
             '--tw-prose-bold': theme('colors.foreground'),

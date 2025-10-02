@@ -57,17 +57,17 @@ export default function ServicesPage() {
       <section id="servicios" className="section-padding">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h1 className="text-4xl md:text-5xl font-bold text-primary">Nuestros Servicios</h1>
+            <h1 className="text-4xl md:text-5xl font-bold font-headline text-foreground">Nuestros Servicios</h1>
             <p className="text-lg text-muted-foreground mt-2">Dedicados al cuidado integral de la salud de perros y gatos.</p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
             {services.map((service) => (
-              <Card key={service.title} className="text-center hover:shadow-lg transition-shadow duration-300">
+              <Card key={service.title} className="text-center shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300">
                 <CardHeader>
                   <div className="mx-auto bg-primary/10 text-primary rounded-full p-4 w-fit mb-4">
                     <service.icon className="h-8 w-8" />
                   </div>
-                  <CardTitle>{service.title}</CardTitle>
+                  <CardTitle className="font-headline">{service.title}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground">{service.description}</p>
@@ -77,18 +77,18 @@ export default function ServicesPage() {
           </div>
 
           <div className="text-center my-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-primary">Diagnóstico Avanzado</h2>
+            <h2 className="text-3xl md:text-4xl font-bold font-headline text-foreground">Diagnóstico Avanzado</h2>
             <p className="text-lg text-muted-foreground mt-2">Tecnología de punta para un diagnóstico preciso y rápido.</p>
           </div>
           <div className="grid md:grid-cols-1 gap-8 lg:gap-12 items-stretch">
             {diagnosticServices.map(service => {
               const image = PlaceHolderImages.find(p => p.id === service.id);
               return (
-                <Card key={service.id} className="flex flex-col md:flex-row items-center overflow-hidden">
+                <Card key={service.id} className="flex flex-col md:flex-row items-center overflow-hidden shadow-md">
                   <div className="p-6 md:p-8 flex-1">
                     <div className="flex items-center gap-3 mb-3">
                       <service.icon className="h-8 w-8 text-primary" />
-                      <h3 className="text-2xl font-semibold">{service.title}</h3>
+                      <h3 className="text-2xl font-semibold font-headline">{service.title}</h3>
                     </div>
                     <p className="text-muted-foreground mb-4">
                       {service.description}

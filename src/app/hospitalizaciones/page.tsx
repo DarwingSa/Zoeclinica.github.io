@@ -33,7 +33,7 @@ export default function HospitalizationPage() {
         <section id="hospitalizaciones" className="section-padding">
             <div className="container mx-auto px-4">
                 <div className="text-center mb-12">
-                    <h1 className="text-4xl md:text-5xl font-bold text-primary">Servicio de Hospitalización</h1>
+                    <h1 className="text-4xl md:text-5xl font-bold font-headline text-foreground">Servicio de Hospitalización</h1>
                     <p className="text-lg text-muted-foreground mt-2">Cuidado intensivo y especializado para cuando más lo necesitan.</p>
                 </div>
 
@@ -49,7 +49,7 @@ export default function HospitalizationPage() {
                         />
                     </div>
                     <div>
-                        <h2 className="text-3xl font-bold mb-4">Atención Dedicada 24/7</h2>
+                        <h2 className="text-3xl font-bold font-headline mb-4">Atención Dedicada 24/7</h2>
                         <p className="text-muted-foreground mb-6">
                             Cuando una mascota requiere cuidados intensivos o una recuperación postoperatoria vigilada, nuestro servicio de hospitalización ofrece un entorno seguro y profesional. Nuestro equipo está preparado para administrar tratamientos, monitorear la evolución y brindar el confort que tu compañero necesita para recuperarse.
                         </p>
@@ -61,11 +61,11 @@ export default function HospitalizationPage() {
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
                     {hospitalFeatures.map((feature) => (
-                        <div key={feature.title} className="p-6 border rounded-lg bg-muted/50">
+                        <div key={feature.title} className="p-6 border rounded-lg bg-secondary">
                              <div className="mx-auto bg-primary/10 text-primary rounded-full p-4 w-fit mb-4">
                                 <feature.icon className="h-8 w-8" />
                             </div>
-                            <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
+                            <h3 className="text-xl font-semibold font-headline mb-2">{feature.title}</h3>
                             <p className="text-muted-foreground">{feature.description}</p>
                         </div>
                     ))}

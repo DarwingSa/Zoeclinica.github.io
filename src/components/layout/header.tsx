@@ -1,6 +1,6 @@
 'use client';
 
-import { PawPrint, Menu, X } from 'lucide-react';
+import { PawPrint, Menu, X, Phone } from 'lucide-react';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -11,7 +11,6 @@ const navLinks = [
   { href: '/servicios', label: 'Servicios' },
   { href: '/viajes', label: 'Viajes' },
   { href: '/hospitalizaciones', label: 'Hospitalizaciones' },
-  { href: '/contacto', label: 'Contacto' },
 ];
 
 export default function Header() {
@@ -27,7 +26,7 @@ export default function Header() {
         <div className="flex h-20 items-center justify-between">
           <Link href="/" className="flex items-center gap-2" onClick={handleLinkClick}>
             <PawPrint className="h-8 w-8 text-primary" />
-            <span className="text-xl font-bold text-primary-foreground tracking-tight bg-primary px-2 py-1 rounded-md">
+            <span className="text-xl font-headline font-bold text-foreground tracking-tight">
               VetPet Haven
             </span>
           </Link>
@@ -41,7 +40,16 @@ export default function Header() {
                 {link.label}
               </Link>
             ))}
+             <a href="tel:+34912345678" className="text-sm font-medium text-foreground/80 transition-colors hover:text-primary flex items-center gap-2">
+              <Phone className="h-4 w-4" />
+              +34 912 345 678
+            </a>
           </nav>
+          <div className="hidden md:flex items-center gap-2">
+             <Button asChild>
+                <Link href="/contacto">Pedir Cita</Link>
+             </Button>
+          </div>
           <div className="md:hidden">
             <Button
               variant="ghost"
@@ -72,6 +80,12 @@ export default function Header() {
               {link.label}
             </Link>
           ))}
+           <a href="tel:+34912345678" className="text-lg font-medium text-foreground transition-colors hover:text-primary" onClick={handleLinkClick}>
+              +34 912 345 678
+            </a>
+          <Button asChild size="lg" className="w-full mt-4">
+             <Link href="/contacto" onClick={handleLinkClick}>Pedir Cita</Link>
+          </Button>
         </nav>
       </div>
     </header>

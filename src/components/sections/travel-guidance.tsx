@@ -56,7 +56,7 @@ export default function TravelGuidance() {
     <section id="viajes" className="section-padding">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold text-primary">Trámites de Viajes Internacionales</h1>
+          <h1 className="text-4xl md:text-5xl font-bold font-headline text-foreground">Trámites de Viajes Internacionales</h1>
           <p className="text-lg text-muted-foreground mt-2">
             Obtén una guía personalizada de los requisitos para viajar con tu mascota. Nuestra herramienta de IA te proporcionará información detallada sobre certificados, microchips y advertencias sanitarias para tu destino.
           </p>
@@ -65,7 +65,7 @@ export default function TravelGuidance() {
           <div className="lg:col-span-2">
             <Card>
               <CardHeader>
-                <CardTitle>Generador de Guía de Viaje</CardTitle>
+                <CardTitle className='font-headline'>Generador de Guía de Viaje</CardTitle>
                 <CardDescription>
                   Completa el formulario para que nuestra IA genere una guía con los requisitos para tu destino.
                 </CardDescription>
@@ -156,9 +156,9 @@ export default function TravelGuidance() {
             </Card>
           </div>
           <div className="lg:col-span-3">
-            <Card className="min-h-full">
+            <Card className="min-h-full bg-background">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
+                <CardTitle className="flex items-center gap-2 font-headline">
                   <Sparkles className="text-primary h-5 w-5" />
                   Guía de Viaje Personalizada
                 </CardTitle>

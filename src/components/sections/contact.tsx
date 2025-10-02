@@ -47,7 +47,7 @@ export default function Contact() {
     <section id="contacto" className="bg-background section-padding">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold text-primary">Contacto</h1>
+          <h1 className="text-4xl md:text-5xl font-bold font-headline text-foreground">Contacto</h1>
           <p className="text-lg text-muted-foreground mt-2">Estamos aquí para ayudarte. ¡Ponte en contacto con nosotros!</p>
         </div>
         <Card className="shadow-lg">
@@ -55,7 +55,7 @@ export default function Contact() {
             <div className="grid md:grid-cols-2">
               <div className="p-8 md:p-10 flex flex-col justify-between">
                 <div>
-                  <h3 className="text-2xl font-semibold mb-6">Información de Contacto</h3>
+                  <h3 className="text-2xl font-semibold font-headline mb-6">Información de Contacto</h3>
                   <ul className="space-y-4 text-foreground">
                     {contactInfo.map((info, index) => (
                       <li key={index} className="flex items-start gap-4">
@@ -78,8 +78,8 @@ export default function Contact() {
                   ></iframe>
                 </div>
               </div>
-              <div className="p-8 md:p-10 bg-muted/50">
-                <h3 className="text-2xl font-semibold mb-6">Envíanos un Mensaje</h3>
+              <div className="p-8 md:p-10 bg-secondary">
+                <h3 className="text-2xl font-semibold font-headline mb-6">Envíanos un Mensaje</h3>
                  <Form {...form}>
                   <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                     <FormField
