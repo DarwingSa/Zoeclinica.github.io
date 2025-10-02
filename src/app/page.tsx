@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Stethoscope, Plane, Hospital, Star, Heart, Medal, Handshake } from 'lucide-react';
 import Link from 'next/link';
 
@@ -116,24 +116,24 @@ export default function Home() {
       <section id="philosophy" className="bg-background section-padding">
         <div className="container">
           <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div className="relative flex justify-center items-center order-last md:order-first">
-              <div className="absolute w-full h-5/6 bg-secondary rounded-lg -rotate-3"></div>
+          <div className="relative flex justify-center items-center order-last md:order-first">
+              <div className="hidden md:block absolute w-full h-5/6 bg-secondary rounded-lg -rotate-3"></div>
               {philosophyImage && (
-                 <div className="overflow-hidden rounded-lg shadow-lg z-10">
-                    <Image
+                <div className="md:relative overflow-hidden rounded-lg shadow-lg z-10">
+                  <Image
                     src={philosophyImage.imageUrl}
                     alt={philosophyImage.description}
                     width={800}
                     height={600}
                     className="rounded-lg object-cover"
                     data-ai-hint={philosophyImage.imageHint}
-                    />
+                  />
                 </div>
               )}
             </div>
             <div className="text-center md:text-left">
               <h2 className="font-bold font-headline text-foreground mb-4">Un Equipo que se Preocupa</h2>
-              <p className="text-muted-foreground mb-6">
+              <p className="text-muted-foreground mb-6 max-w-[65ch] mx-auto md:mx-0">
                 Nuestra misión va más allá de la medicina. En VetPet Haven, creemos en el vínculo profundo entre las mascotas y sus familias. Por eso, cada miembro de nuestro equipo está comprometido no solo con la excelencia clínica, sino con ofrecer un trato compasivo y cercano. 
               </p>
                <h4 className="font-semibold font-headline text-foreground/90 mb-3">Nuestros Valores</h4>
@@ -164,12 +164,12 @@ export default function Home() {
                   </div>
                   <p className="text-foreground/90 mb-4 italic">"{testimonial.quote}"</p>
                 </CardContent>
-                <div className="p-6 pt-0">
+                <CardFooter>
                     <div className='text-sm'>
                         <p className='font-bold'>{testimonial.name}</p>
                         <p className='text-muted-foreground'>{testimonial.pet}</p>
                     </div>
-                </div>
+                </CardFooter>
               </Card>
             ))}
           </div>
