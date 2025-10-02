@@ -64,13 +64,13 @@ export default function ServicesPage() {
             {services.map((service) => (
               <Card key={service.title} className="text-center shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300">
                 <CardHeader className="items-center">
-                  <div className="mx-auto bg-primary/10 text-primary rounded-full p-4 w-16 h-16 flex items-center justify-center mb-4">
-                    <service.icon className="h-8 w-8" />
+                  <div className="mx-auto bg-primary/10 text-primary rounded-full p-4 w-18 h-18 flex items-center justify-center mb-4">
+                    <service.icon className="h-9 w-9" />
                   </div>
                   <CardTitle className="font-headline">{service.title}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-muted-foreground">{service.description}</p>
+                  <p className="text-muted-foreground leading-relaxed">{service.description}</p>
                 </CardContent>
               </Card>
             ))}

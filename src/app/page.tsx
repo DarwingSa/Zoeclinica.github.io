@@ -1,8 +1,8 @@
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
-import { Stethoscope, Plane, Hospital, Star } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Stethoscope, Plane, Hospital, Star, Heart, Medal, Handshake } from 'lucide-react';
 import Link from 'next/link';
 
 export default function Home() {
@@ -55,7 +55,7 @@ export default function Home() {
     <div>
       <section id="inicio" className="bg-background section-padding pt-12 md:pt-20 overflow-hidden">
         <div className="container relative">
-           <div className="absolute -top-20 -left-40 w-[500px] h-[500px] bg-secondary/30 rounded-full blur-3xl -z-10 opacity-50"></div>
+           <div className="absolute -top-20 -left-40 w-[500px] h-[500px] bg-secondary/30 rounded-full blur-3xl -z-10 opacity-40"></div>
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="text-center md:text-left">
               <h1 className="font-extrabold font-headline text-foreground tracking-tighter mb-4">
@@ -70,15 +70,17 @@ export default function Home() {
             </div>
             <div className="relative flex justify-center">
               {heroImage && (
-                <Image
-                  src={heroImage.imageUrl}
-                  alt={heroImage.description}
-                  width={800}
-                  height={600}
-                  className="rounded-lg shadow-2xl object-cover z-10"
-                  data-ai-hint={heroImage.imageHint}
-                  priority
-                />
+                <div className="overflow-hidden rounded-lg shadow-2xl">
+                    <Image
+                    src={heroImage.imageUrl}
+                    alt={heroImage.description}
+                    width={800}
+                    height={600}
+                    className="rounded-lg object-cover z-10 slow-zoom"
+                    data-ai-hint={heroImage.imageHint}
+                    priority
+                    />
+                </div>
               )}
             </div>
           </div>
@@ -89,19 +91,20 @@ export default function Home() {
         <div className="container">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {pageLinks.map((link) => (
-              <Card key={link.title} className="text-left flex flex-col shadow-lg hover:shadow-xl hover:-translate-y-2 transition-all duration-300 border-transparent border hover:border-primary">
+              <Card key={link.title} className="text-left flex flex-col shadow-lg hover:shadow-xl hover:-translate-y-2 transition-all duration-300 border border-transparent hover:border-primary">
                 <CardHeader>
-                  <div className="mx-auto md:mx-0 bg-background text-primary rounded-full p-4 w-16 h-16 flex items-center justify-center mb-4">
-                    <link.icon className="h-8 w-8" />
+                  <div className="mx-auto md:mx-0 bg-background text-primary rounded-full p-4 w-18 h-18 flex items-center justify-center mb-4">
+                    <link.icon className="h-9 w-9" />
                   </div>
                   <CardTitle className="font-headline text-2xl">{link.title}</CardTitle>
                 </CardHeader>
                 <CardContent className="flex-grow pt-4">
-                  <p className="text-muted-foreground mb-4">{link.description}</p>
+                  <p className="text-muted-foreground mb-4 leading-relaxed">{link.description}</p>
                 </CardContent>
                 <div className="p-6 pt-0">
                   <Button asChild variant="outline" className='w-full md:w-auto text-primary border-primary hover:bg-primary/5 hover:text-primary'>
                     <Link href={link.href}>{link.cta}</Link>
+
                   </Button>
                 </div>
               </Card>
@@ -116,24 +119,29 @@ export default function Home() {
             <div className="relative flex justify-center items-center">
               <div className="absolute w-full h-5/6 bg-secondary rounded-lg -rotate-3"></div>
               {philosophyImage && (
-                <Image
-                  src={philosophyImage.imageUrl}
-                  alt={philosophyImage.description}
-                  width={800}
-                  height={600}
-                  className="rounded-lg shadow-lg object-cover z-10"
-                  data-ai-hint={philosophyImage.imageHint}
-                />
+                 <div className="overflow-hidden rounded-lg shadow-lg z-10">
+                    <Image
+                    src={philosophyImage.imageUrl}
+                    alt={philosophyImage.description}
+                    width={800}
+                    height={600}
+                    className="rounded-lg object-cover"
+                    data-ai-hint={philosophyImage.imageHint}
+                    />
+                </div>
               )}
             </div>
             <div className="text-center md:text-left">
               <h2 className="font-bold font-headline text-foreground mb-4">Un Equipo que se Preocupa</h2>
-              <p className="text-muted-foreground mb-4">
-                Nuestra misión va más allá de la medicina. En VetPet Haven, creemos en el vínculo profundo entre las mascotas y sus familias. Por eso, cada miembro de nuestro equipo está comprometido no solo con la excelencia clínica, sino con ofrecer un trato compasivo y cercano. Entendemos que cada paciente es único, y nos esforzamos por crear un ambiente de confianza y tranquilidad tanto para ti como para tu compañero.
+              <p className="text-muted-foreground mb-6">
+                Nuestra misión va más allá de la medicina. En VetPet Haven, creemos en el vínculo profundo entre las mascotas y sus familias. Por eso, cada miembro de nuestro equipo está comprometido no solo con la excelencia clínica, sino con ofrecer un trato compasivo y cercano. 
               </p>
-              <p className="text-muted-foreground">
-                Combinamos años de experiencia con una formación continua y la tecnología más avanzada para asegurar diagnósticos precisos y tratamientos efectivos. Tu tranquilidad es nuestra prioridad.
-              </p>
+               <h4 className="font-semibold font-headline text-foreground/90 mb-3">Nuestros Valores</h4>
+                <ul className="space-y-3 text-muted-foreground">
+                    <li className="flex items-center gap-3"><Heart className="h-5 w-5 text-primary"/><span>Pasión por los Animales</span></li>
+                    <li className="flex items-center gap-3"><Medal className="h-5 w-5 text-primary"/><span>Excelencia Médica</span></li>
+                    <li className="flex items-center gap-3"><Handshake className="h-5 w-5 text-primary"/><span>Compromiso y Confianza</span></li>
+                </ul>
             </div>
           </div>
         </div>
@@ -156,19 +164,19 @@ export default function Home() {
                   </div>
                   <p className="text-foreground/90 mb-4 italic">"{testimonial.quote}"</p>
                 </CardContent>
-                <CardFooter>
+                <div className="p-6 pt-0">
                     <div className='text-sm'>
                         <p className='font-bold'>{testimonial.name}</p>
                         <p className='text-muted-foreground'>{testimonial.pet}</p>
                     </div>
-                </CardFooter>
+                </div>
               </Card>
             ))}
           </div>
         </div>
       </section>
 
-       <section className="bg-primary section-padding text-primary-foreground">
+       <section className="bg-primary pre-footer-cta text-primary-foreground">
         <div className="container text-center">
           <h2 className="text-3xl md:text-4xl font-bold font-headline mb-4">¿Listos para darle a tu mejor amigo el cuidado que merece?</h2>
           <p className="text-lg text-primary-foreground/80 mb-8 max-w-2xl mx-auto">No esperes más. Contáctanos para cualquier consulta o para agendar una cita. Estamos aquí para ayudarte.</p>

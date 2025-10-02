@@ -1,7 +1,7 @@
 'use client';
 
 import { PawPrint, Menu, X, Phone } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
@@ -15,13 +15,27 @@ const navLinks = [
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
 
   const handleLinkClick = () => {
     setIsMenuOpen(false);
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-sm shadow-sm">
+    <header className={cn(
+      "sticky top-0 z-50 bg-background/80 backdrop-blur-sm transition-all duration-300",
+      isScrolled ? "shadow-md" : "shadow-none"
+    )}>
       <div className="container mx-auto px-4">
         <div className="flex h-20 items-center justify-between">
           <Link href="/" className="flex items-center gap-2" onClick={handleLinkClick}>
@@ -45,7 +59,7 @@ export default function Header() {
               +34 912 345 678
             </a>
           </nav>
-          <div className="hidden md:flex items-center gap-2">
+          <div className="hidden md:flex items-center gap-2 ml-6">
              <Button asChild>
                 <Link href="/contacto">Pedir Cita</Link>
              </Button>
