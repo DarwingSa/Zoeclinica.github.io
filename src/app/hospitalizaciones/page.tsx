@@ -38,7 +38,7 @@ export default function HospitalizationPage() {
                 </div>
 
                 <div className="grid md:grid-cols-2 gap-12 items-center mb-16">
-                    <div className="flex justify-center">
+                    <div className="flex justify-center order-last md:order-first">
                         <Image
                             src={hospitalizationImage.imageUrl}
                             alt={hospitalizationImage.description}

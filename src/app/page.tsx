@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Stethoscope, Plane, Hospital, Star, Heart, Medal, Handshake } from 'lucide-react';
 import Link from 'next/link';
 
@@ -55,7 +55,7 @@ export default function Home() {
     <div>
       <section id="inicio" className="bg-background section-padding pt-12 md:pt-20 overflow-hidden">
         <div className="container relative">
-           <div className="absolute -top-20 -left-40 w-[500px] h-[500px] bg-secondary/30 rounded-full blur-3xl -z-10 opacity-40"></div>
+           <div className="absolute -top-20 -left-40 w-[250px] h-[250px] md:w-[500px] md:h-[500px] bg-secondary/30 rounded-full blur-3xl -z-10 opacity-40"></div>
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="text-center md:text-left">
               <h1 className="font-extrabold font-headline text-foreground tracking-tighter mb-4">
@@ -93,7 +93,7 @@ export default function Home() {
             {pageLinks.map((link) => (
               <Card key={link.title} className="text-left flex flex-col shadow-lg hover:shadow-xl hover:-translate-y-2 transition-all duration-300 border border-transparent hover:border-primary">
                 <CardHeader>
-                  <div className="mx-auto md:mx-0 bg-background text-primary rounded-full p-4 w-18 h-18 flex items-center justify-center mb-4">
+                  <div className="bg-background text-primary rounded-full p-4 w-18 h-18 flex items-center justify-center mb-4">
                     <link.icon className="h-9 w-9" />
                   </div>
                   <CardTitle className="font-headline text-2xl">{link.title}</CardTitle>
@@ -116,7 +116,7 @@ export default function Home() {
       <section id="philosophy" className="bg-background section-padding">
         <div className="container">
           <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div className="relative flex justify-center items-center">
+            <div className="relative flex justify-center items-center order-last md:order-first">
               <div className="absolute w-full h-5/6 bg-secondary rounded-lg -rotate-3"></div>
               {philosophyImage && (
                  <div className="overflow-hidden rounded-lg shadow-lg z-10">
@@ -164,12 +164,12 @@ export default function Home() {
                   </div>
                   <p className="text-foreground/90 mb-4 italic">"{testimonial.quote}"</p>
                 </CardContent>
-                <CardFooter>
+                <div className="p-6 pt-0">
                     <div className='text-sm'>
                         <p className='font-bold'>{testimonial.name}</p>
                         <p className='text-muted-foreground'>{testimonial.pet}</p>
                     </div>
-                </CardFooter>
+                </div>
               </Card>
             ))}
           </div>

@@ -64,7 +64,7 @@ export default function ServicesPage() {
             {services.map((service) => (
               <Card key={service.title} className="text-center shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300">
                 <CardHeader className="items-center">
-                  <div className="mx-auto bg-primary/10 text-primary rounded-full p-4 w-18 h-18 flex items-center justify-center mb-4">
+                  <div className="bg-primary/10 text-primary rounded-full p-4 w-fit mb-4">
                     <service.icon className="h-9 w-9" />
                   </div>
                   <CardTitle className="font-headline">{service.title}</CardTitle>
@@ -80,12 +80,13 @@ export default function ServicesPage() {
             <h2 className="text-3xl md:text-4xl font-bold font-headline text-foreground">Diagnóstico Avanzado</h2>
             <p className="text-lg text-muted-foreground mt-2">Tecnología de punta para un diagnóstico preciso y rápido.</p>
           </div>
-          <div className="grid md:grid-cols-1 gap-8 lg:gap-12 items-stretch">
-            {diagnosticServices.map(service => {
+          <div className="grid grid-cols-1 gap-8 lg:gap-12 items-stretch">
+            {diagnosticServices.map((service, index) => {
               const image = PlaceHolderImages.find(p => p.id === service.id);
+              const isEven = index % 2 === 0;
               return (
                 <Card key={service.id} className="flex flex-col md:flex-row items-center overflow-hidden shadow-md">
-                  <div className="p-6 md:p-8 flex-1">
+                  <div className={`p-6 md:p-8 flex-1 ${isEven ? 'md:order-1' : 'md:order-2'}`}>
                     <div className="flex items-center gap-3 mb-3">
                       <div className="bg-primary/10 text-primary rounded-full p-3 w-fit">
                         <service.icon className="h-8 w-8" />
@@ -102,7 +103,7 @@ export default function ServicesPage() {
                     </ul>
                   </div>
                   {image && (
-                    <div className="w-full md:w-1/3 h-64 md:h-full shrink-0">
+                    <div className={`w-full md:w-1/3 h-64 md:h-full shrink-0 ${isEven ? 'md:order-2' : 'md:order-1'}`}>
                       <Image src={image.imageUrl} alt={image.description} width={600} height={400} className="object-cover w-full h-full" data-ai-hint={service.imageHint} />
                     </div>
                   )}

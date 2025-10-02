@@ -37,9 +37,9 @@ export default function Footer() {
           </div>
 
           {/* Columna 2: Enlaces de navegación */}
-          <div>
-            <h3 className="font-headline font-semibold text-lg mb-4 text-center md:text-left text-primary">Navegación</h3>
-            <ul className="space-y-2 text-center md:text-left">
+          <div className='text-center md:text-left'>
+            <h3 className="font-headline font-semibold text-lg mb-4 text-primary">Navegación</h3>
+            <ul className="space-y-2">
               {navLinks.map((link) => (
                 <li key={link.href}>
                   <Link href={link.href} className="text-sm text-background/70 hover:text-primary transition-colors">
@@ -51,9 +51,9 @@ export default function Footer() {
           </div>
 
           {/* Columna 3: Información de Contacto */}
-          <div>
-            <h3 className="font-headline font-semibold text-lg mb-4 text-center md:text-left text-primary">Contacto</h3>
-            <ul className="space-y-3 text-sm text-background/70 text-center md:text-left">
+          <div className='text-center md:text-left'>
+            <h3 className="font-headline font-semibold text-lg mb-4 text-primary">Contacto</h3>
+            <ul className="space-y-3 text-sm text-background/70">
               <li className="flex items-center gap-3 justify-center md:justify-start">
                 <MapPin className="h-4 w-4 text-primary shrink-0" />
                 <span>Calle de la Veterinaria 123, 28001 Madrid</span>
