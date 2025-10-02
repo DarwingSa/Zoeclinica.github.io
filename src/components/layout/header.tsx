@@ -21,7 +21,13 @@ export default function Header() {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
     };
+    // Add event listener on mount
     window.addEventListener('scroll', handleScroll);
+    
+    // Initial check
+    handleScroll();
+
+    // Clean up event listener on unmount
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
