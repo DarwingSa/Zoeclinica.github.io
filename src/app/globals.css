@@ -2,11 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
-html {
-  scroll-behavior: smooth;
-}
-
 @layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
   :root {
     --background: 240 10% 99%; /* Almost white */
     --foreground: 240 6% 10%; /* Dark Gray */
@@ -56,32 +56,18 @@ html {
     --input: 240 4% 16%;
     --ring: 262 80% 58%;
   }
-}
 
-@layer base {
   * {
     @apply border-border;
   }
   body {
     @apply bg-background text-foreground;
   }
-  h1 {
-    font-size: clamp(2.5rem, 5vw, 4.5rem);
-  }
-  h2 {
-    font-size: clamp(2rem, 4vw, 3rem);
-  }
-  h3 {
-    font-size: clamp(1.5rem, 3vw, 2rem);
-  }
 }
 
 @layer utilities {
   .section-padding {
     @apply py-16 md:py-24 lg:py-28;
-  }
-  .scroll-mt-header {
-    scroll-margin-top: 80px; /* Adjust to match header height */
   }
   .container {
     @apply w-full max-w-6xl mx-auto px-5;
@@ -95,5 +81,17 @@ html {
   }
   .slow-zoom {
     animation: slowZoom 15s infinite alternate ease-in-out;
+  }
+}
+
+@layer base {
+  h1 {
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
+  }
+  h2 {
+    font-size: clamp(2rem, 4vw, 3rem);
+  }
+  h3 {
+    font-size: clamp(1.5rem, 3vw, 2rem);
   }
 }
