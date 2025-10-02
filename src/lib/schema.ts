@@ -1,9 +1,10 @@
 import { z } from 'zod';
 
 export const travelGuidanceSchema = z.object({
-  destination: z.string().min(2, { message: 'El destino debe tener al menos 2 caracteres.' }),
-  animalType: z.enum(['dog', 'cat'], { required_error: 'Debe seleccionar un tipo de animal.' }),
+  destination: z.enum(['europa', 'norteamerica', 'asia'], { required_error: 'Debes seleccionar un destino.' }),
+  animalType: z.enum(['dog', 'cat'], { required_error: 'Debes seleccionar un tipo de animal.' }),
   animalAge: z.coerce.number().min(0, { message: 'La edad no puede ser negativa.' }).max(30, { message: 'La edad parece demasiado alta.' }),
+  animalWeight: z.coerce.number().min(0, { message: 'El peso no puede ser negativo.' }).max(100, { message: 'El peso parece demasiado alto.' }),
   knownHealthConditions: z.string().min(2, { message: 'Por favor, ingrese "ninguna" si no hay condiciones.' }),
 });
 

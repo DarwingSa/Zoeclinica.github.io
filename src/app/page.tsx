@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Stethoscope, Plane, Hospital, Star, Heart, Medal, Handshake } from 'lucide-react';
 import Link from 'next/link';
 
@@ -64,7 +64,7 @@ export default function Home() {
               <p className="text-base text-muted-foreground mb-8 max-w-[60ch] mx-auto md:mx-0">
                 En VetPet Haven, ofrecemos atención veterinaria de la más alta calidad exclusivamente para perros y gatos. Nuestra misión es garantizar su bienestar con un equipo apasionado y la mejor tecnología. Tu tranquilidad y su salud son nuestra prioridad.
               </p>
-              <Button asChild size="lg" className="shadow-lg hover:-translate-y-0.5 hover:shadow-primary/40">
+              <Button asChild size="lg" className="shadow-lg mt-4 hover:-translate-y-0.5 hover:shadow-primary/40">
                 <Link href="/contacto">Pedir Cita</Link>
               </Button>
             </div>
@@ -164,12 +164,12 @@ export default function Home() {
                   </div>
                   <p className="text-foreground/90 mb-4 italic">"{testimonial.quote}"</p>
                 </CardContent>
-                <div className="p-6 pt-0">
+                <CardFooter>
                     <div className='text-sm'>
                         <p className='font-bold'>{testimonial.name}</p>
                         <p className='text-muted-foreground'>{testimonial.pet}</p>
                     </div>
-                </div>
+                </CardFooter>
               </Card>
             ))}
           </div>
