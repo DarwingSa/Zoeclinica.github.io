@@ -63,8 +63,8 @@ export default function ServicesPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
             {services.map((service) => (
               <Card key={service.title} className="text-center shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300">
-                <CardHeader>
-                  <div className="mx-auto bg-primary/10 text-primary rounded-full p-4 w-fit mb-4">
+                <CardHeader className="items-center">
+                  <div className="mx-auto bg-primary/10 text-primary rounded-full p-4 w-16 h-16 flex items-center justify-center mb-4">
                     <service.icon className="h-8 w-8" />
                   </div>
                   <CardTitle className="font-headline">{service.title}</CardTitle>
@@ -87,7 +87,9 @@ export default function ServicesPage() {
                 <Card key={service.id} className="flex flex-col md:flex-row items-center overflow-hidden shadow-md">
                   <div className="p-6 md:p-8 flex-1">
                     <div className="flex items-center gap-3 mb-3">
-                      <service.icon className="h-8 w-8 text-primary" />
+                      <div className="bg-primary/10 text-primary rounded-full p-3 w-fit">
+                        <service.icon className="h-8 w-8" />
+                      </div>
                       <h3 className="text-2xl font-semibold font-headline">{service.title}</h3>
                     </div>
                     <p className="text-muted-foreground mb-4">

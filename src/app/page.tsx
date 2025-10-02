@@ -7,6 +7,7 @@ import Link from 'next/link';
 
 export default function Home() {
   const heroImage = PlaceHolderImages.find(p => p.id === 'hero-dog-cat');
+  const philosophyImage = PlaceHolderImages.find(p => p.id === 'vet-smiling');
 
   const pageLinks = [
     {
@@ -83,15 +84,16 @@ export default function Home() {
         </div>
       </section>
       
-      <section className="bg-background section-padding">
+      <section className="bg-secondary section-padding">
         <div className="container">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {pageLinks.map((link) => (
               <Card key={link.title} className="text-center flex flex-col shadow-lg hover:shadow-xl hover:-translate-y-2 transition-all duration-300">
                 <CardHeader className="items-center">
-                  <div className="mx-auto bg-primary/10 text-primary rounded-full p-4 w-fit mb-4">
+                  <div className="mx-auto bg-background text-primary rounded-full p-4 w-16 h-16 flex items-center justify-center mb-4">
                     <link.icon className="h-8 w-8" />
                   </div>
+
                   <CardTitle className="font-headline text-2xl">{link.title}</CardTitle>
                 </CardHeader>
                 <CardContent className="flex-grow">
@@ -104,6 +106,34 @@ export default function Home() {
                 </div>
               </Card>
             ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="philosophy" className="bg-background section-padding">
+        <div className="container">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            <div className="flex justify-center">
+              {philosophyImage && (
+                <Image
+                  src={philosophyImage.imageUrl}
+                  alt={philosophyImage.description}
+                  width={800}
+                  height={600}
+                  className="rounded-lg shadow-lg object-cover"
+                  data-ai-hint={philosophyImage.imageHint}
+                />
+              )}
+            </div>
+            <div className="text-center md:text-left">
+              <h2 className="text-4xl font-bold font-headline text-foreground mb-4">Un Equipo que se Preocupa</h2>
+              <p className="text-muted-foreground mb-4">
+                Nuestra misión va más allá de la medicina. En VetPet Haven, creemos en el vínculo profundo entre las mascotas y sus familias. Por eso, cada miembro de nuestro equipo está comprometido no solo con la excelencia clínica, sino con ofrecer un trato compasivo y cercano. Entendemos que cada paciente es único, y nos esforzamos por crear un ambiente de confianza y tranquilidad tanto para ti como para tu compañero.
+              </p>
+              <p className="text-muted-foreground">
+                Combinamos años de experiencia con una formación continua y la tecnología más avanzada para asegurar diagnósticos precisos y tratamientos efectivos. Tu tranquilidad es nuestra prioridad.
+              </p>
+            </div>
           </div>
         </div>
       </section>
