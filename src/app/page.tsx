@@ -53,16 +53,16 @@ export default function Home() {
   return (
     <div>
       <section id="inicio" className="bg-background section-padding pt-12 md:pt-20">
-        <div className="container mx-auto px-4">
+        <div className="container">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="text-center md:text-left">
-              <h1 className="text-5xl md:text-6xl font-extrabold font-headline text-foreground tracking-tighter mb-4">
+              <h1 className="font-extrabold font-headline text-foreground tracking-tighter mb-4">
                 Cuidado experto para tus mejores amigos
               </h1>
-              <p className="text-base text-muted-foreground mb-8">
+              <p className="text-base text-muted-foreground mb-8 max-w-[60ch] mx-auto md:mx-0">
                 En VetPet Haven, ofrecemos atención veterinaria de la más alta calidad exclusivamente para perros y gatos. Nuestra misión es garantizar su bienestar con un equipo apasionado y la mejor tecnología. Tu tranquilidad y su salud son nuestra prioridad.
               </p>
-              <Button asChild size="lg" className="shadow-lg">
+              <Button asChild size="lg" className="shadow-lg hover:-translate-y-0.5 hover:shadow-primary/40">
                 <Link href="/contacto">Pedir Cita</Link>
               </Button>
             </div>
@@ -84,15 +84,15 @@ export default function Home() {
       </section>
       
       <section className="bg-background section-padding">
-        <div className="container mx-auto px-4">
+        <div className="container">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {pageLinks.map((link) => (
-              <Card key={link.title} className="text-center flex flex-col shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300">
+              <Card key={link.title} className="text-center flex flex-col shadow-lg hover:shadow-xl hover:-translate-y-2 transition-all duration-300">
                 <CardHeader className="items-center">
                   <div className="mx-auto bg-primary/10 text-primary rounded-full p-4 w-fit mb-4">
                     <link.icon className="h-8 w-8" />
                   </div>
-                  <CardTitle className="font-headline">{link.title}</CardTitle>
+                  <CardTitle className="font-headline text-2xl">{link.title}</CardTitle>
                 </CardHeader>
                 <CardContent className="flex-grow">
                   <p className="text-muted-foreground mb-4">{link.description}</p>
@@ -109,7 +109,7 @@ export default function Home() {
       </section>
 
       <section className="bg-secondary section-padding">
-        <div className="container mx-auto px-4">
+        <div className="container">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold font-headline text-foreground">¿Por qué confiar en nosotros?</h2>
             <p className="text-lg text-muted-foreground mt-2">Nuestros clientes y sus mascotas son nuestra mejor carta de presentación.</p>
