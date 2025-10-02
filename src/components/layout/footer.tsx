@@ -2,7 +2,6 @@
 
 import { PawPrint, Phone, Mail, MapPin, Clock } from 'lucide-react';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
 
 const navLinks = [
   { href: '/', label: 'Inicio' },
@@ -13,11 +12,6 @@ const navLinks = [
 ];
 
 export default function Footer() {
-  const [year, setYear] = useState<number | null>(null);
-
-  useEffect(() => {
-    setYear(new Date().getFullYear());
-  }, []);
 
   return (
     <footer className="bg-foreground text-background section-padding pb-8">
@@ -75,7 +69,7 @@ export default function Footer() {
         </div>
 
         <div className="border-t border-background/20 mt-12 pt-6 text-center text-sm text-background/50">
-          {year && <p>&copy; {year} VetPet Haven. Todos los derechos reservados.</p>}
+          <p>&copy; {new Date().getFullYear()} VetPet Haven. Todos los derechos reservados.</p>
         </div>
       </div>
     </footer>
