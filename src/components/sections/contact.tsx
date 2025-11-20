@@ -3,7 +3,7 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import type { z } from 'zod';
-import { Clock, Mail, MapPin, Send } from 'lucide-react';
+import { Clock, Mail, MapPin, Phone, Send } from 'lucide-react';
 import { contactFormSchema } from '@/lib/schema';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -57,41 +57,41 @@ export default function Contact() {
   return (
     <div className="bg-background">
        {/* Hero Section */}
-       <section className="relative bg-primary pt-32 pb-40 md:pt-40 md:pb-48 overflow-hidden text-primary-foreground">
+       <section className="relative bg-primary pt-24 pb-24 md:pt-40 md:pb-48 overflow-hidden text-primary-foreground">
          <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
           {/* Decorative Blobs */}
          <div className="absolute top-20 right-20 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
          <div className="absolute bottom-0 left-0 w-96 h-96 bg-white/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/4"></div>
          
-         <div className="container text-center relative z-10">
-            <h1 className="text-4xl md:text-6xl font-extrabold font-headline mb-6 tracking-tight">Contáctanos</h1>
-            <p className="text-lg md:text-xl text-primary-foreground/80 max-w-2xl mx-auto leading-relaxed">
+         <div className="container text-center relative z-10 px-4">
+            <h1 className="text-3xl md:text-6xl font-extrabold font-headline mb-4 md:mb-6 tracking-tight">Contáctanos</h1>
+            <p className="text-base md:text-xl text-primary-foreground/80 max-w-2xl mx-auto leading-relaxed">
               Estamos aquí para escuchar a ti y a tu mascota. Ya sea para una consulta, una emergencia o simplemente para decir hola.
             </p>
          </div>
        </section>
 
        {/* Main Content (Floating Card) */}
-       <section className="relative z-20 -mt-20 pb-24">
+       <section className="relative z-20 -mt-12 md:-mt-20 pb-16 md:pb-24">
         <div className="container px-4">
-          <Card className="shadow-2xl border-none overflow-hidden rounded-3xl">
+          <Card className="shadow-2xl border-none overflow-hidden rounded-2xl md:rounded-3xl">
             <CardContent className="p-0">
               <div className="grid lg:grid-cols-5">
                 
                 {/* Info Column */}
-                <div className="lg:col-span-2 bg-secondary text-foreground p-8 md:p-12 flex flex-col justify-between">
-                  <div>
-                    <h3 className="text-2xl font-bold font-headline mb-2">Información de Contacto</h3>
-                    <p className="text-muted-foreground mb-8">Encuentra la forma más rápida de comunicarte con nosotros.</p>
+                <div className="lg:col-span-2 bg-secondary text-foreground p-6 md:p-12 flex flex-col justify-between order-last lg:order-first">
+                  <div className="mb-8 lg:mb-0">
+                    <h3 className="text-xl md:text-2xl font-bold font-headline mb-2">Información de Contacto</h3>
+                    <p className="text-muted-foreground mb-6 md:mb-8 text-sm md:text-base">Encuentra la forma más rápida de comunicarte con nosotros.</p>
                     
-                    <ul className="space-y-8">
+                    <ul className="space-y-6 md:space-y-8">
                       {contactInfo.map((info, index) => (
                         <li key={index} className="flex gap-4">
-                          <div className={`bg-white p-3 rounded-xl shadow-sm h-fit ${info.customColor ? '' : 'text-primary'}`}>
-                            <info.icon className={`h-6 w-6 ${info.customColor || ''}`} />
+                          <div className={`bg-white p-2.5 md:p-3 rounded-xl shadow-sm h-fit ${info.customColor ? '' : 'text-primary'}`}>
+                            <info.icon className={`h-5 w-5 md:h-6 md:w-6 ${info.customColor || ''}`} />
                           </div>
                           <div>
-                            <h4 className="font-bold text-foreground text-sm uppercase tracking-wide mb-1">{info.title}</h4>
+                            <h4 className="font-bold text-foreground text-xs md:text-sm uppercase tracking-wide mb-1">{info.title}</h4>
                             {info.href ? (
                                 <a 
                                     href={info.href} 
@@ -111,7 +111,7 @@ export default function Contact() {
                   </div>
                   
                   {/* Map Preview */}
-                  <div className="mt-10 rounded-2xl overflow-hidden shadow-md border border-primary/10 h-48 lg:h-64 relative group">
+                  <div className="mt-6 md:mt-10 rounded-2xl overflow-hidden shadow-md border border-primary/10 h-48 lg:h-64 relative group">
                      <div className="absolute inset-0 bg-primary/10 group-hover:bg-transparent transition-colors duration-300 z-10 pointer-events-none"></div>
                     <iframe
                       src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3037.649615962828!2d-3.703790184605697!3d40.4167753793649!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd422880a8f7c9e1%3A0xfa96350e6ed3948e!2sPuerta%20del%20Sol!5e0!3m2!1sen!2ses!4v1678886400000"
@@ -128,23 +128,23 @@ export default function Contact() {
                 </div>
 
                 {/* Form Column */}
-                <div className="lg:col-span-3 bg-white p-8 md:p-12 lg:p-16">
-                  <div className="mb-8">
-                     <h3 className="text-3xl font-bold font-headline text-foreground mb-2">Envíanos un Mensaje</h3>
-                     <p className="text-muted-foreground">Completa el formulario y nuestro equipo se pondrá en contacto contigo a la brevedad.</p>
+                <div className="lg:col-span-3 bg-white p-6 md:p-12 lg:p-16">
+                  <div className="mb-6 md:mb-8">
+                     <h3 className="text-2xl md:text-3xl font-bold font-headline text-foreground mb-2">Envíanos un Mensaje</h3>
+                     <p className="text-muted-foreground text-sm md:text-base">Completa el formulario y nuestro equipo se pondrá en contacto contigo a la brevedad.</p>
                   </div>
                   
                   <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                      <div className="grid md:grid-cols-2 gap-6">
+                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 md:space-y-6">
+                      <div className="grid md:grid-cols-2 gap-4 md:gap-6">
                         <FormField
                           control={form.control}
                           name="name"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel className="text-foreground font-semibold">Nombre Completo</FormLabel>
+                              <FormLabel className="text-foreground font-semibold text-sm md:text-base">Nombre Completo</FormLabel>
                               <FormControl>
-                                <Input placeholder="Tu nombre" {...field} className="bg-secondary/20 border-secondary-foreground/10 focus:bg-white transition-colors h-12" />
+                                <Input placeholder="Tu nombre" {...field} className="bg-secondary/20 border-secondary-foreground/10 focus:bg-white transition-colors h-10 md:h-12 text-base" />
                               </FormControl>
                               <FormMessage />
                             </FormItem>
@@ -155,9 +155,9 @@ export default function Contact() {
                           name="email"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel className="text-foreground font-semibold">Correo Electrónico</FormLabel>
+                              <FormLabel className="text-foreground font-semibold text-sm md:text-base">Correo Electrónico</FormLabel>
                               <FormControl>
-                                <Input type="email" placeholder="tu@email.com" {...field} className="bg-secondary/20 border-secondary-foreground/10 focus:bg-white transition-colors h-12" />
+                                <Input type="email" placeholder="tu@email.com" {...field} className="bg-secondary/20 border-secondary-foreground/10 focus:bg-white transition-colors h-10 md:h-12 text-base" />
                               </FormControl>
                               <FormMessage />
                             </FormItem>
@@ -170,9 +170,9 @@ export default function Contact() {
                         name="subject"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel className="text-foreground font-semibold">Asunto</FormLabel>
+                            <FormLabel className="text-foreground font-semibold text-sm md:text-base">Asunto</FormLabel>
                             <FormControl>
-                              <Input placeholder="Motivo de tu consulta" {...field} className="bg-secondary/20 border-secondary-foreground/10 focus:bg-white transition-colors h-12" />
+                              <Input placeholder="Motivo de tu consulta" {...field} className="bg-secondary/20 border-secondary-foreground/10 focus:bg-white transition-colors h-10 md:h-12 text-base" />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -184,17 +184,17 @@ export default function Contact() {
                         name="message"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel className="text-foreground font-semibold">Mensaje</FormLabel>
+                            <FormLabel className="text-foreground font-semibold text-sm md:text-base">Mensaje</FormLabel>
                             <FormControl>
-                              <Textarea placeholder="Cuéntanos cómo podemos ayudarte..." className="min-h-[150px] bg-secondary/20 border-secondary-foreground/10 focus:bg-white transition-colors resize-none p-4" {...field} />
+                              <Textarea placeholder="Cuéntanos cómo podemos ayudarte..." className="min-h-[120px] md:min-h-[150px] bg-secondary/20 border-secondary-foreground/10 focus:bg-white transition-colors resize-none p-3 md:p-4 text-base" {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
                         )}
                       />
                       
-                      <div className="pt-4">
-                        <Button type="submit" size="lg" className="w-full md:w-auto shadow-lg hover:translate-y-[-2px] transition-all duration-300 font-bold px-8 h-12" disabled={form.formState.isSubmitting}>
+                      <div className="pt-2 md:pt-4">
+                        <Button type="submit" size="lg" className="w-full md:w-auto shadow-lg hover:translate-y-[-2px] transition-all duration-300 font-bold px-8 h-10 md:h-12 text-base" disabled={form.formState.isSubmitting}>
                            Enviar Mensaje <Send className="ml-2 h-4 w-4" />
                         </Button>
                       </div>
