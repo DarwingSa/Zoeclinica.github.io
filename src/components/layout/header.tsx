@@ -97,7 +97,7 @@ export default function Header() {
       {/* Mobile Menu */}
       <div
         className={cn(
-          'md:hidden absolute top-20 left-0 w-full bg-background shadow-lg transition-transform duration-300 ease-in-out',
+          'md:hidden absolute top-20 left-0 w-full bg-background/95 backdrop-blur-md shadow-lg transition-transform duration-300 ease-in-out',
           isMenuOpen ? 'transform translate-y-0' : 'transform -translate-y-[150%]'
         )}
       >

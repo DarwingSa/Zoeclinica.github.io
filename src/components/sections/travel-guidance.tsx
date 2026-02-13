@@ -3,403 +3,575 @@
 import { useState, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import type { z } from 'zod';
-import { Loader2, Sparkles, Wand2, Plane, ChevronDown } from 'lucide-react';
-import Link from 'next/link';
+import * as z from 'zod';
+import { Loader2, Plane, PawPrint, CalendarIcon, Banknote, FileText, Printer, User, Info } from 'lucide-react';
+import { format } from "date-fns";
+import { es } from "date-fns/locale";
 
-import { travelGuidanceSchema } from '@/lib/schema';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
-import { contactFormSchema } from '@/lib/schema';
 import { useToast } from '@/hooks/use-toast';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Calendar } from '@/components/ui/calendar';
 
+const travelFormSchema = z.object({
+  ownerName: z.string().min(2, "El nombre es obligatorio"),
+  destination: z.enum(["europa", "norteamerica", "asia", "latinoamerica"], {
+    required_error: "Selecciona un destino",
+  }),
+  petName: z.string().min(1, "El nombre de la mascota es obligatorio"),
+  species: z.enum(["dog", "cat"], {
+    required_error: "Selecciona perro o gato",
+  }),
+  breed: z.string().min(2, "La raza es obligatoria"),
+  color: z.string().min(2, "El color es obligatorio"),
+  birthDate: z.date({
+    required_error: "La fecha de nacimiento es obligatoria",
+  }),
+  weight: z.string().min(1, "El peso es obligatorio"),
+});
 
-type TravelGuidanceFormValues = z.infer<typeof travelGuidanceSchema>;
-type ContactFormValues = z.infer<typeof contactFormSchema>;
+type TravelFormValues = z.infer<typeof travelFormSchema>;
 
-const travelGuides = {
+type ServiceItem = {
+  label: string;
+  detail: string;
+  price: number;
+};
+
+type DestinationData = {
+  title: string;
+  description: string;
+  estimatedTime: string;
+  alert: string;
+  aranceles: number;
+  arancelesNote: string;
+  getServices: (species: "dog" | "cat") => ServiceItem[];
+};
+
+const destinationServices: Record<string, DestinationData> = {
   europa: {
-    dog: {
-      title: "Guía de Viaje para Perros a Europa",
-      basePrice: "Desde $500 USD",
-      requirements: [
-        "Microchip ISO 11784/11785.",
-        "Vacuna antirrábica vigente (aplicada al menos 21 días antes del viaje).",
-        "Certificado de Salud Europeo emitido por un veterinario oficial.",
-        "Tratamiento antiparasitario (Echinococcus multilocularis) para ciertos países."
-      ],
-      notes: "El peso y la edad pueden influir en los requisitos de la aerolínea. Mascotas de menos de 3 meses tienen restricciones especiales."
-    },
-    cat: {
-      title: "Guía de Viaje para Gatos a Europa",
-      basePrice: "Desde $450 USD",
-      requirements: [
-        "Microchip ISO 11784/11785.",
-        "Vacuna antirrábica vigente (aplicada al menos 21 días antes del viaje).",
-        "Certificado de Salud Europeo emitido por un veterinario oficial.",
-      ],
-      notes: "Asegúrate de que el transportín cumpla con la normativa IATA. Consulta con la aerolínea sobre sus políticas específicas para gatos."
-    }
+    title: "Presupuesto de Viaje a Europa (UE)",
+    description: "Cumplimiento total normativa CEXGAN y UE. Incluye gestión sanitaria completa.",
+    estimatedTime: "Mínimo 21 días antes del viaje",
+    alert: "Si tu mascota es menor de 3 meses, contáctanos directamente.",
+    aranceles: 70,
+    arancelesNote: "Pago directo a cuenta del cliente (Tasa Oficial)",
+    getServices: (species) => [
+      {
+        label: "Vacunación Anual Completa",
+        detail: species === 'dog' 
+          ? "Séxtuple + Antirrábica + Desparasitación + KC" 
+          : "Quíntuple Felina + Antirrábica + Desparasitación",
+        price: 100
+      },
+      {
+        label: "Implantación de Microchip",
+        detail: "Microchip ISO 11784/11785 Homologado",
+        price: 50
+      },
+      {
+        label: "Titulación de Anticuerpos",
+        detail: "Toma de muestra y envío a laboratorio autorizado",
+        price: 200
+      },
+      {
+        label: "Certificado Oficial Salud UE",
+        detail: "Gestión y emisión ante autoridades competentes",
+        price: 150
+      }
+    ]
   },
   norteamerica: {
-    dog: {
-      title: "Guía de Viaje para Perros a Norteamérica (EEUU/Canadá)",
-      basePrice: "Desde $400 USD",
-      requirements: [
-        "Microchip (recomendado).",
-        "Certificado de vacunación contra la rabia emitido en inglés o francés.",
-        "Examen de salud por un veterinario licenciado.",
-        "Para EEUU, los perros deben parecer sanos a su llegada."
-      ],
-      notes: "Canadá puede requerir inspección veterinaria en el puerto de entrada. Consulta las regulaciones específicas del estado o provincia de destino."
-    },
-    cat: {
-      title: "Guía de Viaje para Gatos a Norteamérica (EEUU/Canadá)",
-      basePrice: "Desde $380 USD",
-      requirements: [
-        "No se requiere microchip de forma obligatoria, pero es muy recomendado.",
-        "Certificado de salud y vacunación antirrábica (aunque EEUU no lo exige para gatos, Canadá sí y muchas aerolíneas también).",
-      ],
-      notes: "Verifica siempre con la aerolínea los requisitos de embarque, especialmente sobre el transportín."
-    }
+    title: "Pack Viaje a Norteamérica",
+    description: "Gestión completa de requisitos CDC (EE.UU.) o CFIA (Canadá).",
+    estimatedTime: "Iniciar 30 días antes",
+    alert: "Nuevos requisitos estrictos para el ingreso a EE.UU.",
+    aranceles: 50,
+    arancelesNote: "Tasas administrativas de exportación",
+    getServices: (species) => [
+      { label: "Certificado Salud Internacional", detail: "Emisión oficial 10 días antes", price: 150 },
+      { label: "Vacunación y Microchip", detail: "Rabia + Anual + Chip Compatible", price: 120 },
+      { label: "Tratamiento Antiparasitario", detail: "Interna y Externa Certificada", price: 30 }
+    ]
   },
-   asia: {
-    dog: {
-      title: "Guía de Viaje para Perros a Asia (General)",
-      basePrice: "Desde $700 USD",
-      requirements: [
-        "Microchip ISO.",
-        "Vacuna antirrábica y test de titulación de anticuerpos contra la rabia (muy importante para países como Japón, Singapur).",
-        "Permiso de importación previo del país de destino.",
-        "Certificado de Salud Internacional y múltiples tratamientos antiparasitarios."
-      ],
-      notes: "Asia tiene las regulaciones más estrictas y variables. Países como Japón o Singapur requieren cuarentena. La planificación debe empezar con 6-8 meses de antelación."
-    },
-    cat: {
-      title: "Guía de Viaje para Gatos a Asia (General)",
-      basePrice: "Desde $650 USD",
-      requirements: [
-         "Microchip ISO.",
-        "Vacuna antirrábica y test de titulación de anticuerpos.",
-        "Permiso de importación del país de destino.",
-        "Certificado de Salud Internacional."
-      ],
-      notes: "Muchos países asiáticos tienen periodos de cuarentena obligatorios. Es crucial investigar los requisitos específicos del país de destino con mucha antelación."
-    }
+  asia: {
+    title: "Pack Viaje a Asia",
+    description: "Protocolo completo para países con requisitos de cuarentena.",
+    estimatedTime: "4-6 meses antes del viaje",
+    alert: "Proceso largo. Requiere titulación de anticuerpos obligatoria.",
+    aranceles: 100,
+    arancelesNote: "Permisos de importación y gestiones externas",
+    getServices: (species) => [
+      { label: "Pack Integral Asia", detail: "Microchip + Vacunas + Titulación + Permisos", price: 650 }
+    ]
+  },
+  latinoamerica: {
+    title: "Pack Viaje a Latinoamérica",
+    description: "Certificados de exportación para países de la región.",
+    estimatedTime: "15-20 días antes",
+    alert: "Puede requerir legalizaciones adicionales.",
+    aranceles: 40,
+    arancelesNote: "Tasas y Aranceles locales (INSAI o similar)",
+    getServices: (species) => [
+      { label: "Certificado Internacional", detail: "Emisión y gestión oficial", price: 120 },
+      { label: "Vacunas y Desparasitación", detail: "Al día según requisito país de destino", price: 80 }
+    ]
   }
 };
 
-
 export default function TravelGuidance() {
-  const [guidance, setGuidance] = useState<typeof travelGuides.europa.dog | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [showContactForm, setShowContactForm] = useState(false);
+  const [result, setResult] = useState<{ 
+    data: TravelFormValues; 
+    services: ServiceItem[]; 
+    info: DestinationData 
+  } | null>(null);
   
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSending, setIsSending] = useState(false);
   const resultsRef = useRef<HTMLDivElement>(null);
-  const contactFormRef = useRef<HTMLDivElement>(null);
+  const { toast } = useToast();
 
-  const form = useForm<TravelGuidanceFormValues>({
-    resolver: zodResolver(travelGuidanceSchema),
+  const form = useForm<TravelFormValues>({
+    resolver: zodResolver(travelFormSchema),
     defaultValues: {
-      destination: undefined,
-      animalType: undefined,
-      animalAge: 0,
-      animalWeight: 0,
-      knownHealthConditions: 'Ninguna',
+      ownerName: '',
+      petName: '',
+      breed: '',
+      color: '',
+      weight: '',
     },
   });
 
-  function onSubmit(values: TravelGuidanceFormValues) {
+  function onSubmit(values: TravelFormValues) {
     setIsLoading(true);
-    setGuidance(null);
-    setShowContactForm(false);
+    setResult(null);
 
-    // Simulate AI processing
+    // Simulación de procesamiento
     setTimeout(() => {
-      const guide = travelGuides[values.destination as keyof typeof travelGuides]?.[values.animalType as 'dog' | 'cat'];
-      setGuidance(guide || null);
+      const info = destinationServices[values.destination];
+      const services = info.getServices(values.species);
+      
+      setResult({ data: values, services, info });
       setIsLoading(false);
-       // Scroll to results
       setTimeout(() => resultsRef.current?.scrollIntoView({ behavior: 'smooth' }), 100);
+      
+      toast({
+        title: "¡Presupuesto Generado!",
+        description: "Revisa los detalles a la derecha para tu viaje.",
+      });
     }, 1000);
   }
 
-  function handleStartProcessClick() {
-    setShowContactForm(true);
-     setTimeout(() => contactFormRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
-  }
-  
-  const { toast } = useToast();
-  const contactForm = useForm<ContactFormValues>({
-    resolver: zodResolver(contactFormSchema),
-    defaultValues: {
-      name: '',
-      email: '',
-      subject: 'Inicio de Trámites de Viaje',
-      message: '',
-    },
-  });
+  const handlePrint = () => {
+    window.print();
+  };
 
-  function onContactSubmit(values: ContactFormValues) {
-    console.log("Contact form submitted:", values);
-    toast({
-      title: "Solicitud Recibida",
-      description: "Un experto en viajes te contactará pronto para iniciar el proceso.",
-    });
-    contactForm.reset();
-    setShowContactForm(false);
-  }
+  const handleScheduleAppointment = async () => {
+    if (!result) return;
+    setIsSending(true);
 
+    // Simulación de envío de datos
+    setTimeout(() => {
+      toast({
+        title: "Solicitud Recibida",
+        description: "Un asesor de viajes se pondrá en contacto contigo en las próximas 24 horas.",
+      });
+      setIsSending(false);
+    }, 1500);
+  };
+
+  const subtotal = result?.services.reduce((acc, item) => acc + item.price, 0) || 0;
 
   return (
-    <section id="viajes" className="section-padding">
+    <section className="section-padding bg-background min-h-screen">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold font-headline text-foreground">Trámites de Viajes Internacionales</h1>
-          <p className="text-lg text-muted-foreground mt-2">
-            Obtén una guía instantánea de los requisitos para viajar con tu mascota. Nuestra herramienta te proporcionará información detallada para tu destino.
+        
+        {/* Header - Hidden on print */}
+        <div className="text-center mb-16 max-w-3xl mx-auto print:hidden">
+          <div className="inline-block p-4 bg-primary/10 rounded-3xl mb-6">
+             <Plane className="h-10 w-10 text-primary" />
+          </div>
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold font-headline text-foreground mb-6 tracking-tight">Asesoría de Viajes</h1>
+          <p className="text-lg text-muted-foreground leading-relaxed">
+            Obtén una guía personalizada de requisitos y costos para viajar con tu mascota. Completa el formulario y nosotros nos encargamos del resto.
           </p>
         </div>
-        <div className="grid lg:grid-cols-5 gap-12 items-start">
-          <div className="lg:col-span-2">
-            <Card className="sticky top-24">
-              <CardHeader>
-                <CardTitle className='font-headline'>Generador de Guía de Viaje</CardTitle>
-                <CardDescription>
-                  Completa el formulario para generar una guía con los requisitos para tu destino.
+        
+        <div className="grid lg:grid-cols-12 gap-8 items-start">
+          
+          {/* Form Side - Hidden on print */}
+          <div className="lg:col-span-5 print:hidden">
+            <Card className="border-none shadow-2xl bg-white rounded-3xl overflow-hidden">
+              <CardHeader className="bg-secondary/30 pb-8">
+                <CardTitle className='font-headline text-2xl flex items-center gap-3'>
+                    <PawPrint className="h-6 w-6 text-primary" />
+                    Generar Presupuesto
+                </CardTitle>
+                <CardDescription className="text-base">
+                  Dinos a dónde vas y con quién viajas.
                 </CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent className="pt-8">
                 <Form {...form}>
                   <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                    <FormField
-                      control={form.control}
-                      name="destination"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Continente de Destino</FormLabel>
-                          <Select onValueChange={field.onChange} defaultValue={field.value}>
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Selecciona un continente" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              <SelectItem value="europa">Europa</SelectItem>
-                              <SelectItem value="norteamerica">Norteamérica</SelectItem>
-                              <SelectItem value="asia">Asia</SelectItem>
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="animalType"
-                      render={({ field }) => (
-                        <FormItem className="space-y-3">
-                          <FormLabel>Tipo de Animal</FormLabel>
-                          <FormControl>
-                            <RadioGroup
-                              onValueChange={field.onChange}
-                              defaultValue={field.value}
-                              className="flex gap-4"
-                            >
-                              <FormItem className="flex items-center space-x-3 space-y-0">
-                                <FormControl>
-                                  <RadioGroupItem value="dog" id="dog"/>
-                                </FormControl>
-                                <FormLabel htmlFor="dog" className="font-normal cursor-pointer">Perro</FormLabel>
-                              </FormItem>
-                              <FormItem className="flex items-center space-x-3 space-y-0">
-                                <FormControl>
-                                  <RadioGroupItem value="cat" id="cat" />
-                                </FormControl>
-                                <FormLabel htmlFor="cat" className="font-normal cursor-pointer">Gato</FormLabel>
-                              </FormItem>
-                            </RadioGroup>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <div className="grid grid-cols-2 gap-4">
-                       <FormField
+                    
+                    <div className="space-y-4">
+                        <div className="flex items-center gap-2 text-primary font-bold text-xs uppercase tracking-widest mb-2">
+                           <User className="h-4 w-4" /> Datos del Propietario
+                        </div>
+                        <FormField
                         control={form.control}
-                        name="animalAge"
+                        name="ownerName"
                         render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Edad (años)</FormLabel>
+                            <FormItem>
+                            <FormLabel>Nombre Completo</FormLabel>
                             <FormControl>
-                              <Input type="number" min="0" placeholder="0" {...field} />
+                                <Input placeholder="Tu nombre" className="rounded-xl h-12" {...field} />
                             </FormControl>
                             <FormMessage />
-                          </FormItem>
+                            </FormItem>
                         )}
-                      />
-                       <FormField
+                        />
+                         <FormField
                         control={form.control}
-                        name="animalWeight"
+                        name="destination"
                         render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Peso (kg)</FormLabel>
-                            <FormControl>
-                              <Input type="number" min="0" placeholder="0" {...field} />
-                            </FormControl>
+                            <FormItem>
+                            <FormLabel>Región de Destino</FormLabel>
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <FormControl>
+                                <SelectTrigger className="rounded-xl h-12">
+                                    <SelectValue placeholder="Selecciona el destino" />
+                                </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                <SelectItem value="europa">Europa (Unión Europea)</SelectItem>
+                                <SelectItem value="norteamerica">Norteamérica (EE.UU. / Canadá)</SelectItem>
+                                <SelectItem value="latinoamerica">Latinoamérica</SelectItem>
+                                <SelectItem value="asia">Asia</SelectItem>
+                                </SelectContent>
+                            </Select>
                             <FormMessage />
-                          </FormItem>
+                            </FormItem>
                         )}
-                      />
+                        />
                     </div>
-                    <FormField
-                      control={form.control}
-                      name="knownHealthConditions"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Condiciones de Salud Conocidas</FormLabel>
-                          <FormControl>
-                            <Textarea placeholder="Ej: alergias, medicación crónica, etc." {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <Button type="submit" disabled={isLoading} className="w-full">
+
+                    <div className="h-px bg-border/50 my-6" />
+
+                    <div className="space-y-4">
+                        <div className="flex items-center gap-2 text-primary font-bold text-xs uppercase tracking-widest mb-2">
+                           <PawPrint className="h-4 w-4" /> Datos de la Mascota
+                        </div>
+                        
+                        <FormField
+                        control={form.control}
+                        name="species"
+                        render={({ field }) => (
+                            <FormItem>
+                            <FormLabel>¿Qué mascota viaja?</FormLabel>
+                            <FormControl>
+                                <RadioGroup
+                                onValueChange={field.onChange}
+                                defaultValue={field.value}
+                                className="flex gap-6 mt-2"
+                                >
+                                <FormItem className="flex items-center space-x-2">
+                                    <FormControl><RadioGroupItem value="dog" /></FormControl>
+                                    <FormLabel className="font-medium cursor-pointer">Perro</FormLabel>
+                                </FormItem>
+                                <FormItem className="flex items-center space-x-2">
+                                    <FormControl><RadioGroupItem value="cat" /></FormControl>
+                                    <FormLabel className="font-medium cursor-pointer">Gato</FormLabel>
+                                </FormItem>
+                                </RadioGroup>
+                            </FormControl>
+                            <FormMessage />
+                            </FormItem>
+                        )}
+                        />
+
+                        <div className="grid grid-cols-2 gap-4">
+                            <FormField
+                            control={form.control}
+                            name="petName"
+                            render={({ field }) => (
+                                <FormItem>
+                                <FormLabel>Nombre</FormLabel>
+                                <FormControl><Input placeholder="Nombre" className="rounded-xl h-12" {...field} /></FormControl>
+                                <FormMessage />
+                                </FormItem>
+                            )}
+                            />
+                            <FormField
+                            control={form.control}
+                            name="breed"
+                            render={({ field }) => (
+                                <FormItem>
+                                <FormLabel>Raza</FormLabel>
+                                <FormControl><Input placeholder="Ej: Poodle" className="rounded-xl h-12" {...field} /></FormControl>
+                                <FormMessage />
+                                </FormItem>
+                            )}
+                            />
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-4">
+                             <FormField
+                            control={form.control}
+                            name="color"
+                            render={({ field }) => (
+                                <FormItem>
+                                <FormLabel>Color</FormLabel>
+                                <FormControl><Input placeholder="Ej: Blanco" className="rounded-xl h-12" {...field} /></FormControl>
+                                <FormMessage />
+                                </FormItem>
+                            )}
+                            />
+                            <FormField
+                            control={form.control}
+                            name="weight"
+                            render={({ field }) => (
+                                <FormItem>
+                                <FormLabel>Peso (kg)</FormLabel>
+                                <FormControl><Input type="number" placeholder="0" className="rounded-xl h-12" {...field} /></FormControl>
+                                <FormMessage />
+                                </FormItem>
+                            )}
+                            />
+                        </div>
+
+                        <FormField
+                        control={form.control}
+                        name="birthDate"
+                        render={({ field }) => (
+                            <FormItem className="flex flex-col">
+                            <FormLabel>Fecha de Nacimiento</FormLabel>
+                            <Popover>
+                                <PopoverTrigger asChild>
+                                <FormControl>
+                                    <Button
+                                    variant={"outline"}
+                                    className={cn(
+                                        "w-full h-12 pl-3 text-left font-normal rounded-xl",
+                                        !field.value && "text-muted-foreground"
+                                    )}
+                                    >
+                                    {field.value ? (
+                                        format(field.value, "PPP", { locale: es })
+                                    ) : (
+                                        <span>Seleccionar fecha</span>
+                                    )}
+                                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                    </Button>
+                                </FormControl>
+                                </PopoverTrigger>
+                                <PopoverContent className="w-auto p-0" align="start">
+                                <Calendar
+                                    mode="single"
+                                    selected={field.value}
+                                    onSelect={field.onChange}
+                                    disabled={(date) =>
+                                    date > new Date() || date < new Date("2000-01-01")
+                                    }
+                                    initialFocus
+                                    locale={es}
+                                />
+                                </PopoverContent>
+                            </Popover>
+                            <FormMessage />
+                            </FormItem>
+                        )}
+                        />
+                    </div>
+                    
+                    <Button type="submit" disabled={isLoading} className="w-full h-14 text-lg font-bold shadow-xl shadow-primary/20 rounded-2xl group">
                       {isLoading ? (
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        <Loader2 className="mr-2 h-5 w-5 animate-spin" />
                       ) : (
-                        <Wand2 className="mr-2 h-4 w-4" />
+                        <Plane className="mr-2 h-5 w-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
                       )}
-                      Generar Guía
+                      Generar Guía de Viaje
                     </Button>
                   </form>
                 </Form>
               </CardContent>
             </Card>
           </div>
-          <div className="lg:col-span-3 space-y-8">
-            <Card ref={resultsRef} className="min-h-full bg-background transition-all duration-300">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 font-headline">
-                  <Sparkles className="text-primary h-5 w-5" />
-                  Guía de Viaje Personalizada
-                </CardTitle>
-                <CardDescription>
-                  Aquí aparecerá la información generada para tu mascota.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className={cn('transition-opacity duration-500', isLoading ? 'opacity-50' : 'opacity-100')}>
+
+          {/* Results Side */}
+          <div className="lg:col-span-7 space-y-8 print:col-span-12">
+            <Card ref={resultsRef} className={cn(
+                "min-h-[600px] border-2 border-dashed border-primary/20 bg-white/50 rounded-3xl transition-all duration-500 relative flex flex-col",
+                "print:border-none print:bg-white print:min-h-0"
+            )}>
+              {!isLoading && !result && (
+                  <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-12 print:hidden">
+                     <div className="bg-primary/5 p-8 rounded-full mb-6">
+                        <Banknote className="h-16 w-16 text-primary/30" />
+                     </div>
+                    <div className="max-w-xs">
+                        <h3 className="font-bold text-2xl text-foreground mb-3">Tu Guía de Viaje</h3>
+                        <p className="text-muted-foreground">Completa el formulario para generar un presupuesto detallado y los requisitos sanitarios específicos.</p>
+                    </div>
+                  </div>
+              )}
+
+              <CardContent className={cn('p-0', !result && 'invisible')}>
                 {isLoading && (
-                  <div className="flex flex-col items-center justify-center text-center gap-4 py-8">
-                    <Loader2 className="h-12 w-12 text-primary animate-spin" />
-                    <p className="text-muted-foreground">Analizando requisitos... Esto puede tardar un momento.</p>
+                  <div className="absolute inset-0 flex flex-col items-center justify-center bg-white/80 z-20 backdrop-blur-sm print:hidden">
+                    <Loader2 className="h-12 w-12 text-primary animate-spin mb-4" />
+                    <p className="text-primary font-bold animate-pulse text-xl">Preparando tu presupuesto...</p>
                   </div>
                 )}
-                {guidance && (
-                  <div className="prose prose-sm max-w-none text-foreground animate-in fade-in">
-                    <h3 className='text-xl font-bold font-headline'>{guidance.title}</h3>
-                    <p className='lead font-semibold text-primary'>{guidance.basePrice}</p>
-                    <h4 className='font-semibold'>Requisitos Clave:</h4>
-                    <ul>
-                      {guidance.requirements.map(req => <li key={req}>{req}</li>)}
-                    </ul>
-                    <h4 className='font-semibold'>Notas Importantes:</h4>
-                    <p>{guidance.notes}</p>
-                     <Button onClick={handleStartProcessClick} className='mt-6'>
-                        Contactar a un Experto
-                    </Button>
-                  </div>
-                )}
-                {!isLoading && !guidance && (
-                  <div className="flex flex-col items-center justify-center text-center text-muted-foreground gap-4 py-8 border-2 border-dashed rounded-lg">
-                     <Plane className="h-12 w-12" />
-                    <p>La guía de viaje aparecerá aquí una vez generada.</p>
+                
+                {result && (
+                  <div className="animate-in fade-in slide-in-from-bottom-8 duration-700">
+                    {/* Visual Header */}
+                    <div className="bg-primary p-10 rounded-t-[2rem] text-primary-foreground print:bg-white print:text-black print:border-b-4 print:border-black print:p-0">
+                        <div className="flex justify-between items-start mb-6 print:mb-4">
+                            <div>
+                                <h1 className="hidden print:block text-4xl font-black uppercase mb-2">VETPET HAVEN</h1>
+                                <h2 className='text-3xl md:text-4xl font-extrabold font-headline mb-2'>{result.info.title}</h2>
+                                <p className="text-primary-foreground/80 text-lg print:text-gray-600">{result.info.description}</p>
+                            </div>
+                            <div className="hidden md:block bg-white/10 p-4 rounded-2xl backdrop-blur-md print:hidden">
+                                <FileText className="h-8 w-8" />
+                            </div>
+                        </div>
+                        
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 bg-white/10 p-6 rounded-2xl backdrop-blur-md border border-white/20 print:bg-gray-50 print:border-gray-300 print:text-black print:grid-cols-2 print:gap-4">
+                            <div>
+                                <p className="text-white/60 text-xs uppercase font-bold mb-1 print:text-gray-500">Mascota</p>
+                                <p className="font-bold">{result.data.petName}</p>
+                                <p className="text-sm opacity-80">{result.data.breed}</p>
+                            </div>
+                            <div>
+                                <p className="text-white/60 text-xs uppercase font-bold mb-1 print:text-gray-500">Propietario</p>
+                                <p className="font-bold truncate">{result.data.ownerName}</p>
+                            </div>
+                            <div className="col-span-2 md:col-span-2 text-right">
+                                <p className="text-white/60 text-xs uppercase font-bold mb-1 print:text-gray-500">Inicio de Trámite Sugerido</p>
+                                <p className="font-bold text-lg">{result.info.estimatedTime}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="p-8 md:p-12 space-y-10 print:p-0 print:mt-8">
+                        {/* Services List */}
+                        <div className="space-y-6">
+                            <h3 className='font-bold text-2xl flex items-center gap-3 text-foreground'>
+                                <FileText className="h-6 w-6 text-primary" />
+                                Desglose de Servicios Médicos
+                            </h3>
+                            <div className="rounded-3xl border border-border overflow-hidden bg-white shadow-sm print:border-gray-300 print:shadow-none">
+                                <div className="divide-y divide-border print:divide-gray-200">
+                                    {result.services.map((service, i) => (
+                                        <div key={i} className="p-6 flex justify-between items-center gap-4 hover:bg-secondary/20 transition-colors">
+                                            <div>
+                                                <p className="font-bold text-lg text-foreground">{service.label}</p>
+                                                <p className="text-sm text-muted-foreground">{service.detail}</p>
+                                            </div>
+                                            <p className="font-bold text-xl text-primary print:text-black">${service.price}</p>
+                                        </div>
+                                    ))}
+                                    <div className="p-6 bg-secondary/30 flex justify-between items-center print:bg-gray-100">
+                                        <p className="font-extrabold text-xl">Total Estimado Servicios</p>
+                                        <p className="font-black text-3xl text-primary print:text-black">${subtotal}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Extra Fees */}
+                        <div className="bg-amber-50 border border-amber-200 rounded-3xl p-8 print:bg-white print:border-gray-200">
+                            <div className="flex justify-between items-center mb-4">
+                                <h4 className="font-bold text-amber-900 text-xl flex items-center gap-2">
+                                    <Info className="h-6 w-6 text-amber-600 print:hidden" />
+                                    Tasas y Aranceles de Exportación
+                                </h4>
+                                <p className="font-black text-2xl text-amber-900">${result.info.aranceles}</p>
+                            </div>
+                            <p className="text-amber-800/80 leading-relaxed">
+                                {result.info.arancelesNote}. Este monto corresponde a entidades gubernamentales y no forma parte de los honorarios de la clínica.
+                            </p>
+                        </div>
+                        
+                        {/* Final CTA Buttons */}
+                        <div className="flex flex-col sm:flex-row gap-4 pt-8 border-t border-border print:hidden">
+                            <Button 
+                                className='flex-grow h-16 text-xl font-bold shadow-2xl rounded-2xl transition-transform active:scale-95' 
+                                onClick={handleScheduleAppointment}
+                                disabled={isSending}
+                            >
+                                {isSending ? (
+                                    <>Procesando... <Loader2 className="ml-2 h-6 w-6 animate-spin" /></>
+                                ) : (
+                                    "Agendar Cita y Enviar Presupuesto"
+                                )}
+                            </Button>
+                            
+                            <Button variant="outline" className="h-16 px-8 rounded-2xl border-2 hover:bg-secondary transition-colors" onClick={handlePrint} title="Imprimir o Guardar PDF">
+                                <Printer className="h-8 w-8" />
+                            </Button>
+                        </div>
+
+                        <div className="text-center pt-8 border-t border-border/50">
+                             <p className="text-sm text-muted-foreground font-medium mb-2">Presupuesto Referencial • Generado el {format(new Date(), "d 'de' MMMM, yyyy", { locale: es })}</p>
+                             <p className="text-xs text-muted-foreground/60 max-w-lg mx-auto leading-relaxed">
+                                Este documento es una estimación. Los precios finales pueden variar según el peso exacto de la mascota, su estado de salud previo y cambios en regulaciones internacionales.
+                             </p>
+                        </div>
+                    </div>
                   </div>
                 )}
               </CardContent>
-              <CardFooter>
-                 <p className="text-xs text-muted-foreground">
-                    Esta información es una guía y puede no ser completa o precisa. Consulta siempre con nuestras autoridades y la clínica para confirmar todos los requisitos.
-                 </p>
-              </CardFooter>
             </Card>
-
-            {showContactForm && (
-                 <div ref={contactFormRef} className='animate-in fade-in slide-in-from-top-10 duration-500'>
-                    <Card>
-                        <CardHeader>
-                            <CardTitle className='font-headline'>Inicia el Proceso</CardTitle>
-                            <CardDescription>
-                                Completa tus datos y un especialista en viajes se pondrá en contacto contigo para coordinar todo.
-                            </CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                            <Form {...contactForm}>
-                                <form onSubmit={contactForm.handleSubmit(onContactSubmit)} className="space-y-6">
-                                <FormField
-                                    control={contactForm.control}
-                                    name="name"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                        <FormLabel>Nombre</FormLabel>
-                                        <FormControl><Input placeholder="Tu nombre" {...field} /></FormControl>
-                                        <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                                <FormField
-                                    control={contactForm.control}
-                                    name="email"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                        <FormLabel>Email</FormLabel>
-                                        <FormControl><Input type="email" placeholder="tu@email.com" {...field} /></FormControl>
-                                        <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                                <FormField
-                                    control={contactForm.control}
-                                    name="subject"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                        <FormLabel>Asunto</FormLabel>
-                                        <FormControl><Input {...field} disabled /></FormControl>
-                                        <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                                <FormField
-                                    control={contactForm.control}
-                                    name="message"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                        <FormLabel>Detalles Adicionales</FormLabel>
-                                        <FormControl><Textarea placeholder="Indícanos la fecha estimada de tu viaje o cualquier otra duda..." className="min-h-[100px]" {...field} /></FormControl>
-                                        <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                                <Button type="submit" className="w-full" disabled={contactForm.formState.isSubmitting}>
-                                    {contactForm.formState.isSubmitting ? <Loader2 className="animate-spin" /> : 'Enviar Solicitud'}
-                                </Button>
-                                </form>
-                            </Form>
-                        </CardContent>
-                    </Card>
-                 </div>
-            )}
-
           </div>
         </div>
       </div>
+
+      {/* Style for printing */}
+      <style jsx global>{`
+        @media print {
+          body * {
+            visibility: hidden;
+          }
+          .print-section, .print-section * {
+            visibility: visible;
+          }
+          #viajes, #viajes * {
+            visibility: visible;
+          }
+          header, footer, .print-hidden, button, .lucide {
+            display: none !important;
+          }
+          #viajes {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            background: white;
+            padding: 0 !important;
+            margin: 0 !important;
+          }
+          .container {
+            max-width: none !important;
+            width: 100% !important;
+            padding: 0 !important;
+            margin: 0 !important;
+          }
+          .lg\\:col-span-7 {
+            width: 100% !important;
+          }
+        }
+      `}</style>
     </section>
   );
 }

@@ -16,9 +16,9 @@ export default function ServiciosPage() {
         "Control de parásitos internos y externos.",
         "Asesoramiento nutricional y conductual."
       ],
-      // Imagen cambiada: Antes estaba en hospitalización (Perro recibiendo tratamiento)
-      imageUrl: "https://images.pexels.com/photos/6235232/pexels-photo-6235232.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
-      imageAlt: "Perro siendo examinado y recibiendo tratamiento en consulta"
+      // Imagen Correcta: Perro siendo examinado en consulta (reemplazando la de tratamiento)
+      imageUrl: "https://images.pexels.com/photos/5731866/pexels-photo-5731866.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+      imageAlt: "Veterinario realizando un chequeo a un perro"
     },
     {
       icon: Microscope,
@@ -30,7 +30,6 @@ export default function ServiciosPage() {
         "Citologías y dermatología.",
         "Tests rápidos de enfermedades virales."
       ],
-      // Imagen de Laboratorio (Microscopio) - Se mantiene igual
       imageUrl: "https://images.pexels.com/photos/5726794/pexels-photo-5726794.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
       imageAlt: "Equipo de laboratorio veterinario y microscopio"
     },
@@ -44,7 +43,6 @@ export default function ServiciosPage() {
         "Extracción de masas y tumores.",
         "Monitoreo anestésico multiparamétrico."
       ],
-      // Imagen de Cirugía - Se mantiene igual
       imageUrl: "https://images.pexels.com/photos/1350560/pexels-photo-1350560.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
       imageAlt: "Equipo veterinario en quirófano"
     },
@@ -58,9 +56,9 @@ export default function ServiciosPage() {
         "Áreas separadas para reducir estrés.",
         "Reportes constantes a los propietarios."
       ],
-      // Nueva imagen: Veterinario cuidando perro en recuperación/jaula
-      imageUrl: "https://images.pexels.com/photos/6234610/pexels-photo-6234610.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
-      imageAlt: "Perro en área de recuperación con atención veterinaria"
+      // Imagen Correcta: Perro con tratamiento/suero (la que antes estaba en consulta)
+      imageUrl: "https://images.pexels.com/photos/6235232/pexels-photo-6235232.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+      imageAlt: "Perro recibiendo tratamiento de fluidoterapia"
     },
     {
       icon: Scissors,
@@ -72,8 +70,8 @@ export default function ServiciosPage() {
         "Corte de uñas y limpieza de oídos.",
         "Deslanado y control de muda."
       ],
-      // Nueva imagen: Perro en peluquería/baño
-      imageUrl: "https://images.pexels.com/photos/3361722/pexels-photo-3361722.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2", 
+      // Imagen Correcta: Perro en baño con espuma
+      imageUrl: "https://images.pexels.com/photos/6634166/pexels-photo-6634166.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2", 
       imageAlt: "Perro recibiendo servicio de peluquería y baño"
     }
     ];

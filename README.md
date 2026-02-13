@@ -1,62 +1,53 @@
-# VetPet Haven - Clínica Veterinaria
+# VetPet Haven - Clínica Veterinaria Moderna
 
-Este es el repositorio del sitio web para **VetPet Haven**, una clínica veterinaria moderna y ficticia. El proyecto está construido con Next.js y diseñado para ser profesional, atractivo y completamente responsive, ofreciendo una experiencia de usuario premium tanto para los dueños de mascotas como para los administradores del sitio.
+Este es el repositorio del sitio web oficial de **VetPet Haven**, una clínica veterinaria de vanguardia especializada en el cuidado integral de perros y gatos. El proyecto está diseñado con un enfoque "Premium Experience", combinando una estética elegante con funcionalidades interactivas avanzadas.
+
+## 🚀 Tecnologías Utilizadas
+
+- **Framework**: [Next.js 15](https://nextjs.org/) (App Router)
+- **Lenguaje**: [TypeScript](https://www.typescriptlang.org/)
+- **Estilos**: [Tailwind CSS](https://tailwindcss.com/)
+- **Componentes UI**: [Shadcn/ui](https://ui.shadcn.com/)
+- **Iconos**: [Lucide React](https://lucide.dev/)
+- **Animaciones**: Tailwind Animate + Custom Keyframes
+- **Validación de Formularios**: React Hook Form + Zod
 
 ## ✨ Características Principales
 
-El sitio web está compuesto por varias secciones y páginas clave:
+### 1. Página de Inicio (Home)
+- **Sección Hero**: Impactante saludo visual con animaciones de zoom suave y blobs decorativos.
+- **Servicios Destacados**: Tarjetas interactivas con iconos personalizados y efectos hover.
+- **Nuestra Filosofía**: Sección detallada que comunica los valores de la clínica (Pasión, Excelencia, Transparencia).
+- **Testimonios**: Carrusel de historias de éxito de clientes reales.
 
--   **Página de Inicio (`/`)**: La cara principal de la clínica.
-    -   **Sección Héroe**: Un impactante saludo con una llamada a la acción clara para "Pedir Cita".
-    -   **Servicios Destacados**: Un resumen visual de los servicios más importantes que ofrece la clínica.
-    -   **Nuestra Filosofía**: Una sección que comunica los valores y la misión de la clínica, combinando imagen y texto de forma elegante.
-    -   **Testimonios**: Opiniones de clientes para generar confianza y credibilidad.
-    -   **Llamada a la Acción (CTA) Final**: Una sección pre-footer para incentivar a los usuarios a agendar una cita.
+### 2. Gestión de Viajes Internacionales (Página de Viajes)
+Una herramienta interactiva y dinámica que permite a los usuarios:
+- **Generador de Presupuestos**: Los usuarios ingresan los datos de su mascota y destino para obtener una guía instantánea.
+- **Lógica Inteligente**: Cálculo automático de costos de vacunación, microchips y tasas según la región (Europa, Norteamérica, Asia, Latinoamérica).
+- **Función de Impresión**: Generación de un "Ticket de Presupuesto" profesional listo para imprimir o guardar como PDF.
+- **Flujo de Conversión**: Botón directo para agendar cita basado en el presupuesto generado.
 
--   **Página de Servicios (`/servicios`)**: Describe en detalle cada uno de los servicios veterinarios disponibles, desde consultas preventivas hasta cirugías, utilizando un diseño claro y fácil de leer.
+### 3. Página de Servicios
+- Catálogo detallado de especialidades (Consulta, Laboratorio, Cirugía, Hospitalización, Peluquería).
+- Diseño alterno con imágenes de alta calidad y listas de características por servicio.
 
--   **Página de Viajes (`/viajes`)**:
-    -   **Herramienta Interactiva**: Un generador de guías de viaje que permite a los usuarios obtener información instantánea sobre los requisitos para viajar con sus mascotas a diferentes continentes.
-    -   **Flujo Dinámico**: La guía se genera en el cliente sin recargar la página, y ofrece un segundo paso para contactar a un experto, mostrando un formulario de contacto de manera fluida.
+### 4. Contacto e Interacción
+- **Formulario Validado**: Protección contra errores de entrada.
+- **Integración con WhatsApp**: Enlace directo para comunicación rápida.
+- **Mapa Interactivo**: Ubicación exacta de la clínica.
 
--   **Página de Contacto (`/contacto`)**:
-    -   Un formulario de contacto completo para que los usuarios puedan enviar sus consultas.
-    -   Información de contacto detallada, incluyendo dirección, teléfono, email, horario y un mapa de ubicación.
+## 📱 Diseño Responsive y Accesibilidad
 
--   **Diseño Responsive**: La interfaz está cuidadosamente diseñada para adaptarse a cualquier tamaño de pantalla, desde dispositivos móviles hasta escritorios grandes.
+La aplicación ha sido desarrollada bajo la filosofía **Mobile-First**, asegurando:
+- Adaptabilidad total en smartphones, tablets y desktops.
+- Tipografía fluida y espacios generosos para una lectura cómoda.
+- Navegación intuitiva y tiempos de carga optimizados.
 
-## 🚀 Stack Tecnológico
+## 🛠 Instalación y Uso
 
-Este proyecto utiliza un conjunto de tecnologías modernas para garantizar un rendimiento óptimo, una excelente experiencia de desarrollador y una alta calidad visual:
+1. Instalar dependencias: `npm install`
+2. Iniciar servidor de desarrollo: `npm run dev`
+3. Abrir [http://localhost:3000](http://localhost:3000)
 
--   **Framework**: [Next.js](https://nextjs.org/) (con App Router)
--   **Lenguaje**: [TypeScript](https://www.typescriptlang.org/)
--   **Estilos**: [Tailwind CSS](https://tailwindcss.com/)
--   **Componentes UI**: [ShadCN UI](https://ui.shadcn.com/)
--   **Formularios**: [React Hook Form](https://react-hook-form.com/) y [Zod](https://zod.dev/) para validación de esquemas.
--   **Iconos**: [Lucide React](https://lucide.dev/)
--   **Animaciones y Transiciones**: Implementadas con CSS para una experiencia fluida.
-
-## 🏁 Cómo Empezar
-
-Para ejecutar este proyecto en un entorno de desarrollo local, sigue estos pasos:
-
-1.  **Clonar el repositorio**:
-    ```bash
-    git clone https://github.com/DarwingSa/Zoeclinica.github.io.git
-    cd Zoeclinica.github.io
-    ```
-
-2.  **Instalar las dependencias**:
-    Se recomienda usar `npm` para la gestión de paquetes.
-    ```bash
-    npm install
-    ```
-
-3.  **Ejecutar el servidor de desarrollo**:
-    Esto iniciará la aplicación en modo de desarrollo, generalmente en `http://localhost:3000`.
-    ```bash
-    npm run dev
-    ```
-
-¡Y listo! Ahora puedes ver el sitio web en tu navegador y empezar a hacer modificaciones.
+---
+*Diseñado con ❤️ para los amantes de las mascotas.*
