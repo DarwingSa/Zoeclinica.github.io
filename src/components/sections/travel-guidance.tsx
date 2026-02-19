@@ -18,6 +18,16 @@ import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
+import { ScrollReveal } from '@/components/ui/scroll-reveal';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogFooter,
+} from "@/components/ui/dialog";
 
 const travelFormSchema = z.object({
   ownerName: z.string().min(2, "El nombre es obligatorio"),
@@ -127,26 +137,51 @@ const destinationServices: Record<string, DestinationData> = {
   }
 };
 
-export default function TravelGuidance() {
-  const [result, setResult] = useState<{
-    data: TravelFormValues;
-    services: ServiceItem[];
-    info: DestinationData
-  } | null>(null);
+import { NAV_LINKS, CLINIC_INFO } from '@/lib/constants';
 
+const contactFormSchema = z.object({
+  contactName: z.string().min(2, "El nombre es obligatorio"),
+  contactPhone: z.string().min(10, "El teléfono debe tener al menos 10 dígitos"),
+  contactEmail: z.string().email("Correo electrónico inválido"),
+});
+
+type ContactFormValues = z.infer<typeof contactFormSchema>;
+
+type TravelResult = {
+  data: TravelFormValues;
+  services: ServiceItem[];
+  info: DestinationData;
+  total: number;
+};
+
+export default function TravelGuidance() {
+  const [result, setResult] = useState<TravelResult | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isSending, setIsSending] = useState(false);
+  const [isContactModalOpen, setIsContactModalOpen] = useState(false);
   const resultsRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
   const form = useForm<TravelFormValues>({
     resolver: zodResolver(travelFormSchema),
     defaultValues: {
-      ownerName: '',
-      petName: '',
-      breed: '',
-      color: '',
-      weight: '',
+      ownerName: "",
+      petName: "",
+      species: "dog", // Corrected from petSpecies
+      weight: "", // Corrected from petWeight
+      destination: "europa", // Corrected from ue
+      birthDate: undefined, // Corrected from travelDate
+      breed: "",
+      color: "",
+    },
+  });
+
+  const contactForm = useForm<ContactFormValues>({
+    resolver: zodResolver(contactFormSchema),
+    defaultValues: {
+      contactName: "",
+      contactPhone: "",
+      contactEmail: "",
     },
   });
 
@@ -158,8 +193,9 @@ export default function TravelGuidance() {
     setTimeout(() => {
       const info = destinationServices[values.destination];
       const services = info.getServices(values.species);
+      const total = services.reduce((acc, s) => acc + s.price, 0) + info.aranceles; // Calculate total for contact form
 
-      setResult({ data: values, services, info });
+      setResult({ data: values, services, info, total }); // Add total to result
       setIsLoading(false);
       setTimeout(() => resultsRef.current?.scrollIntoView({ behavior: 'smooth' }), 100);
 
@@ -299,18 +335,40 @@ export default function TravelGuidance() {
     }, 500);
   };
 
-  const handleScheduleAppointment = async () => {
+  const handleScheduleAppointment = () => {
+    if (!result) return;
+    // Open the contact modal instead of sending directly
+    setIsContactModalOpen(true);
+  };
+
+  const onContactSubmit = async (contactData: ContactFormValues) => {
     if (!result) return;
     setIsSending(true);
 
-    // Simulación de envío de datos
-    setTimeout(() => {
-      toast({
-        title: "Solicitud Recibida",
-        description: "Un asesor de viajes se pondrá en contacto contigo en las próximas 24 horas.",
-      });
-      setIsSending(false);
-    }, 1500);
+    // Simulate a small delay for better UX
+    await new Promise(resolve => setTimeout(resolve, 800));
+
+    const message = `hola soy ${contactData.contactName} y quisiera agENDAR UNA CITA para tramitar el certificado de viaje de mi mascota.
+    
+*Datos del Propietario:* ${result.data.ownerName}
+*Mascota:* ${result.data.petName} (${result.data.species === 'dog' ? 'Perro' : 'Gato'}, ${result.data.weight}kg)
+*Destino:* ${result.info.title.replace('Presupuesto de Viaje a ', '').replace('Pack Viaje a ', '')}
+*Fecha de Nacimiento Mascota:* ${format(result.data.birthDate, 'dd/MM/yyyy')}
+
+*Contacto:*
+📞 ${contactData.contactPhone}
+✉️ ${contactData.contactEmail}
+
+*Presupuesto Estimado:* $${result.total}
+
+Gracias.`;
+
+    const whatsappUrl = `https://wa.me/${CLINIC_INFO.whatsappNumber}?text=${encodeURIComponent(message)}`;
+    window.open(whatsappUrl, '_blank');
+
+    setIsSending(false);
+    setIsContactModalOpen(false);
+    contactForm.reset();
   };
 
   const subtotal = result?.services.reduce((acc, item) => acc + item.price, 0) || 0;
@@ -324,37 +382,37 @@ export default function TravelGuidance() {
       <div className="container mx-auto px-4 relative z-10">
 
         {/* Header - Hidden on print */}
-        <div className="text-center mb-16 max-w-3xl mx-auto print:hidden">
-          <div className="inline-block p-4 bg-primary/10 rounded-3xl mb-6 group cursor-default">
-            <Plane className="h-10 w-10 text-primary group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300" />
+        <ScrollReveal direction="up" className="text-center mb-10 sm:mb-12 md:mb-16 max-w-3xl mx-auto print:hidden">
+          <div className="inline-block p-3 sm:p-4 bg-primary/10 rounded-2xl sm:rounded-3xl mb-4 sm:mb-6 group cursor-default">
+            <Plane className="h-8 w-8 sm:h-10 sm:w-10 text-primary group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300" />
           </div>
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold font-headline text-foreground mb-6 tracking-tight">Asesoría de <span className="text-gradient">Viajes</span></h1>
-          <p className="text-lg text-muted-foreground leading-relaxed">
+          <h1 className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-extrabold font-headline text-foreground mb-4 sm:mb-6 tracking-tight">Asesoría de <span className="text-gradient">Viajes</span></h1>
+          <p className="text-sm sm:text-base md:text-lg text-muted-foreground leading-relaxed">
             Obtén una guía personalizada de requisitos y costos para viajar con tu mascota. Completa el formulario y nosotros nos encargamos del resto.
           </p>
-        </div>
+        </ScrollReveal>
 
-        <div className="grid lg:grid-cols-12 gap-8 items-start">
+        <div className="grid lg:grid-cols-12 gap-5 sm:gap-6 md:gap-8 items-start">
 
           {/* Form Side - Hidden on print */}
-          <div className="lg:col-span-5 print:hidden">
-            <Card className="border border-border/30 shadow-glow-lg bg-card rounded-3xl">
-              <CardHeader className="bg-secondary/30 pb-8">
-                <CardTitle className='font-headline text-2xl flex items-center gap-3'>
-                  <PawPrint className="h-6 w-6 text-primary" />
+          <ScrollReveal direction="left" className="lg:col-span-5 print:hidden">
+            <Card className="border border-border/30 shadow-glow-lg bg-card rounded-2xl sm:rounded-3xl">
+              <CardHeader className="bg-secondary/30 pb-5 sm:pb-8">
+                <CardTitle className='font-headline text-lg sm:text-xl md:text-2xl flex items-center gap-2 sm:gap-3'>
+                  <PawPrint className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
                   Generar Presupuesto
                 </CardTitle>
-                <CardDescription className="text-base">
+                <CardDescription className="text-sm sm:text-base">
                   Dinos a dónde vas y con quién viajas.
                 </CardDescription>
               </CardHeader>
-              <CardContent className="pt-8">
+              <CardContent className="pt-5 sm:pt-8">
                 <Form {...form}>
                   <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
 
-                    <div className="space-y-5 bg-secondary/20 dark:bg-secondary/10 p-5 rounded-2xl border border-border/30">
-                      <div className="flex items-center gap-2 text-primary font-bold text-xs uppercase tracking-widest">
-                        <User className="h-4 w-4" /> Datos del Propietario
+                    <div className="space-y-4 sm:space-y-5 bg-secondary/20 dark:bg-secondary/10 p-4 sm:p-5 rounded-xl sm:rounded-2xl border border-border/30">
+                      <div className="flex items-center gap-2 text-primary font-bold text-[10px] sm:text-xs uppercase tracking-widest">
+                        <User className="h-3.5 w-3.5 sm:h-4 sm:w-4" /> Datos del Propietario
                       </div>
                       <FormField
                         control={form.control}
@@ -394,11 +452,11 @@ export default function TravelGuidance() {
                       />
                     </div>
 
-                    <div className="h-px bg-border/50 my-6" />
+                    <div className="h-px bg-border/50 my-4 sm:my-6" />
 
-                    <div className="space-y-5 bg-secondary/20 dark:bg-secondary/10 p-5 rounded-2xl border border-border/30">
-                      <div className="flex items-center gap-2 text-primary font-bold text-xs uppercase tracking-widest">
-                        <PawPrint className="h-4 w-4" /> Datos de la Mascota
+                    <div className="space-y-4 sm:space-y-5 bg-secondary/20 dark:bg-secondary/10 p-4 sm:p-5 rounded-xl sm:rounded-2xl border border-border/30">
+                      <div className="flex items-center gap-2 text-primary font-bold text-[10px] sm:text-xs uppercase tracking-widest">
+                        <PawPrint className="h-3.5 w-3.5 sm:h-4 sm:w-4" /> Datos de la Mascota
                       </div>
 
                       <FormField
@@ -547,7 +605,7 @@ export default function TravelGuidance() {
                       />
                     </div>
 
-                    <Button type="submit" disabled={isLoading} className="w-full h-14 text-lg font-bold shadow-xl shadow-primary/20 rounded-2xl group">
+                    <Button type="submit" disabled={isLoading} className="w-full h-12 sm:h-14 text-base sm:text-lg font-bold shadow-xl shadow-primary/20 rounded-xl sm:rounded-2xl group">
                       {isLoading ? (
                         <Loader2 className="mr-2 h-5 w-5 animate-spin" />
                       ) : (
@@ -559,23 +617,23 @@ export default function TravelGuidance() {
                 </Form>
               </CardContent>
             </Card>
-          </div>
+          </ScrollReveal>
 
           {/* Results Side */}
-          <div className="lg:col-span-7 space-y-8 print:col-span-12">
+          <ScrollReveal direction="right" delay={200} className="lg:col-span-7 space-y-6 sm:space-y-8 print:col-span-12">
             <Card ref={resultsRef} className={cn(
-              "min-h-[600px] border-2 border-dashed border-primary/20 bg-card/50 dark:bg-card/30 backdrop-blur-sm rounded-3xl transition-all duration-500 relative flex flex-col",
+              "min-h-[400px] sm:min-h-[500px] md:min-h-[600px] border-2 border-dashed border-primary/20 bg-card/50 dark:bg-card/30 backdrop-blur-sm rounded-2xl sm:rounded-3xl transition-all duration-500 relative flex flex-col",
               result && "border-solid border-border/30 shadow-glow-lg",
               "print:border-none print:bg-white print:min-h-0"
             )}>
               {!isLoading && !result && (
-                <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-12 print:hidden">
-                  <div className="bg-primary/5 p-8 rounded-full mb-6">
-                    <Banknote className="h-16 w-16 text-primary/30" />
+                <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-6 sm:p-8 md:p-12 print:hidden">
+                  <div className="bg-primary/5 p-5 sm:p-6 md:p-8 rounded-full mb-4 sm:mb-6">
+                    <Banknote className="h-10 w-10 sm:h-12 sm:w-12 md:h-16 md:w-16 text-primary/30" />
                   </div>
                   <div className="max-w-xs">
-                    <h3 className="font-bold text-2xl text-foreground mb-3">Tu Guía de Viaje</h3>
-                    <p className="text-muted-foreground">Completa el formulario para generar un presupuesto detallado y los requisitos sanitarios específicos.</p>
+                    <h3 className="font-bold text-lg sm:text-xl md:text-2xl text-foreground mb-2 sm:mb-3">Tu Guía de Viaje</h3>
+                    <p className="text-muted-foreground text-sm sm:text-base">Completa el formulario para generar un presupuesto detallado y los requisitos sanitarios específicos.</p>
                   </div>
                 </div>
               )}
@@ -591,97 +649,163 @@ export default function TravelGuidance() {
                 {result && (
                   <div className="animate-in fade-in slide-in-from-bottom-8 duration-700">
                     {/* Visual Header */}
-                    <div className="bg-gradient-to-r from-primary via-[#2aaadd] to-primary bg-[length:200%_100%] animate-gradient-shift p-10 rounded-t-[2rem] text-primary-foreground print:bg-white print:text-black print:border-b-4 print:border-black print:p-0">
-                      <div className="flex justify-between items-start mb-6 print:mb-4">
+                    <div className="bg-gradient-to-r from-primary via-[#2aaadd] to-primary bg-[length:200%_100%] animate-gradient-shift p-5 sm:p-7 md:p-10 rounded-t-[1.5rem] sm:rounded-t-[2rem] text-primary-foreground print:bg-white print:text-black print:border-b-4 print:border-black print:p-0">
+                      <div className="flex flex-col sm:flex-row justify-between items-start mb-4 sm:mb-6 print:mb-4 gap-3">
                         <div>
                           <h1 className="hidden print:block text-4xl font-black uppercase mb-2">CENTRO VETERINARIO ZOÉ</h1>
-                          <h2 className='text-3xl md:text-4xl font-extrabold font-headline mb-2'>{result.info.title}</h2>
-                          <p className="text-primary-foreground/80 text-lg print:text-gray-600">{result.info.description}</p>
+                          <h2 className='text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold font-headline mb-1.5 sm:mb-2'>{result.info.title}</h2>
+                          <p className="text-primary-foreground/80 text-sm sm:text-base md:text-lg print:text-gray-600">{result.info.description}</p>
                         </div>
                         <div className="hidden md:block bg-white/10 p-4 rounded-2xl backdrop-blur-md print:hidden">
                           <FileText className="h-8 w-8" />
                         </div>
                       </div>
-
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-6 bg-white/10 p-6 rounded-2xl backdrop-blur-md border border-white/20 print:bg-gray-50 print:border-gray-300 print:text-black print:grid-cols-2 print:gap-4">
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 md:gap-6 bg-white/10 p-3 sm:p-4 md:p-6 rounded-xl sm:rounded-2xl backdrop-blur-md border border-white/20 print:bg-gray-50 print:border-gray-300 print:text-black print:grid-cols-2 print:gap-4">
                         <div>
-                          <p className="text-white/60 text-xs uppercase font-bold mb-1 print:text-gray-500">Mascota</p>
-                          <p className="font-bold">{result.data.petName}</p>
-                          <p className="text-sm opacity-80">{result.data.breed}</p>
+                          <p className="text-white/60 text-[10px] sm:text-xs uppercase font-bold mb-0.5 sm:mb-1 print:text-gray-500">Mascota</p>
+                          <p className="font-bold text-sm sm:text-base">{result.data.petName}</p>
+                          <p className="text-xs sm:text-sm opacity-80">{result.data.breed}</p>
                         </div>
                         <div>
-                          <p className="text-white/60 text-xs uppercase font-bold mb-1 print:text-gray-500">Propietario</p>
-                          <p className="font-bold truncate">{result.data.ownerName}</p>
+                          <p className="text-white/60 text-[10px] sm:text-xs uppercase font-bold mb-0.5 sm:mb-1 print:text-gray-500">Propietario</p>
+                          <p className="font-bold text-sm sm:text-base truncate">{result.data.ownerName}</p>
                         </div>
-                        <div className="col-span-2 md:col-span-2 text-right">
-                          <p className="text-white/60 text-xs uppercase font-bold mb-1 print:text-gray-500">Inicio de Trámite Sugerido</p>
-                          <p className="font-bold text-lg">{result.info.estimatedTime}</p>
+                        <div className="col-span-2 md:col-span-2 text-left sm:text-right">
+                          <p className="text-white/60 text-[10px] sm:text-xs uppercase font-bold mb-0.5 sm:mb-1 print:text-gray-500">Inicio de Trámite Sugerido</p>
+                          <p className="font-bold text-sm sm:text-base md:text-lg">{result.info.estimatedTime}</p>
                         </div>
                       </div>
                     </div>
 
-                    <div className="p-8 md:p-12 space-y-10 print:p-0 print:mt-8">
+                    <div className="p-5 sm:p-6 md:p-8 lg:p-12 space-y-6 sm:space-y-8 md:space-y-10 print:p-0 print:mt-8">
                       {/* Services List */}
-                      <div className="space-y-6">
-                        <h3 className='font-bold text-2xl flex items-center gap-3 text-foreground'>
-                          <FileText className="h-6 w-6 text-primary" />
+                      <div className="space-y-4 sm:space-y-6">
+                        <h3 className='font-bold text-lg sm:text-xl md:text-2xl flex items-center gap-2 sm:gap-3 text-foreground'>
+                          <FileText className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
                           Desglose de Servicios Médicos
                         </h3>
-                        <div className="rounded-3xl border border-border/50 overflow-hidden bg-card shadow-sm hover:shadow-glow-sm transition-all duration-500 print:border-gray-300 print:shadow-none">
+                        <div className="rounded-2xl sm:rounded-3xl border border-border/50 overflow-hidden bg-card shadow-sm hover:shadow-glow-sm transition-all duration-500 print:border-gray-300 print:shadow-none">
                           <div className="divide-y divide-border print:divide-gray-200">
                             {result.services.map((service, i) => (
-                              <div key={i} className="p-6 flex justify-between items-center gap-4 hover:bg-secondary/20 transition-colors">
-                                <div>
-                                  <p className="font-bold text-lg text-foreground">{service.label}</p>
-                                  <p className="text-sm text-muted-foreground">{service.detail}</p>
+                              <div key={i} className="p-4 sm:p-5 md:p-6 flex justify-between items-center gap-3 sm:gap-4 hover:bg-secondary/20 transition-colors">
+                                <div className="min-w-0">
+                                  <p className="font-bold text-sm sm:text-base md:text-lg text-foreground">{service.label}</p>
+                                  <p className="text-xs sm:text-sm text-muted-foreground truncate">{service.detail}</p>
                                 </div>
-                                <p className="font-bold text-xl text-primary print:text-black">${service.price}</p>
+                                <p className="font-bold text-base sm:text-lg md:text-xl text-primary print:text-black flex-shrink-0">${service.price}</p>
                               </div>
                             ))}
-                            <div className="p-6 bg-secondary/30 flex justify-between items-center print:bg-gray-100">
-                              <p className="font-extrabold text-xl">Total Estimado Servicios</p>
-                              <p className="font-black text-3xl text-primary print:text-black">${subtotal}</p>
+                            <div className="p-4 sm:p-5 md:p-6 bg-secondary/30 flex justify-between items-center print:bg-gray-100">
+                              <p className="font-extrabold text-base sm:text-lg md:text-xl">Total Estimado Servicios</p>
+                              <p className="font-black text-xl sm:text-2xl md:text-3xl text-primary print:text-black">${subtotal}</p>
                             </div>
                           </div>
                         </div>
                       </div>
 
                       {/* Extra Fees */}
-                      <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900/30 rounded-3xl p-8 print:bg-white print:border-gray-200">
-                        <div className="flex justify-between items-center mb-4">
-                          <h4 className="font-bold text-amber-900 dark:text-amber-300 text-xl flex items-center gap-2">
-                            <Info className="h-6 w-6 text-amber-600 print:hidden" />
+                      <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900/30 rounded-2xl sm:rounded-3xl p-5 sm:p-6 md:p-8 print:bg-white print:border-gray-200">
+                        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3 sm:mb-4 gap-2">
+                          <h4 className="font-bold text-amber-900 dark:text-amber-300 text-base sm:text-lg md:text-xl flex items-center gap-2">
+                            <Info className="h-5 w-5 sm:h-6 sm:w-6 text-amber-600 print:hidden" />
                             Tasas y Aranceles de Exportación
                           </h4>
-                          <p className="font-black text-2xl text-amber-900 dark:text-amber-300">${result.info.aranceles}</p>
+                          <p className="font-black text-xl sm:text-2xl text-amber-900 dark:text-amber-300">${result.info.aranceles}</p>
                         </div>
-                        <p className="text-amber-800/80 dark:text-amber-400/80 leading-relaxed">
+                        <p className="text-amber-800/80 dark:text-amber-400/80 leading-relaxed text-sm sm:text-base">
                           {result.info.arancelesNote}. Este monto corresponde a entidades gubernamentales y no forma parte de los honorarios de la clínica.
                         </p>
                       </div>
 
                       {/* Final CTA Buttons */}
-                      <div className="flex flex-col sm:flex-row gap-4 pt-8 border-t border-border print:hidden">
-                        <Button
-                          className='flex-grow h-16 text-xl font-bold shadow-2xl rounded-2xl transition-transform active:scale-95'
-                          onClick={handleScheduleAppointment}
-                          disabled={isSending}
-                        >
-                          {isSending ? (
-                            <>Procesando... <Loader2 className="ml-2 h-6 w-6 animate-spin" /></>
-                          ) : (
-                            "Agendar Cita y Enviar Presupuesto"
-                          )}
-                        </Button>
+                      <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-5 sm:pt-6 md:pt-8 border-t border-border print:hidden">
+                        <Dialog open={isContactModalOpen} onOpenChange={setIsContactModalOpen}>
+                          <DialogTrigger asChild>
+                            <Button
+                              className='flex-grow h-12 sm:h-14 md:h-16 text-sm sm:text-base md:text-xl font-bold shadow-2xl rounded-xl sm:rounded-2xl transition-transform active:scale-95'
+                              onClick={handleScheduleAppointment}
+                            >
+                              Agendar Cita y Enviar Presupuesto
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent className="sm:max-w-md bg-card border-border/50">
+                            <DialogHeader>
+                              <DialogTitle className="text-xl sm:text-2xl font-headline flex items-center gap-2">
+                                <User className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
+                                Datos de Contacto
+                              </DialogTitle>
+                              <DialogDescription>
+                                Déjanos tus datos para coordinar la cita y enviarte la información.
+                              </DialogDescription>
+                            </DialogHeader>
 
-                        <Button variant="outline" className="h-16 px-8 rounded-2xl border-2 hover:bg-secondary transition-colors" onClick={handlePrint} title="Imprimir o Guardar PDF">
-                          <Printer className="h-8 w-8" />
+                            <Form {...contactForm}>
+                              <form onSubmit={contactForm.handleSubmit(onContactSubmit)} className="space-y-4 py-4">
+                                <FormField
+                                  control={contactForm.control}
+                                  name="contactName"
+                                  render={({ field }) => (
+                                    <FormItem>
+                                      <FormLabel>Nombre y Apellido</FormLabel>
+                                      <FormControl>
+                                        <Input placeholder="Tu nombre" {...field} className="h-10 sm:h-11" />
+                                      </FormControl>
+                                      <FormMessage />
+                                    </FormItem>
+                                  )}
+                                />
+                                <FormField
+                                  control={contactForm.control}
+                                  name="contactPhone"
+                                  render={({ field }) => (
+                                    <FormItem>
+                                      <FormLabel>Teléfono / WhatsApp</FormLabel>
+                                      <FormControl>
+                                        <Input placeholder="+58 412..." {...field} className="h-10 sm:h-11" />
+                                      </FormControl>
+                                      <FormMessage />
+                                    </FormItem>
+                                  )}
+                                />
+                                <FormField
+                                  control={contactForm.control}
+                                  name="contactEmail"
+                                  render={({ field }) => (
+                                    <FormItem>
+                                      <FormLabel>Correo Electrónico</FormLabel>
+                                      <FormControl>
+                                        <Input placeholder="tu@email.com" {...field} className="h-10 sm:h-11" />
+                                      </FormControl>
+                                      <FormMessage />
+                                    </FormItem>
+                                  )}
+                                />
+
+                                <DialogFooter className="gap-2 sm:gap-0 mt-4">
+                                  <Button type="button" variant="outline" onClick={() => setIsContactModalOpen(false)}>
+                                    Cancelar
+                                  </Button>
+                                  <Button type="submit" disabled={isSending}>
+                                    {isSending ? (
+                                      <>Enviando... <Loader2 className="ml-2 h-4 w-4 animate-spin" /></>
+                                    ) : (
+                                      <>Enviar a WhatsApp <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WA" className="ml-2 h-4 w-4" /></>
+                                    )}
+                                  </Button>
+                                </DialogFooter>
+                              </form>
+                            </Form>
+                          </DialogContent>
+                        </Dialog>
+
+                        <Button variant="outline" className="h-12 sm:h-14 md:h-16 px-6 sm:px-8 rounded-xl sm:rounded-2xl border-2 hover:bg-secondary transition-colors" onClick={handlePrint} title="Imprimir o Guardar PDF">
+                          <Printer className="h-5 w-5 sm:h-6 sm:w-6 md:h-8 md:w-8" />
                         </Button>
                       </div>
 
-                      <div className="text-center pt-8 border-t border-border/50">
-                        <p className="text-sm text-muted-foreground font-medium mb-2">Presupuesto Referencial • Generado el {format(new Date(), "d 'de' MMMM, yyyy", { locale: es })}</p>
-                        <p className="text-xs text-muted-foreground/60 max-w-lg mx-auto leading-relaxed">
+                      <div className="text-center pt-5 sm:pt-6 md:pt-8 border-t border-border/50">
+                        <p className="text-xs sm:text-sm text-muted-foreground font-medium mb-1.5 sm:mb-2">Presupuesto Referencial • Generado el {format(new Date(), "d 'de' MMMM, yyyy", { locale: es })}</p>
+                        <p className="text-[10px] sm:text-xs text-muted-foreground/60 max-w-lg mx-auto leading-relaxed">
                           Este documento es una estimación. Los precios finales pueden variar según el peso exacto de la mascota, su estado de salud previo y cambios en regulaciones internacionales.
                         </p>
                       </div>
@@ -690,7 +814,7 @@ export default function TravelGuidance() {
                 )}
               </CardContent>
             </Card>
-          </div>
+          </ScrollReveal>
         </div>
       </div>
 
