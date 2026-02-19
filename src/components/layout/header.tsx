@@ -1,29 +1,14 @@
 'use client';
 
-import { PawPrint, Menu, X, Phone } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { Menu, X } from 'lucide-react';
+import { useState, useEffect, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { NAV_LINKS, CLINIC_INFO } from '@/lib/constants';
+import { WhatsAppIcon } from '@/components/ui/icons/whatsapp-icon';
+import { ThemeToggle } from '@/components/ui/theme-toggle';
 import Link from 'next/link';
-
-const navLinks = [
-  { href: '/', label: 'Inicio' },
-  { href: '/servicios', label: 'Servicios' },
-  { href: '/viajes', label: 'Viajes' },
-  { href: '/contacto', label: 'Contacto' },
-];
-
-// Componente del icono de WhatsApp
-const WhatsAppIcon = ({ className }: { className?: string }) => (
-  <svg 
-    viewBox="0 0 24 24" 
-    fill="currentColor" 
-    className={className}
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.008-.57-.008-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
-  </svg>
-);
+import Image from 'next/image';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -33,99 +18,166 @@ export default function Header() {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
     };
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     handleScroll();
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const handleLinkClick = () => {
+  const handleLinkClick = useCallback(() => {
     setIsMenuOpen(false);
-  };
+  }, []);
+
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    if (isMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => { document.body.style.overflow = ''; };
+  }, [isMenuOpen]);
 
   return (
     <header className={cn(
-      "sticky top-0 z-50 bg-background/80 backdrop-blur-sm transition-all duration-300",
-      isScrolled ? "shadow-md" : "shadow-none"
+      "sticky top-0 z-50 transition-all duration-500",
+      isScrolled
+        ? "bg-background/85 backdrop-blur-2xl saturate-150 shadow-lg shadow-black/[0.06] dark:bg-background/80 dark:shadow-black/30"
+        : "bg-transparent"
     )}>
+      {/* Gradient line at bottom of header */}
+      <div className={cn(
+        "absolute bottom-0 left-0 right-0 h-px transition-opacity duration-500",
+        isScrolled ? "opacity-100" : "opacity-0"
+      )}>
+        <div className="h-full bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
+      </div>
+
       <div className="container mx-auto px-4">
-        <div className="flex h-20 items-center justify-between">
-          <Link href="/" className="flex items-center gap-2" onClick={handleLinkClick}>
-            <PawPrint className="h-8 w-8 text-primary" />
-            <span className="text-xl font-headline font-bold text-foreground tracking-tight">
-              VetPet Haven
-            </span>
+        <div className="flex h-20 md:h-24 items-center justify-between">
+          {/* Logo */}
+          <Link href="/" className="flex items-center gap-2 relative z-10" onClick={handleLinkClick}>
+            <Image
+              src="/logo.png"
+              alt="Centro Veterinario Zoé"
+              width={360}
+              height={100}
+              className="h-16 md:h-20 w-auto dark:brightness-0 dark:invert transition-all duration-300"
+              priority
+            />
           </Link>
-          <nav className="hidden md:flex items-center gap-6">
-            {navLinks.map((link) => (
+
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex items-center gap-1">
+            {NAV_LINKS.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-sm font-medium text-foreground/80 transition-colors hover:text-primary"
+                className="link-underline text-sm font-medium text-foreground/70 transition-colors hover:text-primary px-3 py-2 rounded-lg hover:bg-primary/5"
               >
                 {link.label}
               </Link>
             ))}
-             <a 
-               href="https://wa.me/34912345678" 
-               target="_blank" 
-               rel="noopener noreferrer"
-               className="group text-sm font-bold text-foreground/80 transition-colors hover:text-[#25D366] flex items-center gap-2 bg-secondary/50 px-3 py-2 rounded-full hover:bg-[#25D366]/10"
-             >
+            <a
+              href={`https://wa.me/${CLINIC_INFO.whatsappNumber}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`Contactar por WhatsApp al ${CLINIC_INFO.phoneDisplay}`}
+              className="group text-sm font-bold text-foreground/70 transition-all hover:text-[#25D366] flex items-center gap-2 px-3 py-2 rounded-full hover:bg-[#25D366]/10 ml-1"
+            >
               <WhatsAppIcon className="h-5 w-5 text-[#25D366] group-hover:scale-110 transition-transform" />
-              +34 912 345 678
+              {CLINIC_INFO.phoneDisplay}
             </a>
           </nav>
-          <div className="hidden md:flex items-center gap-2 ml-6">
-             <Button asChild>
-                <Link href="/contacto">Pedir Cita</Link>
-             </Button>
+
+          {/* Desktop Actions */}
+          <div className="hidden md:flex items-center gap-2 ml-4">
+            <ThemeToggle />
+            <Button asChild className="rounded-full shadow-glow hover:shadow-glow-lg transition-all duration-300">
+              <Link href="/contacto">Pedir Cita</Link>
+            </Button>
           </div>
-          <div className="md:hidden">
+
+          {/* Mobile Menu Button */}
+          <div className="md:hidden relative z-10">
             <Button
               variant="ghost"
               size="icon"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              aria-label="Toggle menu"
+              aria-label="Abrir menú de navegación"
+              aria-expanded={isMenuOpen}
+              className="h-10 w-10"
             >
               {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </Button>
           </div>
         </div>
       </div>
-      {/* Mobile Menu */}
+
+      {/* Mobile overlay */}
       <div
         className={cn(
-          'md:hidden absolute top-20 left-0 w-full bg-background/95 backdrop-blur-md shadow-lg transition-transform duration-300 ease-in-out',
-          isMenuOpen ? 'transform translate-y-0' : 'transform -translate-y-[150%]'
+          'md:hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-40 transition-opacity duration-300',
+          isMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+        )}
+        onClick={() => setIsMenuOpen(false)}
+        aria-hidden="true"
+      />
+
+      {/* Mobile Drawer */}
+      <div
+        className={cn(
+          'md:hidden fixed top-0 right-0 h-full w-[85%] max-w-sm bg-background/95 backdrop-blur-xl shadow-2xl z-50 transition-transform duration-500 ease-out',
+          isMenuOpen ? 'translate-x-0' : 'translate-x-full'
         )}
       >
-        <nav className="flex flex-col items-center gap-4 p-4">
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="text-lg font-medium text-foreground transition-colors hover:text-primary"
+        <div className="flex flex-col h-full p-6 pt-20">
+          {/* Close button */}
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setIsMenuOpen(false)}
+            className="absolute top-5 right-5 h-10 w-10"
+            aria-label="Cerrar menú"
+          >
+            <X className="h-6 w-6" />
+          </Button>
+
+          <nav className="flex flex-col gap-1 flex-grow">
+            {NAV_LINKS.map((link, index) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={cn(
+                  "text-lg font-medium text-foreground/80 transition-all hover:text-primary px-4 py-3 rounded-xl hover:bg-primary/5 animate-fade-up",
+                )}
+                style={{ animationDelay: `${index * 80}ms` }}
+                onClick={handleLinkClick}
+              >
+                {link.label}
+              </Link>
+            ))}
+            <a
+              href={`https://wa.me/${CLINIC_INFO.whatsappNumber}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`Contactar por WhatsApp al ${CLINIC_INFO.phoneDisplay}`}
+              className="text-lg font-medium text-foreground/80 transition-all hover:text-[#25D366] flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-[#25D366]/10 animate-fade-up delay-300"
               onClick={handleLinkClick}
             >
-              {link.label}
-            </Link>
-          ))}
-           <a 
-             href="https://wa.me/34912345678" 
-             target="_blank" 
-             rel="noopener noreferrer"
-             className="text-lg font-medium text-foreground transition-colors hover:text-[#25D366] flex items-center gap-2" 
-             onClick={handleLinkClick}
-           >
               <WhatsAppIcon className="h-6 w-6 text-[#25D366]" />
-              +34 912 345 678
+              {CLINIC_INFO.phoneDisplay}
             </a>
-          <Button asChild size="lg" className="w-full mt-4">
-             <Link href="/contacto" onClick={handleLinkClick}>Pedir Cita</Link>
-          </Button>
-        </nav>
+          </nav>
+
+          <div className="border-t border-border/50 pt-6 space-y-4">
+            <div className="flex justify-center">
+              <ThemeToggle />
+            </div>
+            <Button asChild size="lg" className="w-full rounded-full shadow-glow">
+              <Link href="/contacto" onClick={handleLinkClick}>Pedir Cita</Link>
+            </Button>
+          </div>
+        </div>
       </div>
     </header>
   );

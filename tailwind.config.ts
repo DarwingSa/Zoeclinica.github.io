@@ -1,4 +1,4 @@
-import type {Config} from 'tailwindcss';
+import type { Config } from 'tailwindcss';
 
 export default {
   darkMode: ['class'],
@@ -80,27 +80,46 @@ export default {
       },
       keyframes: {
         'accordion-down': {
-          from: {
-            height: '0',
-          },
-          to: {
-            height: 'var(--radix-accordion-content-height)',
-          },
+          from: { height: '0' },
+          to: { height: 'var(--radix-accordion-content-height)' },
         },
         'accordion-up': {
-          from: {
-            height: 'var(--radix-accordion-content-height)',
-          },
-          to: {
-            height: '0',
-          },
+          from: { height: 'var(--radix-accordion-content-height)' },
+          to: { height: '0' },
+        },
+        'shimmer': {
+          '0%': { backgroundPosition: '-200% 0' },
+          '100%': { backgroundPosition: '200% 0' },
+        },
+        'glow-pulse': {
+          '0%, 100%': { boxShadow: '0 0 20px hsla(196, 86%, 57%, 0.2)' },
+          '50%': { boxShadow: '0 0 40px hsla(196, 86%, 57%, 0.4)' },
+        },
+        'gradient-shift': {
+          '0%': { backgroundPosition: '0% 50%' },
+          '50%': { backgroundPosition: '100% 50%' },
+          '100%': { backgroundPosition: '0% 50%' },
+        },
+        'slide-up-reveal': {
+          from: { opacity: '0', transform: 'translateY(40px)' },
+          to: { opacity: '1', transform: 'translateY(0)' },
         },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
+        'shimmer': 'shimmer 3s ease-in-out infinite',
+        'glow-pulse': 'glow-pulse 3s ease-in-out infinite',
+        'gradient-shift': 'gradient-shift 6s ease infinite',
+        'slide-up-reveal': 'slide-up-reveal 0.8s cubic-bezier(0.16,1,0.3,1) forwards',
       },
-       typography: (theme: (arg0: string) => any) => ({
+      boxShadow: {
+        'glow-sm': '0 2px 16px -2px hsla(196, 86%, 57%, 0.2)',
+        'glow': '0 4px 24px -4px hsla(196, 86%, 57%, 0.25)',
+        'glow-lg': '0 8px 40px -8px hsla(196, 86%, 57%, 0.3)',
+        'glow-xl': '0 12px 56px -12px hsla(196, 86%, 57%, 0.35)',
+      },
+      typography: (theme: (arg0: string) => any) => ({
         DEFAULT: {
           css: {
             '--tw-prose-body': theme('colors.foreground / 0.8'),
@@ -122,11 +141,11 @@ export default {
             },
             'h2': {
               fontWeight: '600',
-               fontFamily: theme('fontFamily.headline'),
+              fontFamily: theme('fontFamily.headline'),
             },
             'h3': {
               fontWeight: '600',
-               fontFamily: theme('fontFamily.headline'),
+              fontFamily: theme('fontFamily.headline'),
             },
           },
         },

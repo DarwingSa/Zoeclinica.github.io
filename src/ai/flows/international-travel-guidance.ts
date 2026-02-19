@@ -8,8 +8,8 @@
  * - InternationalTravelGuidanceOutput - The return type for the internationalTravelGuidance function.
  */
 
-import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
+import { ai } from '@/ai/genkit';
+import { z } from 'genkit';
 
 const InternationalTravelGuidanceInputSchema = z.object({
   destination: z.string().describe('The destination country.'),
@@ -32,19 +32,19 @@ export async function internationalTravelGuidance(
 
 const prompt = ai.definePrompt({
   name: 'internationalTravelGuidancePrompt',
-  input: {schema: InternationalTravelGuidanceInputSchema},
-  output: {schema: InternationalTravelGuidanceOutputSchema},
-  prompt: `You are an expert veterinarian specializing in international pet travel requirements from [COUNTRY WHERE CLINIC IS BASED].
+  input: { schema: InternationalTravelGuidanceInputSchema },
+  output: { schema: InternationalTravelGuidanceOutputSchema },
+  prompt: `You are an expert veterinarian specializing in international pet travel requirements from España.
 
-  Based on the destination, animal type, animal age, and known health conditions, provide the required health certificates, microchipping, and advisories for traveling internationally with the pet.
+  Based on the destination, animal type, animal age, and known health conditions, provide the required health certificates, microchipping, and advisories for traveling internationally with the pet. Respond in Spanish.
 
   Destination: {{{destination}}}
   Animal Type: {{{animalType}}}
   Animal Age: {{{animalAge}}}
   Known Health Conditions: {{{knownHealthConditions}}}
 
-  Only respond for travel from [COUNTRY WHERE CLINIC IS BASED]. Do not respond if destination is [COUNTRY WHERE CLINIC IS BASED].
-  If there is no travel guidance information for the specified destination, respond saying, "Sorry, we don't have information available for travel to that destination at this time."
+  Only respond for travel from España. Do not respond if destination is España.
+  If there is no travel guidance information for the specified destination, respond saying, "Lo sentimos, no tenemos información disponible para viajes a ese destino en este momento."
   `,
 });
 
@@ -55,7 +55,7 @@ const internationalTravelGuidanceFlow = ai.defineFlow(
     outputSchema: InternationalTravelGuidanceOutputSchema,
   },
   async input => {
-    const {output} = await prompt(input);
+    const { output } = await prompt(input);
     return output!;
   }
 );
