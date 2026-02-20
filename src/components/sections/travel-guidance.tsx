@@ -212,6 +212,7 @@ export default function TravelGuidance() {
     const printWindow = window.open('', '_blank');
     if (!printWindow) return;
 
+    const origin = window.location.origin;
     const totalServicios = result.services.reduce((acc, s) => acc + s.price, 0);
     const speciesLabel = result.data.species === 'dog' ? 'Perro' : 'Gato';
     const birthDateStr = format(result.data.birthDate, "d 'de' MMMM, yyyy", { locale: es });
@@ -219,11 +220,11 @@ export default function TravelGuidance() {
 
     const servicesRows = result.services.map(s => `
       <tr>
-        <td style="padding:9px 12px;border-bottom:1px solid #e5e7eb;">
-          <strong style="font-size:13px;">${s.label}</strong><br/>
-          <span style="color:#6b7280;font-size:11px;">${s.detail}</span>
+        <td class="service-name">
+          <strong>${s.label}</strong><br/>
+          <span>${s.detail}</span>
         </td>
-        <td style="padding:9px 12px;border-bottom:1px solid #e5e7eb;text-align:right;font-weight:700;font-size:16px;color:#0891b2;">$${s.price}</td>
+        <td class="service-price">$${s.price}</td>
       </tr>
     `).join('');
 
@@ -232,45 +233,71 @@ export default function TravelGuidance() {
       <html lang="es">
       <head>
         <meta charset="UTF-8">
-        <title>Presupuesto de Viaje - Centro Veterinario Zoé</title>
+        <title>Presupuesto Referencial - Centro Veterinario Zoé</title>
         <style>
-          @page { size: letter; margin: 15mm 16mm; }
+          @page { size: letter; margin: 12mm 15mm; }
           * { margin:0; padding:0; box-sizing:border-box; }
-          body { font-family:'Segoe UI',system-ui,-apple-system,sans-serif; color:#1e293b; padding:0; line-height:1.45; font-size:13px; }
-          .header { display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #0891b2; padding-bottom:14px; margin-bottom:20px; }
-          .logo-area h1 { font-size:18px; color:#0891b2; }
-          .logo-area p { font-size:11px; color:#6b7280; }
-          .doc-title { text-align:right; }
-          .doc-title h2 { font-size:15px; color:#1e293b; }
-          .doc-title p { font-size:11px; color:#6b7280; }
-          .section { margin-bottom:18px; }
-          .section-title { font-size:12px; font-weight:700; color:#0891b2; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:8px; border-bottom:1px solid #e5e7eb; padding-bottom:5px; }
-          .info-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:6px 20px; }
-          .info-grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:6px 20px; }
-          .info-item label { display:block; font-size:10px; color:#6b7280; text-transform:uppercase; letter-spacing:0.5px; }
-          .info-item p { font-size:14px; font-weight:600; margin-bottom:4px; }
-          table { width:100%; border-collapse:collapse; margin-top:6px; }
-          th { text-align:left; padding:6px 12px; border-bottom:2px solid #0891b2; font-size:11px; color:#6b7280; text-transform:uppercase; }
-          th:last-child { text-align:right; }
-          .total-row { background:#f0fdfa; }
-          .total-row td { padding:10px 12px; font-weight:800; font-size:16px; }
-          .total-row td:last-child { color:#0891b2; text-align:right; }
-          .fee-box { background:#fffbeb; border:1px solid #fde68a; border-radius:6px; padding:12px 14px; margin-top:16px; display:flex; justify-content:space-between; align-items:center; }
-          .fee-box .fee-label { font-weight:700; color:#92400e; font-size:14px; }
-          .fee-box .fee-amount { font-weight:800; font-size:18px; color:#92400e; white-space:nowrap; margin-left:16px; }
-          .fee-box .fee-note { font-size:11px; color:#a16207; margin-top:3px; }
-          .footer { margin-top:28px; padding-top:12px; border-top:1px solid #e5e7eb; text-align:center; font-size:10px; color:#9ca3af; }
-          .footer p { margin-top:4px; }
-          .alert-box { background:#fef3c7; border-left:3px solid #f59e0b; padding:8px 12px; border-radius:4px; margin-bottom:16px; font-size:12px; color:#92400e; }
+          body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; color: #1e293b; line-height: 1.4; font-size: 13px; max-width: 100%; margin: 0 auto; padding: 0; }
+          
+          /* Header */
+          .header { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 3px solid #0891b2; padding-bottom: 12px; margin-bottom: 24px; }
+          .logo-area { display: flex; align-items: center; gap: 12px; }
+          .logo-area img { width: 50px; height: 50px; object-fit: contain; } /* Smaller logo */
+          .logo-text h1 { font-size: 16px; color: #0891b2; font-weight: 800; margin-bottom: 2px; letter-spacing: -0.5px; }
+          .logo-text p { font-size: 12px; color: #475569; }
+          .doc-meta { text-align: right; }
+          .doc-meta h2 { font-size: 12px; color: #0f172a; font-weight: 700; margin-bottom: 2px; }
+          .doc-meta p { font-size: 12px; color: #64748b; }
+
+          /* Sections */
+          .section { margin-bottom: 20px; }
+          .section-title { font-size: 12px; font-weight: 800; color: #0891b2; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid #e2e8f0; padding-bottom: 6px; margin-bottom: 12px; }
+          
+          /* Grids */
+          .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 24px; }
+          .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px 24px; }
+          
+          .data-item label { display: block; font-size: 10px; color: #64748b; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; margin-bottom: 2px; }
+          .data-item p { font-size: 14px; font-weight: 600; color: #0f172a; }
+
+          /* Alert */
+          .alert-box { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #c2410c; margin-bottom: 20px; border-left: 4px solid #fb923c; padding-left: 12px; }
+          .alert-box svg { width: 16px; height: 16px; }
+          
+          /* Table */
+          table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+          th { text-align: left; padding: 8px 10px; border-bottom: 2px solid #0891b2; font-size: 11px; color: #0f172a; text-transform: uppercase; font-weight: 800; }
+          th.right { text-align: right; }
+          td { padding: 8px 10px; border-bottom: 1px solid #e2e8f0; } 
+          .service-name strong { font-size: 14px; color: #0f172a; display: block; margin-bottom: 2px; }
+          .service-name span { font-size: 11px; color: #64748b; }
+          .service-price { text-align: right; font-weight: 800; font-size: 16px; color: #0891b2; }
+          
+          /* Totals */
+          .total-row td { padding: 8px 10px; font-weight: 800; font-size: 14px; color: #0f172a; background: #f8fafc; border-bottom: none; }
+          .total-row td:last-child { color: #0891b2; text-align: right; font-size: 16px; }
+          
+          /* Fees */
+          .fee-box { border: 1px solid #fde047; border-radius: 8px; padding: 14px 18px; margin-top: 16px; display: flex; justify-content: space-between; align-items: center; background: #fffbeb; }
+          .fee-info h4 { font-size: 14px; color: #b45309; font-weight: 700; margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
+          .fee-info p { font-size: 12px; color: #b45309; opacity: 0.9; }
+          .fee-amount { font-size: 14px; font-weight: 800; color: #b45309; }
+          
+          /* Footer */
+          .print-footer { margin-top: 24px; text-align: center; color: #64748b; font-size: 10px; border-top: 1px solid #e2e8f0; padding-top: 12px; }
+          .print-footer strong { color: #475569; font-weight: 600; }
         </style>
       </head>
       <body>
         <div class="header">
           <div class="logo-area">
-            <h1>🐾 Centro Veterinario Zoé</h1>
-            <p>Asesoría de Viajes Internacionales</p>
+            <img src="${origin}/logo.png" alt="Centro Veterinario Zoé" />
+            <div class="logo-text">
+              <h1>Centro Veterinario Zoé</h1>
+              <p>Asesoría de Viajes Internacionales</p>
+            </div>
           </div>
-          <div class="doc-title">
+          <div class="doc-meta">
             <h2>Presupuesto Referencial</h2>
             <p>Generado el ${todayStr}</p>
           </div>
@@ -278,30 +305,38 @@ export default function TravelGuidance() {
 
         <div class="section">
           <div class="section-title">Datos del Propietario</div>
-          <div class="info-grid-2">
-            <div class="info-item"><label>Nombre</label><p>${result.data.ownerName}</p></div>
-            <div class="info-item"><label>Destino</label><p>${result.info.title.replace('Presupuesto de Viaje a ', '').replace('Pack Viaje a ', '')}</p></div>
+          <div class="grid-2">
+            <div class="data-item"><label>Nombre</label><p>${result.data.ownerName}</p></div>
+            <div class="data-item"><label>Destino</label><p>${result.info.title.replace('Presupuesto de Viaje a ', '').replace('Pack Viaje a ', '')}</p></div>
           </div>
         </div>
 
         <div class="section">
           <div class="section-title">Datos de la Mascota</div>
-          <div class="info-grid">
-            <div class="info-item"><label>Nombre</label><p>${result.data.petName}</p></div>
-            <div class="info-item"><label>Especie</label><p>${speciesLabel}</p></div>
-            <div class="info-item"><label>Raza</label><p>${result.data.breed}</p></div>
-            <div class="info-item"><label>Color</label><p>${result.data.color}</p></div>
-            <div class="info-item"><label>Peso</label><p>${result.data.weight} kg</p></div>
-            <div class="info-item"><label>Fecha de Nacimiento</label><p>${birthDateStr}</p></div>
+          <div class="grid-3">
+            <div class="data-item"><label>Nombre</label><p>${result.data.petName}</p></div>
+            <div class="data-item"><label>Especie</label><p>${speciesLabel}</p></div>
+            <div class="data-item"><label>Raza</label><p>${result.data.breed}</p></div>
+            <div class="data-item"><label>Color</label><p>${result.data.color}</p></div>
+            <div class="data-item"><label>Peso</label><p>${result.data.weight} kg</p></div>
+            <div class="data-item"><label>Fecha de Nacimiento</label><p>${birthDateStr}</p></div>
           </div>
         </div>
 
-        <div class="alert-box">⏱ <strong>Inicio de trámites:</strong> ${result.info.estimatedTime}</div>
+        <div class="alert-box">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <strong>Inicio de trámites:</strong> ${result.info.estimatedTime}
+        </div>
 
         <div class="section">
           <div class="section-title">Desglose de Servicios Médicos</div>
           <table>
-            <thead><tr><th>Servicio</th><th>Costo</th></tr></thead>
+            <thead>
+              <tr>
+                <th>Servicio</th>
+                <th class="right">Costo</th>
+              </tr>
+            </thead>
             <tbody>
               ${servicesRows}
               <tr class="total-row">
@@ -313,16 +348,16 @@ export default function TravelGuidance() {
         </div>
 
         <div class="fee-box">
-          <div>
-            <div class="fee-label">Tasas y Aranceles de Exportación</div>
-            <div class="fee-note">${result.info.arancelesNote}. Corresponde a entidades gubernamentales.</div>
+          <div class="fee-info">
+            <h4>Tasas y Aranceles de Exportación</h4>
+            <p>${result.info.arancelesNote}. Corresponde a entidades gubernamentales.</p>
           </div>
           <div class="fee-amount">$${result.info.aranceles}</div>
         </div>
 
-        <div class="footer">
+        <div class="print-footer">
           <p><strong>Centro Veterinario Zoé</strong> — Asesoría de Viajes Internacionales</p>
-          <p>Este documento es una estimación referencial. Los precios pueden variar según peso, estado de salud y regulaciones internacionales vigentes.</p>
+          <p>Este documento es una estimación referencial. Los precios finales pueden variar según peso, estado de salud y regulaciones internacionales vigentes.</p>
         </div>
       </body>
       </html>
@@ -348,22 +383,35 @@ export default function TravelGuidance() {
     // Simulate a small delay for better UX
     await new Promise(resolve => setTimeout(resolve, 800));
 
-    const message = `hola soy ${contactData.contactName} y quisiera agENDAR UNA CITA para tramitar el certificado de viaje de mi mascota.
-    
-*Datos del Propietario:* ${result.data.ownerName}
-*Mascota:* ${result.data.petName} (${result.data.species === 'dog' ? 'Perro' : 'Gato'}, ${result.data.weight}kg)
-*Destino:* ${result.info.title.replace('Presupuesto de Viaje a ', '').replace('Pack Viaje a ', '')}
-*Fecha de Nacimiento Mascota:* ${format(result.data.birthDate, 'dd/MM/yyyy')}
+    const subtotalMedicos = result.services.reduce((acc, s) => acc + s.price, 0);
 
-*Contacto:*
-📞 ${contactData.contactPhone}
-✉️ ${contactData.contactEmail}
+    // Build plain text message using standard emojis (some systems strip custom markdown emojis)
+    const rawMessage = `¡Hola! Mi nombre es *${contactData.contactName}*.
+Me gustaría agendar una cita para tramitar el certificado de viaje de mi mascota. A continuación, comparto los detalles de nuestro viaje:
 
-*Presupuesto Estimado:* $${result.total}
+🐾 *Datos de la Mascota*
+• Nombre: ${result.data.petName}
+• Especie: ${result.data.species === 'dog' ? 'Perro' : 'Gato'}
+• Peso: ${result.data.weight} kg
+• Fecha de Nacimiento: ${format(result.data.birthDate, 'dd/MM/yyyy')}
 
-Gracias.`;
+✈️ *Detalles del Viaje*
+• Destino: ${result.info.title.replace('Presupuesto de Viaje a ', '').replace('Pack Viaje a ', '')}
+• Propietario/a: ${result.data.ownerName}
 
-    const whatsappUrl = `https://wa.me/${CLINIC_INFO.whatsappNumber}?text=${encodeURIComponent(message)}`;
+📱 *Mi Información de Contacto*
+• Teléfono: ${contactData.contactPhone}
+• Correo: ${contactData.contactEmail}
+
+💰 *Desglose del Presupuesto*
+• Gastos Médicos (Clínica): $${subtotalMedicos}
+• Tasas Gubernamentales: $${result.info.aranceles}
+*Total Estimado:* $${result.total}
+
+Quedo atento/a para coordinar la disponibilidad. ¡Muchas gracias!`;
+
+    // Ensure strict URI encoding and explicit replacement of symbols where some clients drop them
+    const whatsappUrl = `https://wa.me/${CLINIC_INFO.whatsappNumber}?text=${encodeURIComponent(rawMessage)}`;
     window.open(whatsappUrl, '_blank');
 
     setIsSending(false);
@@ -647,7 +695,7 @@ Gracias.`;
                 )}
 
                 {result && (
-                  <div className="animate-in fade-in slide-in-from-bottom-8 duration-700">
+                  <div className="animate-in fade-in slide-in-from-bottom-8 duration-500">
                     {/* Visual Header */}
                     <div className="bg-gradient-to-r from-primary via-[#2aaadd] to-primary bg-[length:200%_100%] animate-gradient-shift p-5 sm:p-7 md:p-10 rounded-t-[1.5rem] sm:rounded-t-[2rem] text-primary-foreground print:bg-white print:text-black print:border-b-4 print:border-black print:p-0">
                       <div className="flex flex-col sm:flex-row justify-between items-start mb-4 sm:mb-6 print:mb-4 gap-3">
@@ -692,12 +740,12 @@ Gracias.`;
                                   <p className="font-bold text-sm sm:text-base md:text-lg text-foreground">{service.label}</p>
                                   <p className="text-xs sm:text-sm text-muted-foreground truncate">{service.detail}</p>
                                 </div>
-                                <p className="font-bold text-base sm:text-lg md:text-xl text-primary print:text-black flex-shrink-0">${service.price}</p>
+                                <p className="font-bold text-base sm:text-lg md:text-xl text-primary print:text-black">${service.price}</p>
                               </div>
                             ))}
                             <div className="p-4 sm:p-5 md:p-6 bg-secondary/30 flex justify-between items-center print:bg-gray-100">
                               <p className="font-extrabold text-base sm:text-lg md:text-xl">Total Estimado Servicios</p>
-                              <p className="font-black text-xl sm:text-2xl md:text-3xl text-primary print:text-black">${subtotal}</p>
+                              <p className="font-black text-xl sm:text-2xl md:text-3xl text-primary print:text-black">${result.services.reduce((acc, s) => acc + s.price, 0)}</p>
                             </div>
                           </div>
                         </div>
@@ -717,12 +765,32 @@ Gracias.`;
                         </p>
                       </div>
 
+                      {/* Total Breakdown */}
+                      <div className="rounded-2xl sm:rounded-3xl border border-border/50 overflow-hidden bg-card shadow-sm hover:shadow-glow-sm transition-all duration-500 print:border-gray-300 print:shadow-none p-4 sm:p-5 md:p-6">
+                        <h3 className='font-bold text-lg sm:text-xl md:text-2xl flex items-center gap-2 sm:gap-3 text-foreground mb-4'>
+                          <Banknote className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
+                          Resumen del Presupuesto
+                        </h3>
+                        <div className="flex justify-between items-center text-sm mb-2 text-muted-foreground">
+                          <span>Subtotal Servicios de Clínica:</span>
+                          <span className="font-semibold">${result.services.reduce((acc, s) => acc + s.price, 0)}</span>
+                        </div>
+                        <div className="flex justify-between items-center text-sm mb-4 text-muted-foreground pb-4 border-b border-border/10">
+                          <span>Tasas y Aranceles de Exportación:</span>
+                          <span className="font-semibold">${result.info.aranceles}</span>
+                        </div>
+                        <div className="flex justify-between items-center font-bold text-lg md:text-xl text-primary">
+                          <span>Total Estimado:</span>
+                          <span className="text-secondary dark:text-secondary-foreground glow-text">${result.total}</span>
+                        </div>
+                      </div>
+
                       {/* Final CTA Buttons */}
                       <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-5 sm:pt-6 md:pt-8 border-t border-border print:hidden">
                         <Dialog open={isContactModalOpen} onOpenChange={setIsContactModalOpen}>
                           <DialogTrigger asChild>
                             <Button
-                              className='flex-grow h-12 sm:h-14 md:h-16 text-sm sm:text-base md:text-xl font-bold shadow-2xl rounded-xl sm:rounded-2xl transition-transform active:scale-95'
+                              className='flex-grow min-h-[3rem] h-auto py-3 sm:py-4 md:py-5 px-4 text-sm sm:text-base md:text-xl font-bold shadow-2xl rounded-xl sm:rounded-2xl transition-transform active:scale-95 whitespace-normal break-words text-balance'
                               onClick={handleScheduleAppointment}
                             >
                               Agendar Cita y Enviar Presupuesto

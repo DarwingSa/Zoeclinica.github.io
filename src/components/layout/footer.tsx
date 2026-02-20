@@ -1,8 +1,9 @@
-import { Phone, Mail, MapPin, Clock, Instagram, Facebook } from 'lucide-react';
+import { Mail, MapPin, Clock, Instagram, Facebook } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { NAV_LINKS, CLINIC_INFO } from '@/lib/constants';
 import { ScrollReveal } from '@/components/ui/scroll-reveal';
+import { WhatsAppIcon } from '@/components/ui/icons/whatsapp-icon';
 
 export default function Footer() {
   return (
@@ -77,11 +78,11 @@ export default function Footer() {
                 </div>
                 <span>Calle Mirador con Av. 1, La Campiña, Distrito Capital</span>
               </li>
-              <li className="flex items-center gap-2.5 sm:gap-3 justify-center sm:justify-start">
-                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
-                  <Phone className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary" />
+              <li className="flex items-center gap-2.5 sm:gap-3 justify-center sm:justify-start group">
+                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0 group-hover:bg-[#25D366]/10 transition-colors">
+                  <WhatsAppIcon className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary group-hover:text-[#25D366] transition-colors" />
                 </div>
-                <a href="tel:+584125957240" className="hover:text-primary transition-colors">+58 412 595 7240</a>
+                <a href={`https://wa.me/${CLINIC_INFO.whatsappNumber}`} target="_blank" rel="noopener noreferrer" className="hover:text-[#25D366] transition-colors">{CLINIC_INFO.phoneDisplay}</a>
               </li>
               <li className="flex items-center gap-2.5 sm:gap-3 justify-center sm:justify-start">
                 <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">

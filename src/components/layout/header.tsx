@@ -4,8 +4,7 @@ import { Menu, X } from 'lucide-react';
 import { useState, useEffect, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { NAV_LINKS, CLINIC_INFO } from '@/lib/constants';
-import { WhatsAppIcon } from '@/components/ui/icons/whatsapp-icon';
+import { NAV_LINKS } from '@/lib/constants';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -38,85 +37,77 @@ export default function Header() {
   }, [isMenuOpen]);
 
   return (
-    <header className={cn(
-      "sticky top-0 z-50 transition-all duration-500",
-      isScrolled
-        ? "bg-background/85 backdrop-blur-2xl saturate-150 shadow-lg shadow-black/[0.06] dark:bg-background/80 dark:shadow-black/30"
-        : "bg-transparent"
-    )}>
-      {/* Gradient line at bottom of header */}
-      <div className={cn(
-        "absolute bottom-0 left-0 right-0 h-px transition-opacity duration-500",
-        isScrolled ? "opacity-100" : "opacity-0"
+    <>
+      <header className={cn(
+        "sticky top-0 z-40 transition-all duration-500",
+        isScrolled
+          ? "bg-background/85 backdrop-blur-2xl saturate-150 shadow-lg shadow-black/[0.06] dark:bg-background/80 dark:shadow-black/30"
+          : "bg-transparent"
       )}>
-        <div className="h-full bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
-      </div>
+        {/* Gradient line at bottom of header */}
+        <div className={cn(
+          "absolute bottom-0 left-0 right-0 h-px transition-opacity duration-500",
+          isScrolled ? "opacity-100" : "opacity-0"
+        )}>
+          <div className="h-full bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
+        </div>
 
-      <div className="container mx-auto px-4">
-        <div className="flex h-20 md:h-24 items-center justify-between">
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 relative z-10" onClick={handleLinkClick}>
-            <Image
-              src="/logo.png"
-              alt="Centro Veterinario Zoé"
-              width={360}
-              height={100}
-              className="h-16 md:h-20 w-auto dark:brightness-0 dark:invert transition-all duration-300"
-              priority
-            />
-          </Link>
+        <div className="container mx-auto px-4">
+          <div className="flex h-20 md:h-24 items-center justify-between">
+            {/* Logo */}
+            <Link href="/" className="flex items-center gap-2 relative z-10" onClick={handleLinkClick}>
+              <Image
+                src="/logo.png"
+                alt="Centro Veterinario Zoé"
+                width={360}
+                height={100}
+                className="h-16 md:h-20 w-auto dark:brightness-0 dark:invert transition-all duration-300"
+                priority
+              />
+            </Link>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-1">
-            {NAV_LINKS.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="link-underline text-sm font-medium text-foreground/70 transition-colors hover:text-primary px-3 py-2 rounded-lg hover:bg-primary/5"
+            {/* Desktop Navigation */}
+            <nav className="hidden md:flex items-center gap-1">
+              {NAV_LINKS.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="link-underline text-sm font-medium text-foreground/70 transition-colors hover:text-primary px-3 py-2 rounded-lg hover:bg-primary/5"
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </nav>
+
+            {/* Desktop Actions */}
+            <div className="hidden md:flex items-center gap-2 ml-4">
+              <ThemeToggle />
+              <Button asChild className="rounded-full shadow-glow hover:shadow-glow-lg transition-all duration-300">
+                <Link href="/contacto">Pedir Cita</Link>
+              </Button>
+            </div>
+
+            {/* Mobile Menu Button */}
+            <div className="md:hidden relative z-10">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                aria-label="Abrir menú de navegación"
+                aria-expanded={isMenuOpen}
+                className="h-10 w-10"
               >
-                {link.label}
-              </Link>
-            ))}
-            <a
-              href={`https://wa.me/${CLINIC_INFO.whatsappNumber}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={`Contactar por WhatsApp al ${CLINIC_INFO.phoneDisplay}`}
-              className="group text-sm font-bold text-foreground/70 transition-all hover:text-[#25D366] flex items-center gap-2 px-3 py-2 rounded-full hover:bg-[#25D366]/10 ml-1"
-            >
-              <WhatsAppIcon className="h-5 w-5 text-[#25D366] group-hover:scale-110 transition-transform" />
-              {CLINIC_INFO.phoneDisplay}
-            </a>
-          </nav>
-
-          {/* Desktop Actions */}
-          <div className="hidden md:flex items-center gap-2 ml-4">
-            <ThemeToggle />
-            <Button asChild className="rounded-full shadow-glow hover:shadow-glow-lg transition-all duration-300">
-              <Link href="/contacto">Pedir Cita</Link>
-            </Button>
-          </div>
-
-          {/* Mobile Menu Button */}
-          <div className="md:hidden relative z-10">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              aria-label="Abrir menú de navegación"
-              aria-expanded={isMenuOpen}
-              className="h-10 w-10"
-            >
-              {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-            </Button>
+                {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              </Button>
+            </div>
           </div>
         </div>
-      </div>
+      </header>
 
       {/* Mobile overlay */}
       <div
         className={cn(
-          'md:hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-40 transition-opacity duration-300',
+          'md:hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] transition-opacity duration-300',
           isMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
         )}
         onClick={() => setIsMenuOpen(false)}
@@ -126,7 +117,7 @@ export default function Header() {
       {/* Mobile Drawer */}
       <div
         className={cn(
-          'md:hidden fixed top-0 right-0 h-full w-[85%] max-w-sm bg-background/95 backdrop-blur-xl shadow-2xl z-50 transition-transform duration-500 ease-out',
+          'md:hidden fixed top-0 right-0 h-full w-[85%] max-w-sm bg-background/95 backdrop-blur-xl shadow-2xl z-[70] transition-transform duration-500 ease-out',
           isMenuOpen ? 'translate-x-0' : 'translate-x-full'
         )}
       >
@@ -156,17 +147,6 @@ export default function Header() {
                 {link.label}
               </Link>
             ))}
-            <a
-              href={`https://wa.me/${CLINIC_INFO.whatsappNumber}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={`Contactar por WhatsApp al ${CLINIC_INFO.phoneDisplay}`}
-              className="text-lg font-medium text-foreground/80 transition-all hover:text-[#25D366] flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-[#25D366]/10 animate-fade-up delay-300"
-              onClick={handleLinkClick}
-            >
-              <WhatsAppIcon className="h-6 w-6 text-[#25D366]" />
-              {CLINIC_INFO.phoneDisplay}
-            </a>
           </nav>
 
           <div className="border-t border-border/50 pt-6 space-y-4">
@@ -179,6 +159,6 @@ export default function Header() {
           </div>
         </div>
       </div>
-    </header>
+    </>
   );
 }

@@ -15,8 +15,8 @@ export const NAV_LINKS = [
  */
 export const CLINIC_INFO = {
     name: 'Centro Veterinario Zoé',
-    phone: '+58 412 595 7240',
-    phoneDisplay: '+58 412 595 7240',
+    phone: '+58 412 5957240',
+    phoneDisplay: '+58 412 5957240',
     email: 'contacto@centrovetzoe.com',
     address: 'Calle Mirador con Av. 1, La Campiña, Distrito Capital, Venezuela',
     whatsappNumber: '584125957240',

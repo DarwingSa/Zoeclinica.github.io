@@ -12,7 +12,7 @@ interface ScrollRevealProps {
     direction?: RevealDirection;
     /** Delay in ms before animation starts. Default: 0 */
     delay?: number;
-    /** Animation duration in ms. Default: 700 */
+    /** Animation duration in ms. Default: 500 */
     duration?: number;
     /** Additional CSS classes */
     className?: string;
@@ -55,7 +55,7 @@ export function ScrollReveal({
     children,
     direction = 'up',
     delay = 0,
-    duration = 700,
+    duration = 500,
     className,
     as: Tag = 'div',
     threshold = 0.15,

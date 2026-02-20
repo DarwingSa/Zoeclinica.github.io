@@ -4,6 +4,8 @@ import { ShieldCheck, Stethoscope, Microscope, Bone, PawPrint, Scissors, CheckCi
 import Link from 'next/link';
 import type { Metadata } from 'next';
 import { ScrollReveal } from '@/components/ui/scroll-reveal';
+import { CLINIC_INFO } from '@/lib/constants';
+import { WhatsAppIcon } from '@/components/ui/icons/whatsapp-icon';
 
 export const metadata: Metadata = {
     title: 'Servicios | Centro Veterinario Zoé',
@@ -194,11 +196,15 @@ export default function ServiciosPage() {
                         <p className="text-sm sm:text-lg md:text-xl text-primary-foreground/90 mb-6 sm:mb-8 md:mb-10 max-w-2xl mx-auto font-light">
                             Desde la prevención hasta el cuidado crítico, estamos aquí para acompañarlos en cada paso del camino.
                         </p>
-                        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 md:gap-6 justify-center items-center">
+                        <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center items-center">
                             <Button asChild size="lg" variant="secondary" className="w-full sm:w-auto shadow-2xl text-primary font-bold h-11 sm:h-12 md:h-14 px-6 sm:px-8 md:px-10 text-sm sm:text-base md:text-lg hover:scale-105 transition-transform">
                                 <Link href="/contacto">Agenda una Cita</Link>
                             </Button>
-                            <p className="text-xs sm:text-sm text-primary-foreground/70">o llámanos al <span className="font-bold text-white">+58 412 595 7240</span></p>
+                            <Button asChild size="lg" variant="outline" className="w-full sm:w-auto font-bold h-11 sm:h-12 md:h-14 px-6 sm:px-8 md:px-10 text-sm sm:text-base md:text-lg bg-white border-[#25D366]/50 text-[#25D366] hover:bg-[#25D366] hover:text-white hover:border-[#25D366] hover:scale-105 transition-all duration-300 group">
+                                <a href={`https://wa.me/${CLINIC_INFO.whatsappNumber}`} target="_blank" rel="noopener noreferrer">
+                                    WhatsApp <WhatsAppIcon className="ml-2 h-4 w-4 sm:h-5 sm:w-5 group-hover:scale-110 transition-transform" />
+                                </a>
+                            </Button>
                         </div>
                     </ScrollReveal>
                 </div>
