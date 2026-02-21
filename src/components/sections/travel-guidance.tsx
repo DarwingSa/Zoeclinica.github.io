@@ -18,6 +18,7 @@ import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
+import { CustomDatePicker } from '@/components/ui/custom-date-picker';
 import { ScrollReveal } from '@/components/ui/scroll-reveal';
 import {
   Dialog,
@@ -235,56 +236,56 @@ export default function TravelGuidance() {
         <meta charset="UTF-8">
         <title>Presupuesto Referencial - Centro Veterinario Zoé</title>
         <style>
-          @page { size: letter; margin: 12mm 15mm; }
+          @page { size: letter; margin: 10mm 12mm; }
           * { margin:0; padding:0; box-sizing:border-box; }
-          body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; color: #1e293b; line-height: 1.4; font-size: 13px; max-width: 100%; margin: 0 auto; padding: 0; }
+          body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; color: #1e293b; line-height: 1.35; font-size: 11.5px; max-width: 100%; margin: 0 auto; padding: 0; }
           
           /* Header */
-          .header { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 3px solid #0891b2; padding-bottom: 12px; margin-bottom: 24px; }
-          .logo-area { display: flex; align-items: center; gap: 12px; }
-          .logo-area img { width: 50px; height: 50px; object-fit: contain; } /* Smaller logo */
-          .logo-text h1 { font-size: 16px; color: #0891b2; font-weight: 800; margin-bottom: 2px; letter-spacing: -0.5px; }
-          .logo-text p { font-size: 12px; color: #475569; }
+          .header { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2px solid #0891b2; padding-bottom: 8px; margin-bottom: 14px; }
+          .logo-area { display: flex; align-items: center; gap: 10px; }
+          .logo-area img { width: 42px; height: 42px; object-fit: contain; }
+          .logo-text h1 { font-size: 14px; color: #0891b2; font-weight: 800; margin-bottom: 2px; letter-spacing: -0.5px; }
+          .logo-text p { font-size: 11px; color: #475569; }
           .doc-meta { text-align: right; }
-          .doc-meta h2 { font-size: 12px; color: #0f172a; font-weight: 700; margin-bottom: 2px; }
-          .doc-meta p { font-size: 12px; color: #64748b; }
+          .doc-meta h2 { font-size: 11px; color: #0f172a; font-weight: 700; margin-bottom: 2px; }
+          .doc-meta p { font-size: 10px; color: #64748b; }
 
           /* Sections */
-          .section { margin-bottom: 20px; }
-          .section-title { font-size: 12px; font-weight: 800; color: #0891b2; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid #e2e8f0; padding-bottom: 6px; margin-bottom: 12px; }
+          .section { margin-bottom: 14px; }
+          .section-title { font-size: 11px; font-weight: 800; color: #0891b2; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1.5px solid #e2e8f0; padding-bottom: 4px; margin-bottom: 8px; }
           
           /* Grids */
-          .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 24px; }
-          .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px 24px; }
+          .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 16px; }
+          .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px 16px; }
           
-          .data-item label { display: block; font-size: 10px; color: #64748b; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; margin-bottom: 2px; }
-          .data-item p { font-size: 14px; font-weight: 600; color: #0f172a; }
+          .data-item label { display: block; font-size: 9px; color: #64748b; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; margin-bottom: 2px; }
+          .data-item p { font-size: 12.5px; font-weight: 600; color: #0f172a; }
 
           /* Alert */
-          .alert-box { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #c2410c; margin-bottom: 20px; border-left: 4px solid #fb923c; padding-left: 12px; }
-          .alert-box svg { width: 16px; height: 16px; }
+          .alert-box { display: flex; align-items: center; gap: 8px; font-size: 11px; color: #c2410c; margin-bottom: 14px; border-left: 3px solid #fb923c; padding-left: 10px; }
+          .alert-box svg { width: 14px; height: 14px; }
           
           /* Table */
-          table { width: 100%; border-collapse: collapse; margin-top: 8px; }
-          th { text-align: left; padding: 8px 10px; border-bottom: 2px solid #0891b2; font-size: 11px; color: #0f172a; text-transform: uppercase; font-weight: 800; }
+          table { width: 100%; border-collapse: collapse; margin-top: 4px; }
+          th { text-align: left; padding: 6px 8px; border-bottom: 1.5px solid #0891b2; font-size: 10px; color: #0f172a; text-transform: uppercase; font-weight: 800; }
           th.right { text-align: right; }
-          td { padding: 8px 10px; border-bottom: 1px solid #e2e8f0; } 
-          .service-name strong { font-size: 14px; color: #0f172a; display: block; margin-bottom: 2px; }
-          .service-name span { font-size: 11px; color: #64748b; }
-          .service-price { text-align: right; font-weight: 800; font-size: 16px; color: #0891b2; }
+          td { padding: 6px 8px; border-bottom: 1px solid #e2e8f0; } 
+          .service-name strong { font-size: 12.5px; color: #0f172a; display: block; margin-bottom: 1px; }
+          .service-name span { font-size: 10px; color: #64748b; }
+          .service-price { text-align: right; font-weight: 800; font-size: 14px; color: #0891b2; }
           
           /* Totals */
-          .total-row td { padding: 8px 10px; font-weight: 800; font-size: 14px; color: #0f172a; background: #f8fafc; border-bottom: none; }
-          .total-row td:last-child { color: #0891b2; text-align: right; font-size: 16px; }
+          .total-row td { padding: 6px 8px; font-weight: 800; font-size: 12.5px; color: #0f172a; background: #f8fafc; border-bottom: none; }
+          .total-row td:last-child { color: #0891b2; text-align: right; font-size: 14px; }
           
           /* Fees */
-          .fee-box { border: 1px solid #fde047; border-radius: 8px; padding: 14px 18px; margin-top: 16px; display: flex; justify-content: space-between; align-items: center; background: #fffbeb; }
-          .fee-info h4 { font-size: 14px; color: #b45309; font-weight: 700; margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
-          .fee-info p { font-size: 12px; color: #b45309; opacity: 0.9; }
-          .fee-amount { font-size: 14px; font-weight: 800; color: #b45309; }
+          .fee-box { border: 1px solid #fde047; border-radius: 6px; padding: 10px 14px; margin-top: 10px; display: flex; justify-content: space-between; align-items: center; background: #fffbeb; }
+          .fee-info h4 { font-size: 12px; color: #b45309; font-weight: 700; margin-bottom: 2px; display: flex; align-items: center; gap: 6px; }
+          .fee-info p { font-size: 10.5px; color: #b45309; opacity: 0.9; }
+          .fee-amount { font-size: 13px; font-weight: 800; color: #b45309; }
           
           /* Footer */
-          .print-footer { margin-top: 24px; text-align: center; color: #64748b; font-size: 10px; border-top: 1px solid #e2e8f0; padding-top: 12px; }
+          .print-footer { margin-top: 16px; text-align: center; color: #64748b; font-size: 9.5px; border-top: 1px solid #e2e8f0; padding-top: 10px; }
           .print-footer strong { color: #475569; font-weight: 600; }
         </style>
       </head>
@@ -624,38 +625,11 @@ Quedo atento/a para coordinar la disponibilidad. ¡Muchas gracias!`;
                         render={({ field }) => (
                           <FormItem className="flex flex-col">
                             <FormLabel>Fecha de Nacimiento</FormLabel>
-                            <Popover>
-                              <PopoverTrigger asChild>
-                                <FormControl>
-                                  <Button
-                                    variant={"outline"}
-                                    className={cn(
-                                      "w-full h-12 pl-3 text-left font-normal rounded-xl bg-background/60",
-                                      !field.value && "text-muted-foreground"
-                                    )}
-                                  >
-                                    {field.value ? (
-                                      format(field.value, "PPP", { locale: es })
-                                    ) : (
-                                      <span>Seleccionar fecha</span>
-                                    )}
-                                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                  </Button>
-                                </FormControl>
-                              </PopoverTrigger>
-                              <PopoverContent className="w-auto p-0" align="start">
-                                <Calendar
-                                  mode="single"
-                                  selected={field.value}
-                                  onSelect={field.onChange}
-                                  disabled={(date) =>
-                                    date > new Date() || date < new Date("2000-01-01")
-                                  }
-                                  initialFocus
-                                  locale={es}
-                                />
-                              </PopoverContent>
-                            </Popover>
+                            <CustomDatePicker
+                              date={field.value}
+                              setDate={field.onChange}
+                              minYear={1990}
+                            />
                             <FormMessage />
                           </FormItem>
                         )}
