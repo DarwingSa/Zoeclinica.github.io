@@ -35,9 +35,9 @@ export default function RootLayout({
   return (
     <html lang="es" className="scroll-smooth" suppressHydrationWarning>
       <body className={cn('font-body antialiased flex flex-col min-h-screen', inter.variable, poppins.variable)}>
-        <ThemeProvider attribute="class" defaultTheme="dark" disableTransitionOnChange>
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} forcedTheme="dark" disableTransitionOnChange>
           <Header />
-          <main className="flex-grow">
+          <main className="flex-grow pt-20 md:pt-24">
             {children}
           </main>
           <Footer />

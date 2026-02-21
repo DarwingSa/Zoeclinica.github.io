@@ -432,12 +432,12 @@ Quedo atento/a para coordinar la disponibilidad. ¡Muchas gracias!`;
   const subtotal = result?.services.reduce((acc, item) => acc + item.price, 0) || 0;
 
   return (
-    <section className="section-padding bg-background min-h-screen relative overflow-hidden">
+    <section className="section-padding bg-background min-h-screen relative overflow-x-clip">
       {/* Decorative gradient mesh */}
       <div className="absolute inset-0 gradient-mesh pointer-events-none opacity-50" />
       <div className="hidden md:block absolute top-20 -right-40 w-[500px] h-[500px] bg-primary/5 rounded-full blur-3xl animate-float-slow pointer-events-none" />
 
-      <div className="container mx-auto px-4 relative z-10">
+      <div className="w-full max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 relative z-10">
 
         {/* Header - Hidden on print */}
         <ScrollReveal direction="up" className="text-center mb-10 sm:mb-12 md:mb-16 max-w-3xl mx-auto print:hidden">
@@ -651,9 +651,9 @@ Quedo atento/a para coordinar la disponibilidad. ¡Muchas gracias!`;
           </ScrollReveal>
 
           {/* Results Side */}
-          <ScrollReveal direction="right" delay={200} className="lg:col-span-7 space-y-6 sm:space-y-8 print:col-span-12">
+          <ScrollReveal direction="none" delay={200} className="lg:col-span-7 space-y-6 sm:space-y-8 print:col-span-12 w-full min-w-0">
             <Card ref={resultsRef} className={cn(
-              "min-h-[400px] sm:min-h-[500px] md:min-h-[600px] border-2 border-dashed border-primary/20 bg-card/50 dark:bg-card/30 backdrop-blur-sm rounded-2xl sm:rounded-3xl transition-all duration-500 relative flex flex-col",
+              "w-full min-w-0 min-h-[400px] sm:min-h-[500px] md:min-h-[600px] border-2 border-dashed border-primary/20 bg-card/50 dark:bg-card/30 backdrop-blur-sm rounded-2xl sm:rounded-3xl transition-all duration-500 relative flex flex-col",
               result && "border-solid border-border/30 shadow-glow-lg",
               "print:border-none print:bg-white print:min-h-0"
             )}>
@@ -678,110 +678,109 @@ Quedo atento/a para coordinar la disponibilidad. ¡Muchas gracias!`;
                 )}
 
                 {result && (
-                  <div className="animate-in fade-in slide-in-from-bottom-8 duration-500">
+                  <div className="animate-in fade-in slide-in-from-bottom-8 duration-500 w-full min-w-0">
                     {/* Visual Header */}
-                    <div className="bg-gradient-to-r from-primary via-[#2aaadd] to-primary bg-[length:200%_100%] animate-gradient-shift p-5 sm:p-7 md:p-10 rounded-t-[1.5rem] sm:rounded-t-[2rem] text-primary-foreground print:bg-white print:text-black print:border-b-4 print:border-black print:p-0">
+                    <div className="bg-gradient-to-r from-primary via-[#2aaadd] to-primary bg-[length:200%_100%] animate-gradient-shift p-3 sm:p-7 md:p-10 rounded-t-2xl sm:rounded-t-[2rem] text-primary-foreground print:bg-white print:text-black print:border-b-4 print:border-black print:p-0 w-full min-w-0">
                       <div className="flex flex-col sm:flex-row justify-between items-start mb-4 sm:mb-6 print:mb-4 gap-3">
                         <div>
                           <h1 className="hidden print:block text-4xl font-black uppercase mb-2">CENTRO VETERINARIO ZOÉ</h1>
-                          <h2 className='text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold font-headline mb-1.5 sm:mb-2'>{result.info.title}</h2>
-                          <p className="text-primary-foreground/80 text-sm sm:text-base md:text-lg print:text-gray-600">{result.info.description}</p>
+                          <h2 className='text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold font-headline mb-1.5 sm:mb-2 text-balance leading-tight'>{result.info.title}</h2>
+                          <p className="text-primary-foreground/80 text-sm sm:text-base md:text-lg print:text-gray-600 text-pretty">{result.info.description}</p>
                         </div>
-                        <div className="hidden md:block bg-white/10 p-4 rounded-2xl backdrop-blur-md print:hidden">
+                        <div className="hidden md:block bg-white/10 p-4 rounded-2xl backdrop-blur-md shrink-0 print:hidden">
                           <FileText className="h-8 w-8" />
                         </div>
                       </div>
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 md:gap-6 bg-white/10 p-3 sm:p-4 md:p-6 rounded-xl sm:rounded-2xl backdrop-blur-md border border-white/20 print:bg-gray-50 print:border-gray-300 print:text-black print:grid-cols-2 print:gap-4">
-                        <div>
-                          <p className="text-white/60 text-[10px] sm:text-xs uppercase font-bold mb-0.5 sm:mb-1 print:text-gray-500">Mascota</p>
-                          <p className="font-bold text-sm sm:text-base">{result.data.petName}</p>
-                          <p className="text-xs sm:text-sm opacity-80">{result.data.breed}</p>
+                      <div className="flex flex-col sm:grid sm:grid-cols-2 md:grid-cols-4 gap-2 sm:gap-4 md:gap-6 bg-white/10 p-2.5 sm:p-4 md:p-6 rounded-lg sm:rounded-2xl backdrop-blur-md border border-white/20 print:bg-gray-50 print:border-gray-300 print:text-black">
+                        <div className="min-w-0">
+                          <p className="text-white/60 text-[9px] sm:text-xs uppercase font-bold mb-0.5 print:text-gray-500">Mascota</p>
+                          <p className="font-bold text-sm sm:text-base truncate">{result.data.petName} · {result.data.breed}</p>
                         </div>
-                        <div>
-                          <p className="text-white/60 text-[10px] sm:text-xs uppercase font-bold mb-0.5 sm:mb-1 print:text-gray-500">Propietario</p>
+                        <div className="min-w-0">
+                          <p className="text-white/60 text-[9px] sm:text-xs uppercase font-bold mb-0.5 print:text-gray-500">Propietario</p>
                           <p className="font-bold text-sm sm:text-base truncate">{result.data.ownerName}</p>
                         </div>
-                        <div className="col-span-2 md:col-span-2 text-left sm:text-right">
-                          <p className="text-white/60 text-[10px] sm:text-xs uppercase font-bold mb-0.5 sm:mb-1 print:text-gray-500">Inicio de Trámite Sugerido</p>
+                        <div className="sm:col-span-2 min-w-0">
+                          <p className="text-white/60 text-[9px] sm:text-xs uppercase font-bold mb-0.5 print:text-gray-500">Inicio de Trámite</p>
                           <p className="font-bold text-sm sm:text-base md:text-lg">{result.info.estimatedTime}</p>
                         </div>
                       </div>
                     </div>
 
-                    <div className="p-5 sm:p-6 md:p-8 lg:p-12 space-y-6 sm:space-y-8 md:space-y-10 print:p-0 print:mt-8">
+                    <div className="p-2.5 sm:p-6 md:p-8 lg:p-12 space-y-4 sm:space-y-8 md:space-y-10 print:p-0 print:mt-8 w-full min-w-0">
                       {/* Services List */}
-                      <div className="space-y-4 sm:space-y-6">
-                        <h3 className='font-bold text-lg sm:text-xl md:text-2xl flex items-center gap-2 sm:gap-3 text-foreground'>
-                          <FileText className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
-                          Desglose de Servicios Médicos
+                      <div className="space-y-3 sm:space-y-6 w-full min-w-0">
+                        <h3 className='font-bold text-base sm:text-xl md:text-2xl flex items-center gap-2 text-foreground'>
+                          <FileText className="h-4 w-4 sm:h-6 sm:w-6 text-primary shrink-0" />
+                          Desglose de Servicios
                         </h3>
-                        <div className="rounded-2xl sm:rounded-3xl border border-border/50 overflow-hidden bg-card shadow-sm hover:shadow-glow-sm transition-all duration-500 print:border-gray-300 print:shadow-none">
+                        <div className="rounded-xl sm:rounded-3xl border border-border/50 overflow-hidden w-full min-w-0 bg-card shadow-sm print:border-gray-300 print:shadow-none">
                           <div className="divide-y divide-border print:divide-gray-200">
                             {result.services.map((service, i) => (
-                              <div key={i} className="p-4 sm:p-5 md:p-6 flex justify-between items-center gap-3 sm:gap-4 hover:bg-secondary/20 transition-colors">
-                                <div className="min-w-0">
-                                  <p className="font-bold text-sm sm:text-base md:text-lg text-foreground">{service.label}</p>
-                                  <p className="text-xs sm:text-sm text-muted-foreground truncate">{service.detail}</p>
+                              <div key={i} className="px-3 py-2.5 sm:p-5 md:p-6 flex justify-between items-center gap-2 hover:bg-secondary/20 transition-colors">
+                                <div className="min-w-0 flex-1">
+                                  <p className="font-bold text-[13px] sm:text-base md:text-lg text-foreground">{service.label}</p>
+                                  <p className="text-[10px] sm:text-sm text-muted-foreground truncate">{service.detail}</p>
                                 </div>
-                                <p className="font-bold text-base sm:text-lg md:text-xl text-primary print:text-black">${service.price}</p>
+                                <p className="font-bold text-[13px] sm:text-lg md:text-xl text-primary print:text-black shrink-0 tabular-nums">${service.price}</p>
                               </div>
                             ))}
-                            <div className="p-4 sm:p-5 md:p-6 bg-secondary/30 flex justify-between items-center print:bg-gray-100">
-                              <p className="font-extrabold text-base sm:text-lg md:text-xl">Total Estimado Servicios</p>
-                              <p className="font-black text-xl sm:text-2xl md:text-3xl text-primary print:text-black">${result.services.reduce((acc, s) => acc + s.price, 0)}</p>
+                            <div className="px-3 py-2.5 sm:p-5 md:p-6 bg-secondary/30 flex justify-between items-center print:bg-gray-100 gap-2">
+                              <p className="font-extrabold text-[13px] sm:text-lg md:text-xl">Total Servicios</p>
+                              <p className="font-black text-base sm:text-2xl md:text-3xl text-primary print:text-black shrink-0 tabular-nums">${result.services.reduce((acc, s) => acc + s.price, 0)}</p>
                             </div>
                           </div>
                         </div>
                       </div>
 
                       {/* Extra Fees */}
-                      <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900/30 rounded-2xl sm:rounded-3xl p-5 sm:p-6 md:p-8 print:bg-white print:border-gray-200">
-                        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3 sm:mb-4 gap-2">
-                          <h4 className="font-bold text-amber-900 dark:text-amber-300 text-base sm:text-lg md:text-xl flex items-center gap-2">
-                            <Info className="h-5 w-5 sm:h-6 sm:w-6 text-amber-600 print:hidden" />
-                            Tasas y Aranceles de Exportación
+                      <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900/30 rounded-xl sm:rounded-3xl p-2.5 sm:p-6 md:p-8 print:bg-white print:border-gray-200 w-full min-w-0">
+                        <div className="flex flex-row justify-between items-start sm:items-center mb-2 sm:mb-4 gap-2">
+                          <h4 className="font-bold text-amber-900 dark:text-amber-300 text-[13px] sm:text-lg md:text-xl flex items-start sm:items-center gap-1 sm:gap-2">
+                            <Info className="h-4 w-4 sm:h-6 sm:w-6 text-amber-600 print:hidden shrink-0 mt-0.5 sm:mt-0" />
+                            <span className="text-balance leading-tight">Tasas y Aranceles de Exportación</span>
                           </h4>
-                          <p className="font-black text-xl sm:text-2xl text-amber-900 dark:text-amber-300">${result.info.aranceles}</p>
+                          <p className="font-black text-[15px] sm:text-2xl text-amber-900 dark:text-amber-300 shrink-0 tabular-nums">${result.info.aranceles}</p>
                         </div>
-                        <p className="text-amber-800/80 dark:text-amber-400/80 leading-relaxed text-sm sm:text-base">
+                        <p className="text-amber-800/80 dark:text-amber-400/80 leading-relaxed text-xs sm:text-base">
                           {result.info.arancelesNote}. Este monto corresponde a entidades gubernamentales y no forma parte de los honorarios de la clínica.
                         </p>
                       </div>
 
-                      <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900/30 rounded-2xl sm:rounded-3xl p-5 sm:p-6 md:p-8 mt-4 print:bg-white print:border-gray-200">
-                        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3 sm:mb-4 gap-2">
-                          <h4 className="font-bold text-amber-900 dark:text-amber-300 text-base sm:text-lg md:text-xl flex items-center gap-2">
-                            <Info className="h-5 w-5 sm:h-6 sm:w-6 text-amber-600 print:hidden" />
-                            Aranceles del INSAI (Aeropuertos)
+                      <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900/30 rounded-xl sm:rounded-3xl p-2.5 sm:p-6 md:p-8 mt-3 sm:mt-4 print:bg-white print:border-gray-200 w-full min-w-0">
+                        <div className="flex flex-row justify-between items-start sm:items-center mb-2 sm:mb-4 gap-2">
+                          <h4 className="font-bold text-amber-900 dark:text-amber-300 text-[13px] sm:text-lg md:text-xl flex items-start sm:items-center gap-1 sm:gap-2">
+                            <Info className="h-4 w-4 sm:h-6 sm:w-6 text-amber-600 print:hidden shrink-0 mt-0.5 sm:mt-0" />
+                            <span className="text-balance leading-tight">Aranceles del INSAI (Aeropuertos)</span>
                           </h4>
-                          <p className="font-black text-xl sm:text-2xl text-amber-900 dark:text-amber-300">$20</p>
+                          <p className="font-black text-[15px] sm:text-2xl text-amber-900 dark:text-amber-300 shrink-0 tabular-nums">$20</p>
                         </div>
-                        <p className="text-amber-800/80 dark:text-amber-400/80 leading-relaxed text-sm sm:text-base">
+                        <p className="text-amber-800/80 dark:text-amber-400/80 leading-relaxed text-xs sm:text-base">
                           Destinado a trámites de aeropuertos. Pago directo a cuenta del cliente (Tasa Oficial). Este monto corresponde a entidades gubernamentales y no forma parte de los honorarios de la clínica.
                         </p>
                       </div>
 
                       {/* Total Breakdown */}
-                      <div className="rounded-2xl sm:rounded-3xl border border-border/50 overflow-hidden bg-card shadow-sm hover:shadow-glow-sm transition-all duration-500 print:border-gray-300 print:shadow-none p-4 sm:p-5 md:p-6">
-                        <h3 className='font-bold text-lg sm:text-xl md:text-2xl flex items-center gap-2 sm:gap-3 text-foreground mb-4'>
-                          <Banknote className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
-                          Resumen del Presupuesto
+                      <div className="rounded-xl sm:rounded-3xl border border-border/50 overflow-hidden bg-card shadow-sm print:border-gray-300 print:shadow-none p-2.5 sm:p-5 md:p-6 w-full min-w-0">
+                        <h3 className='font-bold text-base sm:text-xl md:text-2xl flex items-center gap-2 sm:gap-3 text-foreground mb-4'>
+                          <Banknote className="h-5 w-5 sm:h-6 sm:w-6 text-primary shrink-0" />
+                          Resumen
                         </h3>
-                        <div className="flex justify-between items-center text-sm mb-2 text-muted-foreground">
-                          <span>Subtotal Servicios de Clínica:</span>
-                          <span className="font-semibold">${result.services.reduce((acc, s) => acc + s.price, 0)}</span>
+                        <div className="flex justify-between items-center gap-2 text-[10px] sm:text-sm mb-2 text-muted-foreground w-full">
+                          <span className="text-balance break-words">Servicios Clínica:</span>
+                          <span className="font-semibold shrink-0 tabular-nums">${result.services.reduce((acc, s) => acc + s.price, 0)}</span>
                         </div>
-                        <div className="flex justify-between items-center text-sm mb-4 text-muted-foreground pb-4 border-b border-border/10">
-                          <span>Tasas y Aranceles de Exportación:</span>
-                          <span className="font-semibold">${result.info.aranceles}</span>
+                        <div className="flex justify-between items-center gap-2 text-[10px] sm:text-sm mb-3 sm:mb-4 text-muted-foreground pb-3 sm:pb-4 border-b border-border/10 w-full">
+                          <span className="text-balance break-words">Tasas Exportación:</span>
+                          <span className="font-semibold shrink-0 tabular-nums">${result.info.aranceles}</span>
                         </div>
-                        <div className="flex justify-between items-center text-sm mb-4 text-muted-foreground pb-4 border-b border-border/10">
-                          <span>Aranceles del INSAI (Aeropuertos):</span>
-                          <span className="font-semibold">$20</span>
+                        <div className="flex justify-between items-center gap-2 text-[10px] sm:text-sm mb-3 sm:mb-4 text-muted-foreground pb-3 sm:pb-4 border-b border-border/10 w-full">
+                          <span className="text-balance break-words">Aranceles INSAI:</span>
+                          <span className="font-semibold shrink-0 tabular-nums">$20</span>
                         </div>
-                        <div className="flex justify-between items-center font-bold text-lg md:text-xl text-primary">
-                          <span>Total Estimado:</span>
-                          <span className="text-secondary dark:text-secondary-foreground glow-text">${result.total}</span>
+                        <div className="flex justify-between items-center gap-2 font-bold text-sm sm:text-base md:text-xl text-primary w-full">
+                          <span>Total:</span>
+                          <span className="text-secondary dark:text-secondary-foreground glow-text shrink-0 tabular-nums">${result.total}</span>
                         </div>
                       </div>
 

@@ -39,10 +39,10 @@ export default function Header() {
   return (
     <>
       <header className={cn(
-        "sticky top-0 z-40 transition-all duration-500",
+        "fixed w-full top-0 left-0 right-0 z-50 transition-all duration-500",
         isScrolled
           ? "bg-background/85 backdrop-blur-2xl saturate-150 shadow-lg shadow-black/[0.06] dark:bg-background/80 dark:shadow-black/30"
-          : "bg-transparent"
+          : "bg-background/60 backdrop-blur-md md:bg-transparent md:backdrop-blur-none"
       )}>
         {/* Gradient line at bottom of header */}
         <div className={cn(
