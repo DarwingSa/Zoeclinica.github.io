@@ -134,18 +134,16 @@ export default function Home() {
             </p>
 
             {/* CTAs */}
-            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 pt-2 animate-fade-up delay-300">
-              <div className="flex flex-col sm:flex-row gap-3 md:gap-4 w-full sm:w-auto">
-                <Button asChild size="lg" className="w-full sm:w-auto text-sm sm:text-base md:text-lg h-11 sm:h-12 md:h-14 px-5 sm:px-6 md:px-8 shadow-glow-lg hover:shadow-glow-xl hover:translate-y-[-2px] transition-all duration-300">
-                  <Link href="/contacto">
-                    Pedir Cita Ahora
-                  </Link>
-                </Button>
-                <Button asChild size="lg" variant="outline" className="w-full sm:w-auto text-sm sm:text-base md:text-lg h-11 sm:h-12 md:h-14 px-5 sm:px-6 md:px-8 hover:bg-primary/5 hover:text-primary hover:border-primary/40 transition-all duration-300">
-                  <Link href="/servicios">Conocer Servicios</Link>
-                </Button>
-              </div>
-              <Button asChild size="lg" variant="outline" className="w-full sm:w-auto text-sm sm:text-base md:text-lg h-11 sm:h-12 md:h-14 px-5 sm:px-6 md:px-8 border-[#25D366]/50 text-[#25D366] hover:bg-[#25D366]/10 hover:text-[#25D366] hover:border-[#25D366] transition-all duration-300 mt-2 sm:mt-0 sm:ml-2 group">
+            <div className="flex flex-col sm:flex-row flex-wrap items-center sm:items-start gap-3 md:gap-4 pt-2 animate-fade-up delay-300">
+              <Button asChild size="lg" className="w-full sm:w-auto text-sm sm:text-base md:text-lg h-11 sm:h-12 md:h-14 px-5 sm:px-6 md:px-8 shadow-glow-lg hover:shadow-glow-xl hover:translate-y-[-2px] transition-all duration-300">
+                <Link href="/contacto">
+                  Pedir Cita Ahora
+                </Link>
+              </Button>
+              <Button asChild size="lg" variant="outline" className="w-full sm:w-auto text-sm sm:text-base md:text-lg h-11 sm:h-12 md:h-14 px-5 sm:px-6 md:px-8 hover:bg-primary/5 hover:text-primary hover:border-primary/40 transition-all duration-300">
+                <Link href="/servicios">Conocer Servicios</Link>
+              </Button>
+              <Button asChild size="lg" variant="outline" className="w-full sm:w-auto text-sm sm:text-base md:text-lg h-11 sm:h-12 md:h-14 px-5 sm:px-6 md:px-8 border-[#25D366]/50 text-[#25D366] hover:bg-[#25D366]/10 hover:text-[#25D366] hover:border-[#25D366] transition-all duration-300 group">
                 <a href={`https://wa.me/${CLINIC_INFO.whatsappNumber}`} target="_blank" rel="noopener noreferrer">
                   WhatsApp <WhatsAppIcon className="ml-2 h-4 w-4 sm:h-5 sm:w-5 group-hover:scale-110 transition-transform" />
                 </a>
@@ -434,16 +432,14 @@ export default function Home() {
               <p className="text-base sm:text-lg md:text-xl text-white/80 mb-6 sm:mb-8 md:mb-10 max-w-2xl mx-auto font-light leading-relaxed">
                 Agenda una cita hoy y únete a la familia de Centro Veterinario Zoé.
               </p>
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full sm:w-auto">
-                  <Button asChild size="lg" variant="secondary" className="w-full sm:w-auto font-bold h-11 sm:h-12 md:h-14 px-6 sm:px-8 md:px-10 text-sm sm:text-base md:text-lg shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300">
-                    <Link href="/contacto">Agenda una Cita</Link>
-                  </Button>
-                  <Button asChild size="lg" className="w-full sm:w-auto font-bold h-11 sm:h-12 md:h-14 px-6 sm:px-8 md:px-10 text-sm sm:text-base md:text-lg bg-white/90 text-primary hover:bg-white hover:shadow-2xl hover:scale-105 transition-all duration-300 border-0">
-                    <Link href="/servicios">Ver Servicios</Link>
-                  </Button>
-                </div>
-                <Button asChild size="lg" variant="outline" className="w-full sm:w-auto font-bold h-11 sm:h-12 md:h-14 px-6 sm:px-8 md:px-10 text-sm sm:text-base md:text-lg bg-white border-[#25D366]/50 text-[#25D366] hover:bg-[#25D366] hover:text-white hover:border-[#25D366] hover:scale-105 transition-all duration-300 mt-2 sm:mt-0 sm:ml-4 group">
+              <div className="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-3 md:gap-4">
+                <Button asChild size="lg" variant="secondary" className="w-full sm:w-auto font-bold h-11 sm:h-12 md:h-14 px-6 sm:px-8 md:px-10 text-sm sm:text-base md:text-lg shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300">
+                  <Link href="/contacto">Agenda una Cita</Link>
+                </Button>
+                <Button asChild size="lg" className="w-full sm:w-auto font-bold h-11 sm:h-12 md:h-14 px-6 sm:px-8 md:px-10 text-sm sm:text-base md:text-lg bg-white/90 text-primary hover:bg-white hover:shadow-2xl hover:scale-105 transition-all duration-300 border-0">
+                  <Link href="/servicios">Ver Servicios</Link>
+                </Button>
+                <Button asChild size="lg" variant="secondary" className="w-full sm:w-auto font-bold h-11 sm:h-12 md:h-14 px-6 sm:px-8 md:px-10 text-sm sm:text-base md:text-lg border border-[#25D366]/50 text-[#25D366] hover:bg-[#25D366] hover:text-white hover:border-[#25D366] hover:scale-105 transition-all duration-300 group">
                   <a href={`https://wa.me/${CLINIC_INFO.whatsappNumber}`} target="_blank" rel="noopener noreferrer">
                     WhatsApp <WhatsAppIcon className="ml-2 h-4 w-4 sm:h-5 sm:w-5 group-hover:scale-110 transition-transform" />
                   </a>

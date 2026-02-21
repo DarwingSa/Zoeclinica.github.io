@@ -200,7 +200,7 @@ export default function ServiciosPage() {
                             <Button asChild size="lg" variant="secondary" className="w-full sm:w-auto shadow-2xl text-primary font-bold h-11 sm:h-12 md:h-14 px-6 sm:px-8 md:px-10 text-sm sm:text-base md:text-lg hover:scale-105 transition-transform">
                                 <Link href="/contacto">Agenda una Cita</Link>
                             </Button>
-                            <Button asChild size="lg" variant="outline" className="w-full sm:w-auto font-bold h-11 sm:h-12 md:h-14 px-6 sm:px-8 md:px-10 text-sm sm:text-base md:text-lg bg-white border-[#25D366]/50 text-[#25D366] hover:bg-[#25D366] hover:text-white hover:border-[#25D366] hover:scale-105 transition-all duration-300 group">
+                            <Button asChild size="lg" variant="secondary" className="w-full sm:w-auto font-bold h-11 sm:h-12 md:h-14 px-6 sm:px-8 md:px-10 text-sm sm:text-base md:text-lg border border-[#25D366]/50 text-[#25D366] hover:bg-[#25D366] hover:text-white hover:border-[#25D366] hover:scale-105 transition-all duration-300 group">
                                 <a href={`https://wa.me/${CLINIC_INFO.whatsappNumber}`} target="_blank" rel="noopener noreferrer">
                                     WhatsApp <WhatsAppIcon className="ml-2 h-4 w-4 sm:h-5 sm:w-5 group-hover:scale-110 transition-transform" />
                                 </a>

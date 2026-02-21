@@ -193,7 +193,7 @@ export default function TravelGuidance() {
     setTimeout(() => {
       const info = destinationServices[values.destination];
       const services = info.getServices(values.species);
-      const total = services.reduce((acc, s) => acc + s.price, 0) + info.aranceles; // Calculate total for contact form
+      const total = services.reduce((acc, s) => acc + s.price, 0) + info.aranceles + 20; // Added 20 for INSAI
 
       setResult({ data: values, services, info, total }); // Add total to result
       setIsLoading(false);
@@ -355,6 +355,14 @@ export default function TravelGuidance() {
           <div class="fee-amount">$${result.info.aranceles}</div>
         </div>
 
+        <div class="fee-box" style="margin-top: 8px;">
+          <div class="fee-info">
+            <h4>Aranceles del INSAI</h4>
+            <p>Destinado a trámites de aeropuertos. Pago directo a cuenta del cliente (Tasa Oficial). No forma parte de los honorarios de la clínica.</p>
+          </div>
+          <div class="fee-amount">$20</div>
+        </div>
+
         <div class="print-footer">
           <p><strong>Centro Veterinario Zoé</strong> — Asesoría de Viajes Internacionales</p>
           <p>Este documento es una estimación referencial. Los precios finales pueden variar según peso, estado de salud y regulaciones internacionales vigentes.</p>
@@ -406,6 +414,7 @@ Me gustaría agendar una cita para tramitar el certificado de viaje de mi mascot
 💰 *Desglose del Presupuesto*
 • Gastos Médicos (Clínica): $${subtotalMedicos}
 • Tasas Gubernamentales: $${result.info.aranceles}
+• Aranceles del INSAI (Aeropuertos): $20
 *Total Estimado:* $${result.total}
 
 Quedo atento/a para coordinar la disponibilidad. ¡Muchas gracias!`;
@@ -765,6 +774,19 @@ Quedo atento/a para coordinar la disponibilidad. ¡Muchas gracias!`;
                         </p>
                       </div>
 
+                      <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900/30 rounded-2xl sm:rounded-3xl p-5 sm:p-6 md:p-8 mt-4 print:bg-white print:border-gray-200">
+                        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3 sm:mb-4 gap-2">
+                          <h4 className="font-bold text-amber-900 dark:text-amber-300 text-base sm:text-lg md:text-xl flex items-center gap-2">
+                            <Info className="h-5 w-5 sm:h-6 sm:w-6 text-amber-600 print:hidden" />
+                            Aranceles del INSAI (Aeropuertos)
+                          </h4>
+                          <p className="font-black text-xl sm:text-2xl text-amber-900 dark:text-amber-300">$20</p>
+                        </div>
+                        <p className="text-amber-800/80 dark:text-amber-400/80 leading-relaxed text-sm sm:text-base">
+                          Destinado a trámites de aeropuertos. Pago directo a cuenta del cliente (Tasa Oficial). Este monto corresponde a entidades gubernamentales y no forma parte de los honorarios de la clínica.
+                        </p>
+                      </div>
+
                       {/* Total Breakdown */}
                       <div className="rounded-2xl sm:rounded-3xl border border-border/50 overflow-hidden bg-card shadow-sm hover:shadow-glow-sm transition-all duration-500 print:border-gray-300 print:shadow-none p-4 sm:p-5 md:p-6">
                         <h3 className='font-bold text-lg sm:text-xl md:text-2xl flex items-center gap-2 sm:gap-3 text-foreground mb-4'>
@@ -778,6 +800,10 @@ Quedo atento/a para coordinar la disponibilidad. ¡Muchas gracias!`;
                         <div className="flex justify-between items-center text-sm mb-4 text-muted-foreground pb-4 border-b border-border/10">
                           <span>Tasas y Aranceles de Exportación:</span>
                           <span className="font-semibold">${result.info.aranceles}</span>
+                        </div>
+                        <div className="flex justify-between items-center text-sm mb-4 text-muted-foreground pb-4 border-b border-border/10">
+                          <span>Aranceles del INSAI (Aeropuertos):</span>
+                          <span className="font-semibold">$20</span>
                         </div>
                         <div className="flex justify-between items-center font-bold text-lg md:text-xl text-primary">
                           <span>Total Estimado:</span>
