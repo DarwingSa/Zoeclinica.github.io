@@ -8,8 +8,12 @@ import { CLINIC_INFO } from '@/lib/constants';
 import { WhatsAppIcon } from '@/components/ui/icons/whatsapp-icon';
 
 export const metadata: Metadata = {
-    title: 'Servicios | Centro Veterinario Zoé',
-    description: 'Consultas generales, vacunación, cirugía, laboratorio, nutrición y peluquería. Servicios veterinarios profesionales para perros y gatos.',
+    title: 'Servicios de Referencia | Centro Veterinario Zoé Caracas',
+    description: 'Consultas generales, vacunación para perros y gatos, laboratorio, chips y desparasitación. Los mejores servicios veterinarios en La Campiña, Caracas.',
+    openGraph: {
+      title: 'Consultas, Perfiles y Vacunas | Centro Veterinario Zoé',
+      description: 'Cuidamos a tu mejor amigo con la prevención médica más avanzada. Visita nuestra clínica en la calle Mirador, Caracas.',
+    }
 };
 
 export default function ServiciosPage() {
@@ -25,7 +29,7 @@ export default function ServiciosPage() {
                 "Control de parásitos internos y externos.",
                 "Asesoramiento nutricional y conductual."
             ],
-            imageUrl: "https://images.pexels.com/photos/5731866/pexels-photo-5731866.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+            imageUrl: "/img/consulta-img.png",
             imageAlt: "Veterinario realizando un chequeo a un perro"
         },
         {
@@ -38,7 +42,7 @@ export default function ServiciosPage() {
                 "Citologías y dermatología.",
                 "Tests rápidos de enfermedades virales."
             ],
-            imageUrl: "https://images.pexels.com/photos/5726794/pexels-photo-5726794.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+            imageUrl: "/img/laboratorio-img.jpeg",
             imageAlt: "Equipo de laboratorio veterinario y microscopio"
         },
         {
@@ -51,7 +55,7 @@ export default function ServiciosPage() {
                 "Extracción de masas y tumores.",
                 "Monitoreo anestésico multiparamétrico."
             ],
-            imageUrl: "https://images.pexels.com/photos/1350560/pexels-photo-1350560.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+            imageUrl: "/img/cirugia-img.jpg",
             imageAlt: "Equipo veterinario en quirófano"
         },
         {
@@ -77,7 +81,7 @@ export default function ServiciosPage() {
                 "Corte de uñas y limpieza de oídos.",
                 "Deslanado y control de muda."
             ],
-            imageUrl: "https://images.pexels.com/photos/6634166/pexels-photo-6634166.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+            imageUrl: "/img/peluqueria-img.webp",
             imageAlt: "Perro recibiendo servicio de peluquería y baño"
         }
     ];
@@ -140,7 +144,7 @@ export default function ServiciosPage() {
                                     />
                                 </div>
                                 {/* Decorative Icon Floater */}
-                                <div className="absolute -bottom-3 -right-3 sm:-bottom-4 sm:-right-4 md:-bottom-6 md:-right-6 glass p-2.5 sm:p-3 md:p-4 rounded-lg sm:rounded-xl md:rounded-2xl shadow-glow flex items-center justify-center z-20">
+                                <div className="absolute bottom-3 right-3 sm:bottom-4 sm:right-4 md:bottom-6 md:right-6 bg-card border border-border/40 p-2.5 sm:p-3 md:p-4 rounded-lg sm:rounded-xl md:rounded-2xl shadow-xl flex items-center justify-center z-20 hover:scale-110 transition-transform duration-300">
                                     <service.icon className="h-5 w-5 sm:h-6 sm:w-6 md:h-8 md:w-8 text-primary" />
                                 </div>
                             </ScrollReveal>

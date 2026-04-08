@@ -1,9 +1,10 @@
-import { Mail, MapPin, Clock, Instagram, Facebook } from 'lucide-react';
+import { Mail, MapPin, Clock, Instagram } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { NAV_LINKS, CLINIC_INFO } from '@/lib/constants';
 import { ScrollReveal } from '@/components/ui/scroll-reveal';
 import { WhatsAppIcon } from '@/components/ui/icons/whatsapp-icon';
+import { TiktokIcon } from '@/components/ui/icons/tiktok-icon';
 
 export default function Footer() {
   return (
@@ -35,8 +36,8 @@ export default function Footer() {
             {/* Social icons */}
             <div className="flex items-center gap-3">
               {[
-                { icon: Instagram, label: 'Instagram', href: '#' },
-                { icon: Facebook, label: 'Facebook', href: '#' },
+                { icon: TiktokIcon, label: 'TikTok', href: 'https://www.tiktok.com/@centroveterianriozoe' },
+                { icon: Instagram, label: 'Instagram', href: 'https://www.instagram.com/centroveterinariozoe' },
               ].map((social, index) => (
                 <ScrollReveal key={social.label} direction="up" stagger={index} delay={300}>
                   <a

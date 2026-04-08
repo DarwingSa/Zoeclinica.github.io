@@ -4,7 +4,7 @@ import { useState, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { Loader2, Plane, PawPrint, CalendarIcon, Banknote, FileText, Printer, User, Info } from 'lucide-react';
+import { Loader2, Plane, PawPrint, CalendarIcon, Banknote, FileText, Printer, User, Info, Mail } from 'lucide-react';
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 
@@ -57,13 +57,19 @@ type ServiceItem = {
   price: number;
 };
 
+type ExtraFee = {
+  title: string;
+  price: number;
+  note: string;
+};
+
 type DestinationData = {
   title: string;
   description: string;
   estimatedTime: string;
   alert: string;
-  aranceles: number;
-  arancelesNote: string;
+  extraFees?: ExtraFee[];
+  budgetUnavailable?: boolean;
   getServices: (species: "dog" | "cat") => ServiceItem[];
 };
 
@@ -73,30 +79,50 @@ const destinationServices: Record<string, DestinationData> = {
     description: "Cumplimiento total normativa CEXGAN y UE. Incluye gestión sanitaria completa.",
     estimatedTime: "Mínimo 21 días antes del viaje",
     alert: "Si tu mascota es menor de 3 meses, contáctanos directamente.",
-    aranceles: 70,
-    arancelesNote: "Pago directo a cuenta del cliente (Tasa Oficial)",
+    extraFees: [
+      {
+        title: "Tasas y Aranceles de Exportación",
+        price: 70,
+        note: "Pago directo a cuenta del cliente (Tasa Oficial). Este monto corresponde a entidades gubernamentales y no forma parte de los honorarios de la clínica."
+      },
+      {
+        title: "Aranceles del INSAI (Aeropuertos)",
+        price: 20,
+        note: "Destinado a trámites de aeropuertos. Pago directo a cuenta del cliente (Tasa Oficial). Este monto corresponde a entidades gubernamentales y no forma parte de los honorarios de la clínica."
+      }
+    ],
     getServices: (species) => [
       {
-        label: "Vacunación Anual Completa",
+        label: "Plan de Vacunación Anual (Revacunación)",
         detail: species === 'dog'
           ? "Séxtuple + Antirrábica + Desparasitación + KC"
           : "Quíntuple Felina + Antirrábica + Desparasitación",
         price: 100
       },
       {
-        label: "Implantación de Microchip",
+        label: "Implante de Microchips",
         detail: "Microchip ISO 11784/11785 Homologado",
         price: 50
       },
       {
-        label: "Titulación de Anticuerpos",
-        detail: "Toma de muestra y envío a laboratorio autorizado",
+        label: "Titulación de Anticuerpos Contra la Rabia",
+        detail: "Dura en llegar al laboratorio de Alemania 1 a 2 meses",
         price: 200
       },
       {
-        label: "Certificado Oficial Salud UE",
-        detail: "Gestión y emisión ante autoridades competentes",
+        label: "Permisología Sanitaria (INSAI)",
+        detail: "Gestión y emisión de permisos ante autoridades sanitarias",
         price: 150
+      },
+      {
+        label: "Guía de Movilización Europea (Anexo 4)",
+        detail: "Documento oficial requerido por la UE para el ingreso",
+        price: 40
+      },
+      {
+        label: "Pago de la Muestras en Alemania",
+        detail: "Costo del procesamiento de muestras en laboratorio alemán",
+        price: 65
       }
     ]
   },
@@ -105,35 +131,39 @@ const destinationServices: Record<string, DestinationData> = {
     description: "Gestión completa de requisitos CDC (EE.UU.) o CFIA (Canadá).",
     estimatedTime: "Iniciar 30 días antes",
     alert: "Nuevos requisitos estrictos para el ingreso a EE.UU.",
-    aranceles: 50,
-    arancelesNote: "Tasas administrativas de exportación",
-    getServices: (species) => [
-      { label: "Certificado Salud Internacional", detail: "Emisión oficial 10 días antes", price: 150 },
-      { label: "Vacunación y Microchip", detail: "Rabia + Anual + Chip Compatible", price: 120 },
-      { label: "Tratamiento Antiparasitario", detail: "Interna y Externa Certificada", price: 30 }
-    ]
+    budgetUnavailable: true,
+    getServices: (species) => []
   },
   asia: {
     title: "Pack Viaje a Asia",
     description: "Protocolo completo para países con requisitos de cuarentena.",
     estimatedTime: "4-6 meses antes del viaje",
     alert: "Proceso largo. Requiere titulación de anticuerpos obligatoria.",
-    aranceles: 100,
-    arancelesNote: "Permisos de importación y gestiones externas",
-    getServices: (species) => [
-      { label: "Pack Integral Asia", detail: "Microchip + Vacunas + Titulación + Permisos", price: 650 }
-    ]
+    budgetUnavailable: true,
+    getServices: (species) => []
   },
   latinoamerica: {
     title: "Pack Viaje a Latinoamérica",
     description: "Certificados de exportación para países de la región.",
     estimatedTime: "15-20 días antes",
     alert: "Puede requerir legalizaciones adicionales.",
-    aranceles: 40,
-    arancelesNote: "Tasas y Aranceles locales (INSAI o similar)",
+    extraFees: [
+      {
+        title: "Tasas y Aranceles de Exportación",
+        price: 70,
+        note: "Pago directo a cuenta del cliente (Tasa Oficial). Este monto corresponde a entidades gubernamentales y no forma parte de los honorarios de la clínica."
+      },
+      {
+        title: "Aranceles del INSAI (Aeropuertos)",
+        price: 20,
+        note: "Destinado a trámites de aeropuertos. Pago directo a cuenta del cliente (Tasa Oficial). Este monto corresponde a entidades gubernamentales y no forma parte de los honorarios de la clínica."
+      }
+    ],
     getServices: (species) => [
-      { label: "Certificado Internacional", detail: "Emisión y gestión oficial", price: 120 },
-      { label: "Vacunas y Desparasitación", detail: "Al día según requisito país de destino", price: 80 }
+      { label: "Plan de vacunación", detail: "Al día según requisito país de destino", price: 100 },
+      { label: "Microchips", detail: "Implantación de Microchip", price: 50 },
+      { label: "Desparasitacion", detail: "Interna y Externa", price: 30 },
+      { label: "Certificado zoosanitario", detail: "Emisión oficial", price: 150 }
     ]
   }
 };
@@ -194,7 +224,8 @@ export default function TravelGuidance() {
     setTimeout(() => {
       const info = destinationServices[values.destination];
       const services = info.getServices(values.species);
-      const total = services.reduce((acc, s) => acc + s.price, 0) + info.aranceles + 20; // Added 20 for INSAI
+      const extraFeesTotal = info.extraFees?.reduce((acc, f) => acc + f.price, 0) || 0;
+      const total = services.reduce((acc, s) => acc + s.price, 0) + extraFeesTotal;
 
       setResult({ data: values, services, info, total }); // Add total to result
       setIsLoading(false);
@@ -209,175 +240,355 @@ export default function TravelGuidance() {
 
   const handlePrint = () => {
     if (!result) return;
-    // Build a clean printable document with all form data + budget
     const printWindow = window.open('', '_blank');
     if (!printWindow) return;
 
     const origin = window.location.origin;
     const totalServicios = result.services.reduce((acc, s) => acc + s.price, 0);
+    const extraFeesTotal = result.info.extraFees?.reduce((acc, f) => acc + f.price, 0) || 0;
+    const grandTotal = totalServicios + extraFeesTotal;
+    const todayStr    = format(new Date(), "EEEE, dd 'de' MMMM 'de' yyyy", { locale: es });
+    const birthStr    = format(result.data.birthDate, "dd 'de' MMMM 'de' yyyy", { locale: es });
     const speciesLabel = result.data.species === 'dog' ? 'Perro' : 'Gato';
-    const birthDateStr = format(result.data.birthDate, "d 'de' MMMM, yyyy", { locale: es });
-    const todayStr = format(new Date(), "d 'de' MMMM, yyyy", { locale: es });
+    const destinationLabel = result.info.title
+      .replace('Presupuesto de Viaje a ', '')
+      .replace('Pack Viaje a ', '');
 
-    const servicesRows = result.services.map(s => `
-      <tr>
-        <td class="service-name">
-          <strong>${s.label}</strong><br/>
-          <span>${s.detail}</span>
+    const servicesRows = result.services.map((s, i) => `
+      <tr class="${i % 2 === 1 ? 'alt' : ''}">
+        <td class="td-name">
+          <span class="name-main">${s.label}</span>
+          ${s.detail ? `<span class="name-sub">${s.detail}</span>` : ''}
         </td>
-        <td class="service-price">$${s.price}</td>
+        <td class="td-r">USD ${s.price.toFixed(2)}</td>
+        <td class="td-c dim">&mdash;</td>
+        <td class="td-c">1</td>
+        <td class="td-r bold">USD ${s.price.toFixed(2)}</td>
+      </tr>`).join('');
+
+    printWindow.document.write(`<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Presupuesto &mdash; Centro Veterinario Zo&eacute;</title>
+  <style>
+    /* ── PAGE SETUP ── */
+    @page {
+      size: letter;
+      margin: 20mm 22mm;   /* margen en todos los lados */
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      font-size: 10.5px;
+      color: #1e293b;
+      line-height: 1.6;
+      background: #fff;
+    }
+
+    /* ── HEADER ── */
+    .header {
+      display: grid;
+      grid-template-columns: 64px 1fr auto;
+      align-items: center;
+      gap: 14px;
+      padding-bottom: 14px;
+      border-bottom: 2.5px solid #0e7490;
+      margin-bottom: 18px;
+    }
+    .header img { width: 60px; height: 60px; object-fit: contain; }
+    .clinic-info .clinic-name {
+      font-size: 14px; font-weight: 800; color: #0e7490; letter-spacing: -0.3px;
+    }
+    .clinic-info .clinic-detail {
+      font-size: 8.5px; color: #64748b; margin-top: 3px; line-height: 1.5;
+    }
+    .clinic-info .clinic-email { color: #0e7490; }
+    .doc-badge {
+      text-align: right;
+    }
+    .doc-badge .badge-word {
+      font-size: 8px; font-weight: 700; color: #94a3b8;
+      text-transform: uppercase; letter-spacing: 1.2px; display: block;
+    }
+    .doc-badge .badge-type {
+      font-size: 15px; font-weight: 900; color: #0e7490; letter-spacing: 1px;
+    }
+
+    /* ── SECTION TITLES ── */
+    .section-title {
+      font-size: 8px; font-weight: 800; color: #0e7490;
+      text-transform: uppercase; letter-spacing: 1px;
+      border-bottom: 1.5px solid #0e7490;
+      padding-bottom: 4px; margin-bottom: 10px;
+    }
+
+    /* ── INFO GRIDS ── */
+    .info-strip {
+      background: #f0f9ff;
+      border: 1px solid #bae6fd;
+      border-radius: 6px;
+      padding: 10px 14px;
+      margin-bottom: 16px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4px 24px;
+    }
+    .info-row { display: flex; gap: 6px; align-items: baseline; }
+    .info-lbl {
+      font-size: 8px; font-weight: 700; color: #64748b;
+      text-transform: uppercase; letter-spacing: 0.5px;
+      min-width: 90px; flex-shrink: 0;
+    }
+    .info-val { font-size: 10.5px; font-weight: 600; color: #0c2340; }
+    .info-row.full { grid-column: 1 / -1; }
+
+    /* ── PET / OWNER CARDS ── */
+    .cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+    .card {
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .card-head {
+      background: #0c2340;
+      color: #fff;
+      font-size: 8px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.8px;
+      padding: 5px 10px;
+    }
+    .card-body { padding: 8px 10px; }
+    .card-row { display: flex; gap: 6px; margin-bottom: 3px; }
+    .card-lbl {
+      font-size: 8px; color: #64748b; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.4px;
+      min-width: 80px; flex-shrink: 0;
+    }
+    .card-val { font-size: 10px; font-weight: 600; color: #1e293b; }
+
+    /* ── TABLE ── */
+    .tbl { width: 100%; border-collapse: collapse; margin-bottom: 0; }
+    .tbl thead tr { background: #0c2340; }
+    .tbl thead th {
+      padding: 7px 10px;
+      font-size: 8px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.8px;
+      color: rgba(255,255,255,0.85);
+      text-align: left; white-space: nowrap;
+    }
+    .tbl thead th.td-r { text-align: right; }
+    .tbl thead th.td-c { text-align: center; }
+    .tbl tbody tr { border-bottom: 1px solid #e8edf2; }
+    .tbl tbody tr.alt { background: #f8fafc; }
+    .tbl tbody td { padding: 8px 10px; vertical-align: top; }
+    .td-r { text-align: right; }
+    .td-c { text-align: center; }
+    .dim { color: #cbd5e1; }
+    .bold { font-weight: 700; color: #0c2340; }
+    .name-main { display: block; font-size: 10.5px; font-weight: 600; color: #1e293b; line-height: 1.3; }
+    .name-sub  { display: block; font-size: 8.5px; color: #64748b; margin-top: 2px; line-height: 1.4; }
+
+    /* ── TOTALS ── */
+    .totals-wrap {
+      display: flex;
+      justify-content: flex-end;
+      border-top: 2px solid #0e7490;
+    }
+    .totals-box { width: 260px; }
+    .t-row {
+      display: flex; justify-content: space-between;
+      padding: 5px 12px;
+      font-size: 10px; color: #475569;
+      border-bottom: 1px solid #e8edf2;
+    }
+    .t-row .val { font-weight: 600; color: #1e293b; }
+    .t-row.grand {
+      background: #0c2340;
+      border-bottom: none; border-radius: 0 0 4px 4px;
+      padding: 9px 12px;
+    }
+    .t-row.grand .lbl { color: rgba(255,255,255,0.7); font-size: 11px; font-weight: 600; }
+    .t-row.grand .val { color: #fff; font-size: 15px; font-weight: 800; }
+
+    /* ── NOTES ── */
+    .notes {
+      margin-top: 20px;
+      border-left: 3px solid #0e7490;
+      background: #f0f9ff;
+      border-radius: 0 6px 6px 0;
+      padding: 10px 14px;
+    }
+    .notes-title {
+      font-size: 8.5px; font-weight: 800;
+      text-transform: uppercase; letter-spacing: 0.8px;
+      color: #0e7490; margin-bottom: 6px;
+    }
+    .notes ul { padding-left: 14px; }
+    .notes li { font-size: 9px; color: #475569; margin-bottom: 4px; line-height: 1.55; }
+
+    /* ── FOOTER ── */
+    .doc-footer {
+      margin-top: 18px; padding-top: 10px;
+      border-top: 1px solid #e2e8f0;
+      display: flex; justify-content: space-between;
+      font-size: 8px; color: #94a3b8;
+    }
+    .doc-footer strong { color: #0e7490; }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <div class="header">
+    <img src="${origin}/logo.png" alt="ZO&Eacute;" />
+    <div class="clinic-info">
+      <div class="clinic-name">Centro Veterinario Zo&eacute;</div>
+      <div class="clinic-detail">
+        M.V. Eduardo Pe&ntilde;a Rodr&iacute;guez &nbsp;|&nbsp; +58 412&#8209;5957240<br>
+        Calle Miranda Av.1, La Campi&ntilde;a, Caracas 1041<br>
+        <span class="clinic-email">m.v.eduardo.pena@gmail.com</span>
+      </div>
+    </div>
+    <div class="doc-badge">
+      <span class="badge-word">Documento</span>
+      <span class="badge-type">PRESUPUESTO</span>
+    </div>
+  </div>
+
+  <!-- DOCUMENT INFO STRIP -->
+  <div class="section-title">Informaci&oacute;n del Documento</div>
+  <div class="info-strip">
+    <div class="info-row">
+      <span class="info-lbl">Proveedor</span>
+      <span class="info-val">M.V. Eduardo Pe&ntilde;a Rodr&iacute;guez</span>
+    </div>
+    <div class="info-row">
+      <span class="info-lbl">Fecha de emisi&oacute;n</span>
+      <span class="info-val">${todayStr}</span>
+    </div>
+    <div class="info-row">
+      <span class="info-lbl">Propietario</span>
+      <span class="info-val">${result.data.ownerName.toUpperCase()}</span>
+    </div>
+    <div class="info-row">
+      <span class="info-lbl">Destino</span>
+      <span class="info-val">${destinationLabel.toUpperCase()}</span>
+    </div>
+    <div class="info-row full">
+      <span class="info-lbl">Referencia</span>
+      <span class="info-val">Permiso de viaje hacia ${destinationLabel.toUpperCase()} &mdash; Mascota: ${result.data.petName.toUpperCase()}</span>
+    </div>
+  </div>
+
+  <!-- PET + OWNER CARDS -->
+  <div class="section-title">Datos del Solicitante y Mascota</div>
+  <div class="cards">
+    <div class="card">
+      <div class="card-head">&#128100; Datos del Propietario</div>
+      <div class="card-body">
+        <div class="card-row">
+          <span class="card-lbl">Nombre</span>
+          <span class="card-val">${result.data.ownerName}</span>
+        </div>
+        <div class="card-row">
+          <span class="card-lbl">Destino</span>
+          <span class="card-val">${destinationLabel}</span>
+        </div>
+        <div class="card-row">
+          <span class="card-lbl">Fecha emisi&oacute;n</span>
+          <span class="card-val">${todayStr}</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head">&#128062; Datos de la Mascota</div>
+      <div class="card-body">
+        <div class="card-row">
+          <span class="card-lbl">Nombre</span>
+          <span class="card-val">${result.data.petName}</span>
+        </div>
+        <div class="card-row">
+          <span class="card-lbl">Especie</span>
+          <span class="card-val">${speciesLabel}</span>
+        </div>
+        <div class="card-row">
+          <span class="card-lbl">Raza</span>
+          <span class="card-val">${result.data.breed}</span>
+        </div>
+        <div class="card-row">
+          <span class="card-lbl">Color</span>
+          <span class="card-val">${result.data.color}</span>
+        </div>
+        <div class="card-row">
+          <span class="card-lbl">Peso</span>
+          <span class="card-val">${result.data.weight} kg</span>
+        </div>
+        <div class="card-row">
+          <span class="card-lbl">Fecha de nacimiento</span>
+          <span class="card-val">${birthStr}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SERVICES TABLE -->
+  <div class="section-title">Detalle de Servicios</div>
+  <table class="tbl">
+    <thead>
+      <tr>
+        <th style="width:44%">Concepto</th>
+        <th class="td-r" style="width:14%">Base</th>
+        <th class="td-c" style="width:13%">Descuento</th>
+        <th class="td-c" style="width:13%">Cantidad</th>
+        <th class="td-r" style="width:16%">Monto</th>
       </tr>
-    `).join('');
+    </thead>
+    <tbody>${servicesRows}</tbody>
+  </table>
 
-    printWindow.document.write(`
-      <!DOCTYPE html>
-      <html lang="es">
-      <head>
-        <meta charset="UTF-8">
-        <title>Presupuesto Referencial - Centro Veterinario Zoé</title>
-        <style>
-          @page { size: letter; margin: 10mm 12mm; }
-          * { margin:0; padding:0; box-sizing:border-box; }
-          body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; color: #1e293b; line-height: 1.35; font-size: 11.5px; max-width: 100%; margin: 0 auto; padding: 0; }
-          
-          /* Header */
-          .header { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2px solid #0891b2; padding-bottom: 8px; margin-bottom: 14px; }
-          .logo-area { display: flex; align-items: center; gap: 10px; }
-          .logo-area img { width: 42px; height: 42px; object-fit: contain; }
-          .logo-text h1 { font-size: 14px; color: #0891b2; font-weight: 800; margin-bottom: 2px; letter-spacing: -0.5px; }
-          .logo-text p { font-size: 11px; color: #475569; }
-          .doc-meta { text-align: right; }
-          .doc-meta h2 { font-size: 11px; color: #0f172a; font-weight: 700; margin-bottom: 2px; }
-          .doc-meta p { font-size: 10px; color: #64748b; }
+  <!-- TOTALS -->
+  <div class="totals-wrap">
+    <div class="totals-box">
+      <div class="t-row"><span class="lbl">Subtotal</span><span class="val">USD ${grandTotal.toFixed(2)}</span></div>
+      <div class="t-row"><span class="lbl">Descuentos</span><span class="val">USD 0.00</span></div>
+      <div class="t-row"><span class="lbl">Retenciones</span><span class="val">USD 0.00</span></div>
+      <div class="t-row"><span class="lbl">Impuestos</span><span class="val">USD 0.00</span></div>
+      <div class="t-row grand"><span class="lbl">Total a Pagar</span><span class="val">USD ${grandTotal.toFixed(2)}</span></div>
+    </div>
+  </div>
 
-          /* Sections */
-          .section { margin-bottom: 14px; }
-          .section-title { font-size: 11px; font-weight: 800; color: #0891b2; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1.5px solid #e2e8f0; padding-bottom: 4px; margin-bottom: 8px; }
-          
-          /* Grids */
-          .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 16px; }
-          .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px 16px; }
-          
-          .data-item label { display: block; font-size: 9px; color: #64748b; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; margin-bottom: 2px; }
-          .data-item p { font-size: 12.5px; font-weight: 600; color: #0f172a; }
+  <!-- NOTES -->
+  <div class="notes">
+    <div class="notes-title">&#9432; Condiciones y Notas Importantes</div>
+    <ul>
+      <li>Los pagos del laboratorio de Alemania se realizan cuando la muestra est&eacute; en el mismo laboratorio.</li>
+      <li>El pago de los aranceles del INSAI se realiza 15 d&iacute;as antes del viaje.</li>
+      <li>El restante de USD 540 se cancela en dos partes: el 75% en la primera etapa, y el 25% restante cuando la muestra est&eacute; en el laboratorio.</li>
+    </ul>
+  </div>
 
-          /* Alert */
-          .alert-box { display: flex; align-items: center; gap: 8px; font-size: 11px; color: #c2410c; margin-bottom: 14px; border-left: 3px solid #fb923c; padding-left: 10px; }
-          .alert-box svg { width: 14px; height: 14px; }
-          
-          /* Table */
-          table { width: 100%; border-collapse: collapse; margin-top: 4px; }
-          th { text-align: left; padding: 6px 8px; border-bottom: 1.5px solid #0891b2; font-size: 10px; color: #0f172a; text-transform: uppercase; font-weight: 800; }
-          th.right { text-align: right; }
-          td { padding: 6px 8px; border-bottom: 1px solid #e2e8f0; } 
-          .service-name strong { font-size: 12.5px; color: #0f172a; display: block; margin-bottom: 1px; }
-          .service-name span { font-size: 10px; color: #64748b; }
-          .service-price { text-align: right; font-weight: 800; font-size: 14px; color: #0891b2; }
-          
-          /* Totals */
-          .total-row td { padding: 6px 8px; font-weight: 800; font-size: 12.5px; color: #0f172a; background: #f8fafc; border-bottom: none; }
-          .total-row td:last-child { color: #0891b2; text-align: right; font-size: 14px; }
-          
-          /* Fees */
-          .fee-box { border: 1px solid #fde047; border-radius: 6px; padding: 10px 14px; margin-top: 10px; display: flex; justify-content: space-between; align-items: center; background: #fffbeb; }
-          .fee-info h4 { font-size: 12px; color: #b45309; font-weight: 700; margin-bottom: 2px; display: flex; align-items: center; gap: 6px; }
-          .fee-info p { font-size: 10.5px; color: #b45309; opacity: 0.9; }
-          .fee-amount { font-size: 13px; font-weight: 800; color: #b45309; }
-          
-          /* Footer */
-          .print-footer { margin-top: 16px; text-align: center; color: #64748b; font-size: 9.5px; border-top: 1px solid #e2e8f0; padding-top: 10px; }
-          .print-footer strong { color: #475569; font-weight: 600; }
-        </style>
-      </head>
-      <body>
-        <div class="header">
-          <div class="logo-area">
-            <img src="${origin}/logo.png" alt="Centro Veterinario Zoé" />
-            <div class="logo-text">
-              <h1>Centro Veterinario Zoé</h1>
-              <p>Asesoría de Viajes Internacionales</p>
-            </div>
-          </div>
-          <div class="doc-meta">
-            <h2>Presupuesto Referencial</h2>
-            <p>Generado el ${todayStr}</p>
-          </div>
-        </div>
+  <!-- FOOTER -->
+  <div class="doc-footer">
+    <span>Centro Veterinario Zo&eacute; &mdash; Asesor&iacute;a de Viajes Internacionales &mdash; Este presupuesto es referencial.</span>
+    <span>Generado el ${todayStr} &nbsp;|&nbsp; <strong>centrovetzoe.com</strong></span>
+  </div>
 
-        <div class="section">
-          <div class="section-title">Datos del Propietario</div>
-          <div class="grid-2">
-            <div class="data-item"><label>Nombre</label><p>${result.data.ownerName}</p></div>
-            <div class="data-item"><label>Destino</label><p>${result.info.title.replace('Presupuesto de Viaje a ', '').replace('Pack Viaje a ', '')}</p></div>
-          </div>
-        </div>
-
-        <div class="section">
-          <div class="section-title">Datos de la Mascota</div>
-          <div class="grid-3">
-            <div class="data-item"><label>Nombre</label><p>${result.data.petName}</p></div>
-            <div class="data-item"><label>Especie</label><p>${speciesLabel}</p></div>
-            <div class="data-item"><label>Raza</label><p>${result.data.breed}</p></div>
-            <div class="data-item"><label>Color</label><p>${result.data.color}</p></div>
-            <div class="data-item"><label>Peso</label><p>${result.data.weight} kg</p></div>
-            <div class="data-item"><label>Fecha de Nacimiento</label><p>${birthDateStr}</p></div>
-          </div>
-        </div>
-
-        <div class="alert-box">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-          <strong>Inicio de trámites:</strong> ${result.info.estimatedTime}
-        </div>
-
-        <div class="section">
-          <div class="section-title">Desglose de Servicios Médicos</div>
-          <table>
-            <thead>
-              <tr>
-                <th>Servicio</th>
-                <th class="right">Costo</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${servicesRows}
-              <tr class="total-row">
-                <td>Total Estimado Servicios</td>
-                <td>$${totalServicios}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div class="fee-box">
-          <div class="fee-info">
-            <h4>Tasas y Aranceles de Exportación</h4>
-            <p>${result.info.arancelesNote}. Corresponde a entidades gubernamentales.</p>
-          </div>
-          <div class="fee-amount">$${result.info.aranceles}</div>
-        </div>
-
-        <div class="fee-box" style="margin-top: 8px;">
-          <div class="fee-info">
-            <h4>Aranceles del INSAI</h4>
-            <p>Destinado a trámites de aeropuertos. Pago directo a cuenta del cliente (Tasa Oficial). No forma parte de los honorarios de la clínica.</p>
-          </div>
-          <div class="fee-amount">$20</div>
-        </div>
-
-        <div class="print-footer">
-          <p><strong>Centro Veterinario Zoé</strong> — Asesoría de Viajes Internacionales</p>
-          <p>Este documento es una estimación referencial. Los precios finales pueden variar según peso, estado de salud y regulaciones internacionales vigentes.</p>
-        </div>
-      </body>
-      </html>
-    `);
+</body>
+</html>`);
     printWindow.document.close();
     printWindow.focus();
     setTimeout(() => {
       printWindow.print();
       printWindow.close();
-    }, 500);
+    }, 600);
   };
+
+
 
   const handleScheduleAppointment = () => {
     if (!result) return;
@@ -385,7 +596,7 @@ export default function TravelGuidance() {
     setIsContactModalOpen(true);
   };
 
-  const onContactSubmit = async (contactData: ContactFormValues) => {
+  const submitContactForm = async (contactData: ContactFormValues, method: 'whatsapp' | 'email') => {
     if (!result) return;
     setIsSending(true);
 
@@ -412,17 +623,44 @@ Me gustaría agendar una cita para tramitar el certificado de viaje de mi mascot
 • Teléfono: ${contactData.contactPhone}
 • Correo: ${contactData.contactEmail}
 
-💰 *Desglose del Presupuesto*
-• Gastos Médicos (Clínica): $${subtotalMedicos}
-• Tasas Gubernamentales: $${result.info.aranceles}
-• Aranceles del INSAI (Aeropuertos): $20
-*Total Estimado:* $${result.total}
+${result.info.budgetUnavailable ? `⚠️ *Presupuesto no disponible*: Requiere consultar al médico veterinario para esta región.` : `💰 *Desglose del Presupuesto*
+${result.services.map(s => `• ${s.label}: $${s.price}`).join('\n')}
+${result.info.extraFees ? result.info.extraFees.map(f => `• ${f.title}: $${f.price}`).join('\n') : ''}
+*Total Estimado:* $${result.total}`}
 
 Quedo atento/a para coordinar la disponibilidad. ¡Muchas gracias!`;
 
-    // Ensure strict URI encoding and explicit replacement of symbols where some clients drop them
-    const whatsappUrl = `https://wa.me/${CLINIC_INFO.whatsappNumber}?text=${encodeURIComponent(rawMessage)}`;
-    window.open(whatsappUrl, '_blank');
+    if (method === 'whatsapp') {
+      const whatsappUrl = `https://wa.me/${CLINIC_INFO.whatsappNumber}?text=${encodeURIComponent(rawMessage)}`;
+      window.open(whatsappUrl, '_blank');
+    } else {
+      try {
+        await fetch(`https://formsubmit.co/ajax/${CLINIC_INFO.email}`, {
+          method: "POST",
+          headers: { 
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+          },
+          body: JSON.stringify({
+              name: contactData.contactName,
+              phone: contactData.contactPhone,
+              email: contactData.contactEmail,
+              subject: `Presupuesto de Viaje - ${result.data.petName} - ${contactData.contactName}`,
+              message: rawMessage,
+          })
+        });
+        toast({
+          title: "Información Enviada",
+          description: "Los detalles del presupuesto han sido enviados al correo de la clínica.",
+        });
+      } catch (error) {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "No se pudo enviar la información al correo. Inténtalo mediante WhatsApp.",
+        });
+      }
+    }
 
     setIsSending(false);
     setIsContactModalOpen(false);
@@ -708,81 +946,84 @@ Quedo atento/a para coordinar la disponibilidad. ¡Muchas gracias!`;
                     </div>
 
                     <div className="p-2.5 sm:p-6 md:p-8 lg:p-12 space-y-4 sm:space-y-8 md:space-y-10 print:p-0 print:mt-8 w-full min-w-0">
-                      {/* Services List */}
-                      <div className="space-y-3 sm:space-y-6 w-full min-w-0">
-                        <h3 className='font-bold text-base sm:text-xl md:text-2xl flex items-center gap-2 text-foreground'>
-                          <FileText className="h-4 w-4 sm:h-6 sm:w-6 text-primary shrink-0" />
-                          Desglose de Servicios
-                        </h3>
-                        <div className="rounded-xl sm:rounded-3xl border border-border/50 overflow-hidden w-full min-w-0 bg-card shadow-sm print:border-gray-300 print:shadow-none">
-                          <div className="divide-y divide-border print:divide-gray-200">
-                            {result.services.map((service, i) => (
-                              <div key={i} className="px-3 py-2.5 sm:p-5 md:p-6 flex justify-between items-center gap-2 hover:bg-secondary/20 transition-colors">
-                                <div className="min-w-0 flex-1">
-                                  <p className="font-bold text-[13px] sm:text-base md:text-lg text-foreground">{service.label}</p>
-                                  <p className="text-[10px] sm:text-sm text-muted-foreground truncate">{service.detail}</p>
+                      {result.info.budgetUnavailable ? (
+                        <div className="bg-primary/5 border border-primary/20 rounded-xl sm:rounded-3xl p-6 sm:p-10 flex flex-col items-center justify-center text-center">
+                          <Info className="h-10 w-10 sm:h-12 sm:w-12 text-primary mb-4" />
+                          <h3 className="font-bold text-lg sm:text-2xl text-foreground mb-2">Presupuesto no disponible en línea</h3>
+                          <p className="text-muted-foreground text-sm sm:text-base max-w-md">Para organizar un viaje hacia esta región, por favor agenda una cita y consulta directamente con el Médico Veterinario los pasos a seguir y costos asociados.</p>
+                        </div>
+                      ) : (
+                        <>
+                          {/* Services List */}
+                          <div className="space-y-3 sm:space-y-6 w-full min-w-0">
+                            <h3 className='font-bold text-base sm:text-xl md:text-2xl flex items-center gap-2 text-foreground'>
+                              <FileText className="h-4 w-4 sm:h-6 sm:w-6 text-primary shrink-0" />
+                              Desglose de Servicios
+                            </h3>
+                            <div className="rounded-xl sm:rounded-3xl border border-border/50 overflow-hidden w-full min-w-0 bg-card shadow-sm print:border-gray-300 print:shadow-none">
+                              <div className="divide-y divide-border print:divide-gray-200">
+                                {result.services.map((service, i) => (
+                                  <div key={i} className="px-3 py-2.5 sm:p-5 md:p-6 flex justify-between items-center gap-2 hover:bg-secondary/20 transition-colors">
+                                    <div className="min-w-0 flex-1">
+                                      <p className="font-bold text-[13px] sm:text-base md:text-lg text-foreground">{service.label}</p>
+                                      <p className="text-[10px] sm:text-sm text-muted-foreground truncate">{service.detail}</p>
+                                    </div>
+                                    <p className="font-bold text-[13px] sm:text-lg md:text-xl text-primary print:text-black shrink-0 tabular-nums">${service.price}</p>
+                                  </div>
+                                ))}
+                                <div className="px-3 py-2.5 sm:p-5 md:p-6 bg-secondary/30 flex justify-between items-center print:bg-gray-100 gap-2">
+                                  <p className="font-extrabold text-[13px] sm:text-lg md:text-xl">Total Servicios</p>
+                                  <p className="font-black text-base sm:text-2xl md:text-3xl text-primary print:text-black shrink-0 tabular-nums">${result.services.reduce((acc, s) => acc + s.price, 0)}</p>
                                 </div>
-                                <p className="font-bold text-[13px] sm:text-lg md:text-xl text-primary print:text-black shrink-0 tabular-nums">${service.price}</p>
                               </div>
-                            ))}
-                            <div className="px-3 py-2.5 sm:p-5 md:p-6 bg-secondary/30 flex justify-between items-center print:bg-gray-100 gap-2">
-                              <p className="font-extrabold text-[13px] sm:text-lg md:text-xl">Total Servicios</p>
-                              <p className="font-black text-base sm:text-2xl md:text-3xl text-primary print:text-black shrink-0 tabular-nums">${result.services.reduce((acc, s) => acc + s.price, 0)}</p>
                             </div>
                           </div>
-                        </div>
-                      </div>
 
-                      {/* Extra Fees */}
-                      <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900/30 rounded-xl sm:rounded-3xl p-2.5 sm:p-6 md:p-8 print:bg-white print:border-gray-200 w-full min-w-0">
-                        <div className="flex flex-row justify-between items-start sm:items-center mb-2 sm:mb-4 gap-2">
-                          <h4 className="font-bold text-amber-900 dark:text-amber-300 text-[13px] sm:text-lg md:text-xl flex items-start sm:items-center gap-1 sm:gap-2">
-                            <Info className="h-4 w-4 sm:h-6 sm:w-6 text-amber-600 print:hidden shrink-0 mt-0.5 sm:mt-0" />
-                            <span className="text-balance leading-tight">Tasas y Aranceles de Exportación</span>
-                          </h4>
-                          <p className="font-black text-[15px] sm:text-2xl text-amber-900 dark:text-amber-300 shrink-0 tabular-nums">${result.info.aranceles}</p>
-                        </div>
-                        <p className="text-amber-800/80 dark:text-amber-400/80 leading-relaxed text-xs sm:text-base">
-                          {result.info.arancelesNote}. Este monto corresponde a entidades gubernamentales y no forma parte de los honorarios de la clínica.
-                        </p>
-                      </div>
+                          {/* Extra Fees */}
+                          {result.info.extraFees && result.info.extraFees.length > 0 && (
+                            <div className="space-y-3 sm:space-y-4 w-full min-w-0">
+                              {result.info.extraFees.map((fee, i) => (
+                                <div key={i} className="bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900/30 rounded-xl sm:rounded-3xl p-2.5 sm:p-6 md:p-8 print:bg-white print:border-gray-200 w-full min-w-0">
+                                  <div className="flex flex-row justify-between items-start sm:items-center mb-2 sm:mb-4 gap-2">
+                                    <h4 className="font-bold text-amber-900 dark:text-amber-300 text-[13px] sm:text-lg md:text-xl flex items-start sm:items-center gap-1 sm:gap-2">
+                                      <Info className="h-4 w-4 sm:h-6 sm:w-6 text-amber-600 print:hidden shrink-0 mt-0.5 sm:mt-0" />
+                                      <span className="text-balance leading-tight">{fee.title}</span>
+                                    </h4>
+                                    <p className="font-black text-[15px] sm:text-2xl text-amber-900 dark:text-amber-300 shrink-0 tabular-nums">${fee.price}</p>
+                                  </div>
+                                  <p className="text-amber-800/80 dark:text-amber-400/80 leading-relaxed text-xs sm:text-base">
+                                    {fee.note}
+                                  </p>
+                                </div>
+                              ))}
+                            </div>
+                          )}
 
-                      <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900/30 rounded-xl sm:rounded-3xl p-2.5 sm:p-6 md:p-8 mt-3 sm:mt-4 print:bg-white print:border-gray-200 w-full min-w-0">
-                        <div className="flex flex-row justify-between items-start sm:items-center mb-2 sm:mb-4 gap-2">
-                          <h4 className="font-bold text-amber-900 dark:text-amber-300 text-[13px] sm:text-lg md:text-xl flex items-start sm:items-center gap-1 sm:gap-2">
-                            <Info className="h-4 w-4 sm:h-6 sm:w-6 text-amber-600 print:hidden shrink-0 mt-0.5 sm:mt-0" />
-                            <span className="text-balance leading-tight">Aranceles del INSAI (Aeropuertos)</span>
-                          </h4>
-                          <p className="font-black text-[15px] sm:text-2xl text-amber-900 dark:text-amber-300 shrink-0 tabular-nums">$20</p>
-                        </div>
-                        <p className="text-amber-800/80 dark:text-amber-400/80 leading-relaxed text-xs sm:text-base">
-                          Destinado a trámites de aeropuertos. Pago directo a cuenta del cliente (Tasa Oficial). Este monto corresponde a entidades gubernamentales y no forma parte de los honorarios de la clínica.
-                        </p>
-                      </div>
-
-                      {/* Total Breakdown */}
-                      <div className="rounded-xl sm:rounded-3xl border border-border/50 overflow-hidden bg-card shadow-sm print:border-gray-300 print:shadow-none p-2.5 sm:p-5 md:p-6 w-full min-w-0">
-                        <h3 className='font-bold text-base sm:text-xl md:text-2xl flex items-center gap-2 sm:gap-3 text-foreground mb-4'>
-                          <Banknote className="h-5 w-5 sm:h-6 sm:w-6 text-primary shrink-0" />
-                          Resumen
-                        </h3>
-                        <div className="flex justify-between items-center gap-2 text-[10px] sm:text-sm mb-2 text-muted-foreground w-full">
-                          <span className="text-balance break-words">Servicios Clínica:</span>
-                          <span className="font-semibold shrink-0 tabular-nums">${result.services.reduce((acc, s) => acc + s.price, 0)}</span>
-                        </div>
-                        <div className="flex justify-between items-center gap-2 text-[10px] sm:text-sm mb-3 sm:mb-4 text-muted-foreground pb-3 sm:pb-4 border-b border-border/10 w-full">
-                          <span className="text-balance break-words">Tasas Exportación:</span>
-                          <span className="font-semibold shrink-0 tabular-nums">${result.info.aranceles}</span>
-                        </div>
-                        <div className="flex justify-between items-center gap-2 text-[10px] sm:text-sm mb-3 sm:mb-4 text-muted-foreground pb-3 sm:pb-4 border-b border-border/10 w-full">
-                          <span className="text-balance break-words">Aranceles INSAI:</span>
-                          <span className="font-semibold shrink-0 tabular-nums">$20</span>
-                        </div>
-                        <div className="flex justify-between items-center gap-2 font-bold text-sm sm:text-base md:text-xl text-primary w-full">
-                          <span>Total:</span>
-                          <span className="text-secondary dark:text-secondary-foreground glow-text shrink-0 tabular-nums">${result.total}</span>
-                        </div>
-                      </div>
+                          {/* Total Breakdown */}
+                          <div className="rounded-xl sm:rounded-3xl border border-border/50 overflow-hidden bg-card shadow-sm print:border-gray-300 print:shadow-none p-2.5 sm:p-5 md:p-6 w-full min-w-0">
+                            <h3 className='font-bold text-base sm:text-xl md:text-2xl flex items-center gap-2 sm:gap-3 text-foreground mb-4'>
+                              <Banknote className="h-5 w-5 sm:h-6 sm:w-6 text-primary shrink-0" />
+                              Resumen
+                            </h3>
+                            <div className="flex justify-between items-center gap-2 text-[10px] sm:text-sm mb-2 text-muted-foreground w-full">
+                              <span className="text-balance break-words">Servicios Clínica:</span>
+                              <span className="font-semibold shrink-0 tabular-nums">${result.services.reduce((acc, s) => acc + s.price, 0)}</span>
+                            </div>
+                            {result.info.extraFees && result.info.extraFees.length > 0 && (
+                              result.info.extraFees.map((fee, idx) => (
+                                <div key={idx} className="flex justify-between items-center gap-2 text-[10px] sm:text-sm mb-3 sm:mb-4 text-muted-foreground pb-3 sm:pb-4 border-b border-border/10 w-full">
+                                  <span className="text-balance break-words">{fee.title}:</span>
+                                  <span className="font-semibold shrink-0 tabular-nums">${fee.price}</span>
+                                </div>
+                              ))
+                            )}
+                            <div className="flex justify-between items-center gap-2 font-bold text-sm sm:text-base md:text-xl text-primary w-full mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-border/10">
+                              <span>Total:</span>
+                              <span className="text-secondary dark:text-secondary-foreground glow-text shrink-0 tabular-nums">${result.total}</span>
+                            </div>
+                          </div>
+                        </>
+                      )}
 
                       {/* Final CTA Buttons */}
                       <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-5 sm:pt-6 md:pt-8 border-t border-border print:hidden">
@@ -792,7 +1033,7 @@ Quedo atento/a para coordinar la disponibilidad. ¡Muchas gracias!`;
                               className='flex-grow min-h-[3rem] h-auto py-3 sm:py-4 md:py-5 px-4 text-sm sm:text-base md:text-xl font-bold shadow-2xl rounded-xl sm:rounded-2xl transition-transform active:scale-95 whitespace-normal break-words text-balance'
                               onClick={handleScheduleAppointment}
                             >
-                              Agendar Cita y Enviar Presupuesto
+                              {result.info.budgetUnavailable ? "Agendar Cita y Consultar Presupuesto" : "Agendar Cita y Enviar Presupuesto"}
                             </Button>
                           </DialogTrigger>
                           <DialogContent className="sm:max-w-md bg-card border-border/50">
@@ -807,7 +1048,7 @@ Quedo atento/a para coordinar la disponibilidad. ¡Muchas gracias!`;
                             </DialogHeader>
 
                             <Form {...contactForm}>
-                              <form onSubmit={contactForm.handleSubmit(onContactSubmit)} className="space-y-4 py-4">
+                              <form onSubmit={(e) => e.preventDefault()} className="space-y-4 py-4">
                                 <FormField
                                   control={contactForm.control}
                                   name="contactName"
@@ -848,16 +1089,35 @@ Quedo atento/a para coordinar la disponibilidad. ¡Muchas gracias!`;
                                   )}
                                 />
 
-                                <DialogFooter className="gap-2 sm:gap-0 mt-4">
-                                  <Button type="button" variant="outline" onClick={() => setIsContactModalOpen(false)}>
+                                <DialogFooter className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3 mt-4 w-full">
+                                  <Button type="button" variant="outline" onClick={() => setIsContactModalOpen(false)} className="w-full h-11 sm:h-auto whitespace-normal">
                                     Cancelar
                                   </Button>
-                                  <Button type="submit" disabled={isSending}>
+                                  <Button 
+                                    type="button" 
+                                    disabled={isSending} 
+                                    onClick={contactForm.handleSubmit((data) => submitContactForm(data, 'email'))}
+                                    className="bg-slate-800 hover:bg-slate-700 text-white w-full h-11 sm:h-auto whitespace-normal px-2"
+                                  >
                                     {isSending ? (
-                                      <>Enviando... <Loader2 className="ml-2 h-4 w-4 animate-spin" /></>
+                                      <Loader2 className="mr-1.5 sm:mr-2 h-4 w-4 animate-spin shrink-0" />
                                     ) : (
-                                      <>Enviar a WhatsApp <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WA" className="ml-2 h-4 w-4" /></>
+                                      <Mail className="mr-1.5 sm:mr-2 h-4 w-4 shrink-0" />
                                     )}
+                                    <span className="truncate">Mensaje</span>
+                                  </Button>
+                                  <Button 
+                                    type="button" 
+                                    disabled={isSending} 
+                                    onClick={contactForm.handleSubmit((data) => submitContactForm(data, 'whatsapp'))}
+                                    className="bg-[#25D366] hover:bg-[#20bd5a] text-white w-full h-11 sm:h-auto whitespace-normal px-2"
+                                  >
+                                    {isSending ? (
+                                      <Loader2 className="mr-1.5 sm:mr-2 h-4 w-4 animate-spin shrink-0" />
+                                    ) : (
+                                      <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WA" className="mr-1.5 sm:mr-2 h-4 w-4 brightness-0 invert shrink-0" />
+                                    )}
+                                    <span className="truncate">WhatsApp</span>
                                   </Button>
                                 </DialogFooter>
                               </form>

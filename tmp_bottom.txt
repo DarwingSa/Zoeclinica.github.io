@@ -1,0 +1,348 @@
+﻿                              >
+                                <FormItem className="flex items-center space-x-2">
+                                  <FormControl><RadioGroupItem value="dog" /></FormControl>
+                                  <FormLabel className="font-medium cursor-pointer">Perro</FormLabel>
+                                </FormItem>
+                                <FormItem className="flex items-center space-x-2">
+                                  <FormControl><RadioGroupItem value="cat" /></FormControl>
+                                  <FormLabel className="font-medium cursor-pointer">Gato</FormLabel>
+                                </FormItem>
+                              </RadioGroup>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <div className="grid grid-cols-2 gap-4">
+                        <FormField
+                          control={form.control}
+                          name="petName"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Nombre</FormLabel>
+                              <FormControl><Input placeholder="Nombre de tu mascota" className="rounded-xl h-12 bg-background/60 focus:bg-background transition-colors" {...field} /></FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="breed"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Raza</FormLabel>
+                              <FormControl><Input placeholder="Ej: Poodle" className="rounded-xl h-12 bg-background/60 focus:bg-background transition-colors" {...field} /></FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-4">
+                        <FormField
+                          control={form.control}
+                          name="color"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Color</FormLabel>
+                              <FormControl><Input placeholder="Ej: Blanco" className="rounded-xl h-12 bg-background/60 focus:bg-background transition-colors" {...field} /></FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="weight"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Peso (kg)</FormLabel>
+                              <FormControl>
+                                <Input
+                                  inputMode="decimal"
+                                  pattern="[0-9]*\.?[0-9]*"
+                                  placeholder="Ej: 5"
+                                  className="rounded-xl h-12 bg-background/60 focus:bg-background transition-colors"
+                                  {...field}
+                                  onKeyDown={(e) => {
+                                    // Allow: backspace, delete, tab, escape, enter, arrows, period/comma
+                                    const allowedKeys = ['Backspace', 'Delete', 'Tab', 'Escape', 'Enter', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End', '.', ','];
+                                    if (allowedKeys.includes(e.key)) return;
+                                    // Allow Ctrl/Cmd + A, C, V, X
+                                    if ((e.ctrlKey || e.metaKey) && ['a', 'c', 'v', 'x'].includes(e.key.toLowerCase())) return;
+                                    // Block anything that isn't a digit
+                                    if (!/^\d$/.test(e.key)) {
+                                      e.preventDefault();
+                                    }
+                                  }}
+                                  onPaste={(e) => {
+                                    const pastedText = e.clipboardData.getData('text');
+                                    if (!/^\d+(\.\d*)?$/.test(pastedText)) {
+                                      e.preventDefault();
+                                    }
+                                  }}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+
+                      <FormField
+                        control={form.control}
+                        name="birthDate"
+                        render={({ field }) => (
+                          <FormItem className="flex flex-col">
+                            <FormLabel>Fecha de Nacimiento</FormLabel>
+                            <CustomDatePicker
+                              date={field.value}
+                              setDate={field.onChange}
+                              minYear={1990}
+                            />
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    <Button type="submit" disabled={isLoading} className="w-full h-12 sm:h-14 text-base sm:text-lg font-bold shadow-xl shadow-primary/20 rounded-xl sm:rounded-2xl group">
+                      {isLoading ? (
+                        <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                      ) : (
+                        <Plane className="mr-2 h-5 w-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                      )}
+                      Generar GuÃ­a de Viaje
+                    </Button>
+                  </form>
+                </Form>
+              </CardContent>
+            </Card>
+          </ScrollReveal>
+
+          {/* Results Side */}
+          <ScrollReveal direction="none" delay={200} className="lg:col-span-7 space-y-6 sm:space-y-8 print:col-span-12 w-full min-w-0">
+            <Card ref={resultsRef} className={cn(
+              "w-full min-w-0 min-h-[400px] sm:min-h-[500px] md:min-h-[600px] border-2 border-dashed border-primary/20 bg-card/50 dark:bg-card/30 backdrop-blur-sm rounded-2xl sm:rounded-3xl transition-all duration-500 relative flex flex-col",
+              result && "border-solid border-border/30 shadow-glow-lg",
+              "print:border-none print:bg-white print:min-h-0"
+            )}>
+              {!isLoading && !result && (
+                <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-6 sm:p-8 md:p-12 print:hidden">
+                  <div className="bg-primary/5 p-5 sm:p-6 md:p-8 rounded-full mb-4 sm:mb-6">
+                    <Banknote className="h-10 w-10 sm:h-12 sm:w-12 md:h-16 md:w-16 text-primary/30" />
+                  </div>
+                  <div className="max-w-xs">
+                    <h3 className="font-bold text-lg sm:text-xl md:text-2xl text-foreground mb-2 sm:mb-3">Tu GuÃ­a de Viaje</h3>
+                    <p className="text-muted-foreground text-sm sm:text-base">Completa el formulario para generar un presupuesto detallado y los requisitos sanitarios especÃ­ficos.</p>
+                  </div>
+                </div>
+              )}
+
+              <CardContent className={cn('p-0', !result && 'invisible')}>
+                {isLoading && (
+                  <div className="absolute inset-0 flex flex-col items-center justify-center bg-card/80 z-20 backdrop-blur-sm print:hidden">
+                    <Loader2 className="h-12 w-12 text-primary animate-spin mb-4" />
+                    <p className="text-primary font-bold animate-pulse text-xl">Preparando tu presupuesto...</p>
+                  </div>
+                )}
+
+                {result && (
+                  <div className="animate-in fade-in slide-in-from-bottom-8 duration-500 w-full min-w-0">
+                    {/* Visual Header */}
+                    <div className="bg-gradient-to-r from-primary via-[#2aaadd] to-primary bg-[length:200%_100%] animate-gradient-shift p-3 sm:p-7 md:p-10 rounded-t-2xl sm:rounded-t-[2rem] text-primary-foreground print:bg-white print:text-black print:border-b-4 print:border-black print:p-0 w-full min-w-0">
+                      <div className="flex flex-col sm:flex-row justify-between items-start mb-4 sm:mb-6 print:mb-4 gap-3">
+                        <div>
+                          <h1 className="hidden print:block text-4xl font-black uppercase mb-2">CENTRO VETERINARIO ZOÃ‰</h1>
+                          <h2 className='text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold font-headline mb-1.5 sm:mb-2 text-balance leading-tight'>{result.info.title}</h2>
+                          <p className="text-primary-foreground/80 text-sm sm:text-base md:text-lg print:text-gray-600 text-pretty">{result.info.description}</p>
+                        </div>
+                        <div className="hidden md:block bg-white/10 p-4 rounded-2xl backdrop-blur-md shrink-0 print:hidden">
+                          <FileText className="h-8 w-8" />
+                        </div>
+                      </div>
+                      <div className="flex flex-col sm:grid sm:grid-cols-2 md:grid-cols-4 gap-2 sm:gap-4 md:gap-6 bg-white/10 p-2.5 sm:p-4 md:p-6 rounded-lg sm:rounded-2xl backdrop-blur-md border border-white/20 print:bg-gray-50 print:border-gray-300 print:text-black">
+                        <div className="min-w-0">
+                          <p className="text-white/60 text-[9px] sm:text-xs uppercase font-bold mb-0.5 print:text-gray-500">Mascota</p>
+                          <p className="font-bold text-sm sm:text-base truncate">{result.data.petName} Â· {result.data.breed}</p>
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-white/60 text-[9px] sm:text-xs uppercase font-bold mb-0.5 print:text-gray-500">Propietario</p>
+                          <p className="font-bold text-sm sm:text-base truncate">{result.data.ownerName}</p>
+                        </div>
+                        <div className="sm:col-span-2 min-w-0">
+                          <p className="text-white/60 text-[9px] sm:text-xs uppercase font-bold mb-0.5 print:text-gray-500">Inicio de TrÃ¡mite</p>
+                          <p className="font-bold text-sm sm:text-base md:text-lg">{result.info.estimatedTime}</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="p-2.5 sm:p-6 md:p-8 lg:p-12 space-y-4 sm:space-y-8 md:space-y-10 print:p-0 print:mt-8 w-full min-w-0">
+                      {/* Services List */}
+                      <div className="space-y-3 sm:space-y-6 w-full min-w-0">
+                        <h3 className='font-bold text-base sm:text-xl md:text-2xl flex items-center gap-2 text-foreground'>
+                          <FileText className="h-4 w-4 sm:h-6 sm:w-6 text-primary shrink-0" />
+                          Desglose de Servicios
+                        </h3>
+                        <div className="rounded-xl sm:rounded-3xl border border-border/50 overflow-hidden w-full min-w-0 bg-card shadow-sm print:border-gray-300 print:shadow-none">
+                          <div className="divide-y divide-border print:divide-gray-200">
+                            {result.services.map((service, i) => (
+                              <div key={i} className="px-3 py-2.5 sm:p-5 md:p-6 flex justify-between items-center gap-2 hover:bg-secondary/20 transition-colors">
+                                <div className="min-w-0 flex-1">
+                                  <p className="font-bold text-[13px] sm:text-base md:text-lg text-foreground">{service.label}</p>
+                                  <p className="text-[10px] sm:text-sm text-muted-foreground truncate">{service.detail}</p>
+                                </div>
+                                <p className="font-bold text-[13px] sm:text-lg md:text-xl text-primary print:text-black shrink-0 tabular-nums">${service.price}</p>
+                              </div>
+                            ))}
+                            <div className="px-3 py-2.5 sm:p-5 md:p-6 bg-secondary/30 flex justify-between items-center print:bg-gray-100 gap-2">
+                              <p className="font-extrabold text-[13px] sm:text-lg md:text-xl">Total Servicios</p>
+                              <p className="font-black text-base sm:text-2xl md:text-3xl text-primary print:text-black shrink-0 tabular-nums">${result.services.reduce((acc, s) => acc + s.price, 0)}</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Extra Fees - only shown when destination has additional fees */}
+                      {result.info.aranceles > 0 && (
+                        <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900/30 rounded-xl sm:rounded-3xl p-2.5 sm:p-6 md:p-8 print:bg-white print:border-gray-200 w-full min-w-0">
+                          <div className="flex flex-row justify-between items-start sm:items-center mb-2 sm:mb-4 gap-2">
+                            <h4 className="font-bold text-amber-900 dark:text-amber-300 text-[13px] sm:text-lg md:text-xl flex items-start sm:items-center gap-1 sm:gap-2">
+                              <Info className="h-4 w-4 sm:h-6 sm:w-6 text-amber-600 print:hidden shrink-0 mt-0.5 sm:mt-0" />
+                              <span className="text-balance leading-tight">Tasas y Aranceles de ExportaciÃ³n</span>
+                            </h4>
+                            <p className="font-black text-[15px] sm:text-2xl text-amber-900 dark:text-amber-300 shrink-0 tabular-nums">${result.info.aranceles}</p>
+                          </div>
+                          <p className="text-amber-800/80 dark:text-amber-400/80 leading-relaxed text-xs sm:text-base">
+                            {result.info.arancelesNote}. Este monto corresponde a entidades gubernamentales y no forma parte de los honorarios de la clÃ­nica.
+                          </p>
+                        </div>
+                      )}
+
+                      {/* Total Breakdown */}
+                      <div className="rounded-xl sm:rounded-3xl border border-border/50 overflow-hidden bg-card shadow-sm print:border-gray-300 print:shadow-none p-2.5 sm:p-5 md:p-6 w-full min-w-0">
+                        <h3 className='font-bold text-base sm:text-xl md:text-2xl flex items-center gap-2 sm:gap-3 text-foreground mb-4'>
+                          <Banknote className="h-5 w-5 sm:h-6 sm:w-6 text-primary shrink-0" />
+                          Resumen
+                        </h3>
+                        <div className="flex justify-between items-center gap-2 text-[10px] sm:text-sm mb-2 text-muted-foreground w-full">
+                          <span className="text-balance break-words">Servicios ClÃ­nica:</span>
+                          <span className="font-semibold shrink-0 tabular-nums">${result.services.reduce((acc, s) => acc + s.price, 0)}</span>
+                        </div>
+                        {result.info.aranceles > 0 && (
+                          <div className="flex justify-between items-center gap-2 text-[10px] sm:text-sm mb-3 sm:mb-4 text-muted-foreground pb-3 sm:pb-4 border-b border-border/10 w-full">
+                            <span className="text-balance break-words">Tasas ExportaciÃ³n:</span>
+                            <span className="font-semibold shrink-0 tabular-nums">${result.info.aranceles}</span>
+                          </div>
+                        )}
+                        <div className="flex justify-between items-center gap-2 font-bold text-sm sm:text-base md:text-xl text-primary w-full mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-border/10">
+                          <span>Total:</span>
+                          <span className="text-secondary dark:text-secondary-foreground glow-text shrink-0 tabular-nums">${result.total}</span>
+                        </div>
+                      </div>
+
+                      {/* Final CTA Buttons */}
+                      <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-5 sm:pt-6 md:pt-8 border-t border-border print:hidden">
+                        <Dialog open={isContactModalOpen} onOpenChange={setIsContactModalOpen}>
+                          <DialogTrigger asChild>
+                            <Button
+                              className='flex-grow min-h-[3rem] h-auto py-3 sm:py-4 md:py-5 px-4 text-sm sm:text-base md:text-xl font-bold shadow-2xl rounded-xl sm:rounded-2xl transition-transform active:scale-95 whitespace-normal break-words text-balance'
+                              onClick={handleScheduleAppointment}
+                            >
+                              Agendar Cita y Enviar Presupuesto
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent className="sm:max-w-md bg-card border-border/50">
+                            <DialogHeader>
+                              <DialogTitle className="text-xl sm:text-2xl font-headline flex items-center gap-2">
+                                <User className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
+                                Datos de Contacto
+                              </DialogTitle>
+                              <DialogDescription>
+                                DÃ©janos tus datos para coordinar la cita y enviarte la informaciÃ³n.
+                              </DialogDescription>
+                            </DialogHeader>
+
+                            <Form {...contactForm}>
+                              <form onSubmit={contactForm.handleSubmit(onContactSubmit)} className="space-y-4 py-4">
+                                <FormField
+                                  control={contactForm.control}
+                                  name="contactName"
+                                  render={({ field }) => (
+                                    <FormItem>
+                                      <FormLabel>Nombre y Apellido</FormLabel>
+                                      <FormControl>
+                                        <Input placeholder="Tu nombre" {...field} className="h-10 sm:h-11" />
+                                      </FormControl>
+                                      <FormMessage />
+                                    </FormItem>
+                                  )}
+                                />
+                                <FormField
+                                  control={contactForm.control}
+                                  name="contactPhone"
+                                  render={({ field }) => (
+                                    <FormItem>
+                                      <FormLabel>TelÃ©fono / WhatsApp</FormLabel>
+                                      <FormControl>
+                                        <Input placeholder="+58 412..." {...field} className="h-10 sm:h-11" />
+                                      </FormControl>
+                                      <FormMessage />
+                                    </FormItem>
+                                  )}
+                                />
+                                <FormField
+                                  control={contactForm.control}
+                                  name="contactEmail"
+                                  render={({ field }) => (
+                                    <FormItem>
+                                      <FormLabel>Correo ElectrÃ³nico</FormLabel>
+                                      <FormControl>
+                                        <Input placeholder="tu@email.com" {...field} className="h-10 sm:h-11" />
+                                      </FormControl>
+                                      <FormMessage />
+                                    </FormItem>
+                                  )}
+                                />
+
+                                <DialogFooter className="gap-2 sm:gap-0 mt-4">
+                                  <Button type="button" variant="outline" onClick={() => setIsContactModalOpen(false)}>
+                                    Cancelar
+                                  </Button>
+                                  <Button type="submit" disabled={isSending}>
+                                    {isSending ? (
+                                      <>Enviando... <Loader2 className="ml-2 h-4 w-4 animate-spin" /></>
+                                    ) : (
+                                      <>Enviar a WhatsApp <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WA" className="ml-2 h-4 w-4" /></>
+                                    )}
+                                  </Button>
+                                </DialogFooter>
+                              </form>
+                            </Form>
+                          </DialogContent>
+                        </Dialog>
+
+                        <Button variant="outline" className="h-12 sm:h-14 md:h-16 px-6 sm:px-8 rounded-xl sm:rounded-2xl border-2 hover:bg-secondary transition-colors" onClick={handlePrint} title="Imprimir o Guardar PDF">
+                          <Printer className="h-5 w-5 sm:h-6 sm:w-6 md:h-8 md:w-8" />
+                        </Button>
+                      </div>
+
+                      <div className="text-center pt-5 sm:pt-6 md:pt-8 border-t border-border/50">
+                        <p className="text-xs sm:text-sm text-muted-foreground font-medium mb-1.5 sm:mb-2">Presupuesto Referencial â€¢ Generado el {format(new Date(), "d 'de' MMMM, yyyy", { locale: es })}</p>
+                        <p className="text-[10px] sm:text-xs text-muted-foreground/60 max-w-lg mx-auto leading-relaxed">
+                          Este documento es una estimaciÃ³n. Los precios finales pueden variar segÃºn el peso exacto de la mascota, su estado de salud previo y cambios en regulaciones internacionales.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </ScrollReveal>
+        </div>
+      </div>
+
+      {/* Print styles removed â€” printing now handled via dedicated print window in handlePrint */}
+    </section>
+  );
+}

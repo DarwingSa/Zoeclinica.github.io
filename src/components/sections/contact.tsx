@@ -38,13 +38,33 @@ export default function Contact() {
     },
   });
 
-  function onSubmit(values: ContactFormValues) {
-    console.log(values);
-    toast({
-      title: "Mensaje Enviado",
-      description: "Gracias por contactarnos. Te responderemos pronto.",
-    });
-    form.reset();
+  async function onSubmit(values: ContactFormValues) {
+    try {
+      await fetch(`https://formsubmit.co/ajax/${CLINIC_INFO.email}`, {
+        method: "POST",
+        headers: { 
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+            name: values.name,
+            email: values.email,
+            subject: values.subject,
+            message: values.message,
+        })
+      });
+      toast({
+        title: "Mensaje Enviado",
+        description: "Gracias por contactarnos. Te responderemos pronto.",
+      });
+      form.reset();
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Hubo un problema al enviar el mensaje. Inténtalo de nuevo.",
+      });
+    }
   }
 
   return (

@@ -1,0 +1,230 @@
+﻿'use client';
+
+import { useState, useRef } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+import { Loader2, Plane, PawPrint, CalendarIcon, Banknote, FileText, Printer, User, Info } from 'lucide-react';
+import { format } from "date-fns";
+import { es } from "date-fns/locale";
+
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { cn } from '@/lib/utils';
+import { useToast } from '@/hooks/use-toast';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Calendar } from '@/components/ui/calendar';
+import { CustomDatePicker } from '@/components/ui/custom-date-picker';
+import { ScrollReveal } from '@/components/ui/scroll-reveal';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogFooter,
+} from "@/components/ui/dialog";
+
+const travelFormSchema = z.object({
+  ownerName: z.string().min(2, "El nombre es obligatorio"),
+  destination: z.enum(["europa", "norteamerica", "asia", "latinoamerica"], {
+    required_error: "Selecciona un destino",
+  }),
+  petName: z.string().min(1, "El nombre de la mascota es obligatorio"),
+  species: z.enum(["dog", "cat"], {
+    required_error: "Selecciona perro o gato",
+  }),
+  breed: z.string().min(2, "La raza es obligatoria"),
+  color: z.string().min(2, "El color es obligatorio"),
+  birthDate: z.date({
+    required_error: "La fecha de nacimiento es obligatoria",
+  }),
+  weight: z.string()
+    .min(1, "El peso es obligatorio")
+    .regex(/^\d+(\.\d{1,2})?$/, "Ingresa solo nÃºmeros (ej: 5 o 5.5)"),
+});
+
+type TravelFormValues = z.infer<typeof travelFormSchema>;
+
+type ServiceItem = {
+  label: string;
+  detail: string;
+  price: number;
+};
+
+type DestinationData = {
+  title: string;
+  description: string;
+  estimatedTime: string;
+  alert: string;
+  aranceles: number;
+  arancelesNote: string;
+  getServices: (species: "dog" | "cat") => ServiceItem[];
+};
+
+const destinationServices: Record<string, DestinationData> = {
+  europa: {
+    title: "Presupuesto de Viaje a Europa (UE)",
+    description: "Cumplimiento total normativa CEXGAN y UE. Incluye gestiÃ³n sanitaria completa.",
+    estimatedTime: "MÃ­nimo 21 dÃ­as antes del viaje",
+    alert: "Si tu mascota es menor de 3 meses, contÃ¡ctanos directamente.",
+    aranceles: 0,
+    arancelesNote: "",
+    getServices: (species) => [
+      {
+        label: "Plan de VacunaciÃ³n Anual (RevacunaciÃ³n)",
+        detail: species === 'dog'
+          ? "SÃ©xtuple + AntirrÃ¡bica + DesparasitaciÃ³n + KC"
+          : "QuÃ­ntuple Felina + AntirrÃ¡bica + DesparasitaciÃ³n",
+        price: 100
+      },
+      {
+        label: "Implante de Microchips",
+        detail: "Microchip ISO 11784/11785 Homologado",
+        price: 50
+      },
+      {
+        label: "TitulaciÃ³n de Anticuerpos Contra la Rabia",
+        detail: "Dura en llegar al laboratorio de Alemania 1 a 2 meses",
+        price: 200
+      },
+      {
+        label: "PermisologÃ­a Sanitaria (INSAI)",
+        detail: "GestiÃ³n y emisiÃ³n de permisos ante autoridades sanitarias",
+        price: 150
+      },
+      {
+        label: "GuÃ­a de MovilizaciÃ³n Europea (Anexo 4)",
+        detail: "Documento oficial requerido por la UE para el ingreso",
+        price: 40
+      },
+      {
+        label: "Pago de Aranceles de INSAI (en BolÃ­vares)",
+        detail: "Pago directo a cuenta del cliente (Tasa Oficial)",
+        price: 70
+      },
+      {
+        label: "Pago Aranceles INSAI del Aeropuerto (en BolÃ­vares)",
+        detail: "TrÃ¡mites de despacho en aeropuerto â€” pago a cuenta del cliente",
+        price: 20
+      },
+      {
+        label: "Pago de la Muestras en Alemania",
+        detail: "Costo del procesamiento de muestras en laboratorio alemÃ¡n",
+        price: 65
+      }
+    ]
+  },
+  norteamerica: {
+    title: "Pack Viaje a NorteamÃ©rica",
+    description: "GestiÃ³n completa de requisitos CDC (EE.UU.) o CFIA (CanadÃ¡).",
+    estimatedTime: "Iniciar 30 dÃ­as antes",
+    alert: "Nuevos requisitos estrictos para el ingreso a EE.UU.",
+    aranceles: 50,
+    arancelesNote: "Tasas administrativas de exportaciÃ³n",
+    getServices: (species) => [
+      { label: "Certificado Salud Internacional", detail: "EmisiÃ³n oficial 10 dÃ­as antes", price: 150 },
+      { label: "VacunaciÃ³n y Microchip", detail: "Rabia + Anual + Chip Compatible", price: 120 },
+      { label: "Tratamiento Antiparasitario", detail: "Interna y Externa Certificada", price: 30 }
+    ]
+  },
+  asia: {
+    title: "Pack Viaje a Asia",
+    description: "Protocolo completo para paÃ­ses con requisitos de cuarentena.",
+    estimatedTime: "4-6 meses antes del viaje",
+    alert: "Proceso largo. Requiere titulaciÃ³n de anticuerpos obligatoria.",
+    aranceles: 100,
+    arancelesNote: "Permisos de importaciÃ³n y gestiones externas",
+    getServices: (species) => [
+      { label: "Pack Integral Asia", detail: "Microchip + Vacunas + TitulaciÃ³n + Permisos", price: 650 }
+    ]
+  },
+  latinoamerica: {
+    title: "Pack Viaje a LatinoamÃ©rica",
+    description: "Certificados de exportaciÃ³n para paÃ­ses de la regiÃ³n.",
+    estimatedTime: "15-20 dÃ­as antes",
+    alert: "Puede requerir legalizaciones adicionales.",
+    aranceles: 40,
+    arancelesNote: "Tasas y Aranceles locales (INSAI o similar)",
+    getServices: (species) => [
+      { label: "Certificado Internacional", detail: "EmisiÃ³n y gestiÃ³n oficial", price: 120 },
+      { label: "Vacunas y DesparasitaciÃ³n", detail: "Al dÃ­a segÃºn requisito paÃ­s de destino", price: 80 }
+    ]
+  }
+};
+
+import { NAV_LINKS, CLINIC_INFO } from '@/lib/constants';
+
+const contactFormSchema = z.object({
+  contactName: z.string().min(2, "El nombre es obligatorio"),
+  contactPhone: z.string().min(10, "El telÃ©fono debe tener al menos 10 dÃ­gitos"),
+  contactEmail: z.string().email("Correo electrÃ³nico invÃ¡lido"),
+});
+
+type ContactFormValues = z.infer<typeof contactFormSchema>;
+
+type TravelResult = {
+  data: TravelFormValues;
+  services: ServiceItem[];
+  info: DestinationData;
+  total: number;
+};
+
+export default function TravelGuidance() {
+  const [result, setResult] = useState<TravelResult | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSending, setIsSending] = useState(false);
+  const [isContactModalOpen, setIsContactModalOpen] = useState(false);
+  const resultsRef = useRef<HTMLDivElement>(null);
+  const { toast } = useToast();
+
+  const form = useForm<TravelFormValues>({
+    resolver: zodResolver(travelFormSchema),
+    defaultValues: {
+      ownerName: "",
+      petName: "",
+      species: "dog", // Corrected from petSpecies
+      weight: "", // Corrected from petWeight
+      destination: "europa", // Corrected from ue
+      birthDate: undefined, // Corrected from travelDate
+      breed: "",
+      color: "",
+    },
+  });
+
+  const contactForm = useForm<ContactFormValues>({
+    resolver: zodResolver(contactFormSchema),
+    defaultValues: {
+      contactName: "",
+      contactPhone: "",
+      contactEmail: "",
+    },
+  });
+
+  function onSubmit(values: TravelFormValues) {
+    setIsLoading(true);
+    setResult(null);
+
+    // SimulaciÃ³n de procesamiento
+    setTimeout(() => {
+      const info = destinationServices[values.destination];
+      const services = info.getServices(values.species);
+      const total = services.reduce((acc, s) => acc + s.price, 0) + info.aranceles;
+
+      setResult({ data: values, services, info, total }); // Add total to result
+      setIsLoading(false);
+      setTimeout(() => resultsRef.current?.scrollIntoView({ behavior: 'smooth' }), 100);
+
+      toast({
+        title: "Â¡Presupuesto Generado!",
+        description: "Revisa los detalles a la derecha para tu viaje.",
+      });
+    }, 1000);
+  }
+
+  const handlePrint = () => {

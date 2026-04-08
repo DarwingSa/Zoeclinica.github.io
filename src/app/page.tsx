@@ -1,4 +1,14 @@
 import Image from 'next/image';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Veterinaria en Caracas | Centro Veterinario Zoé',
+  description: 'Descubre nuestra clínica veterinaria en La Campiña, Caracas. Medicina general, vacunación, desparasitación y tramitación de viajes internacionales para perros y gatos.',
+  openGraph: {
+    title: 'Centro Veterinario Zoé | Tu Clínica Veterinaria en Caracas',
+    description: 'Atención integral, trámites internacionales INSAI y más. Visita nuestra sede en La Campiña.',
+  }
+};
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import {
@@ -15,8 +25,7 @@ import { CLINIC_INFO } from '@/lib/constants';
 const HERO_IMAGE =
   'https://images.pexels.com/photos/1108099/pexels-photo-1108099.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2';
 
-const PHILOSOPHY_IMAGE =
-  'https://images.pexels.com/photos/6234603/pexels-photo-6234603.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2';
+const PHILOSOPHY_IMAGE = '/img/img-doctor.jpeg';
 
 const services = [
   {
@@ -310,12 +319,12 @@ export default function Home() {
                 </div>
               </div>
               {/* Floating experience badge */}
-              <div className="absolute -bottom-4 -right-2 md:-bottom-5 md:-right-5 glass-strong p-3 md:p-4 rounded-2xl shadow-glow-lg z-20 animate-float hidden md:flex items-center gap-3">
+              <div className="absolute bottom-4 right-4 md:bottom-6 md:right-6 bg-card border border-border/40 p-3 md:p-4 rounded-2xl shadow-xl z-20 animate-float hidden md:flex items-center gap-3">
                 <div className="bg-primary/10 p-2.5 rounded-xl text-primary">
                   <Medal className="h-5 w-5" />
                 </div>
                 <div>
-                  <p className="font-extrabold text-lg text-foreground leading-none">+10 años</p>
+                  <p className="font-extrabold text-lg text-foreground leading-none">+10 a&ntilde;os</p>
                   <p className="text-[10px] uppercase tracking-wider font-semibold text-muted-foreground mt-0.5">de experiencia</p>
                 </div>
               </div>
