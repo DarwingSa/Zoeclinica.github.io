@@ -77,7 +77,7 @@ const destinationServices: Record<string, DestinationData> = {
   europa: {
     title: "Presupuesto de Viaje a Europa (UE)",
     description: "Cumplimiento total normativa CEXGAN y UE. Incluye gestión sanitaria completa.",
-    estimatedTime: "Mínimo 21 días antes del viaje",
+    estimatedTime: "3 - 4 Meses",
     alert: "Si tu mascota es menor de 3 meses, contáctanos directamente.",
     extraFees: [
       {
@@ -145,7 +145,7 @@ const destinationServices: Record<string, DestinationData> = {
   latinoamerica: {
     title: "Pack Viaje a Latinoamérica",
     description: "Certificados de exportación para países de la región.",
-    estimatedTime: "15-20 días antes",
+    estimatedTime: "30 Días",
     alert: "Puede requerir legalizaciones adicionales.",
     extraFees: [
       {
@@ -275,28 +275,28 @@ export default function TravelGuidance() {
     /* ── PAGE SETUP ── */
     @page {
       size: letter;
-      margin: 20mm 22mm;   /* margen en todos los lados */
+      margin: 8mm 12mm;   /* márgenes ultra comprimidos para evitar salto a segunda página */
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: 'Segoe UI', Arial, sans-serif;
       font-size: 10.5px;
       color: #1e293b;
-      line-height: 1.6;
+      line-height: 1.4;
       background: #fff;
     }
 
     /* ── HEADER ── */
     .header {
       display: grid;
-      grid-template-columns: 64px 1fr auto;
+      grid-template-columns: 50px 1fr auto;
       align-items: center;
-      gap: 14px;
-      padding-bottom: 14px;
+      gap: 12px;
+      padding-bottom: 10px;
       border-bottom: 2.5px solid #0e7490;
-      margin-bottom: 18px;
+      margin-bottom: 12px;
     }
-    .header img { width: 60px; height: 60px; object-fit: contain; }
+    .header img { width: 50px; height: 50px; object-fit: contain; }
     .clinic-info .clinic-name {
       font-size: 14px; font-weight: 800; color: #0e7490; letter-spacing: -0.3px;
     }
@@ -320,7 +320,7 @@ export default function TravelGuidance() {
       font-size: 8px; font-weight: 800; color: #0e7490;
       text-transform: uppercase; letter-spacing: 1px;
       border-bottom: 1.5px solid #0e7490;
-      padding-bottom: 4px; margin-bottom: 10px;
+      padding-bottom: 4px; margin-bottom: 6px;
     }
 
     /* ── INFO GRIDS ── */
@@ -328,11 +328,11 @@ export default function TravelGuidance() {
       background: #f0f9ff;
       border: 1px solid #bae6fd;
       border-radius: 6px;
-      padding: 10px 14px;
-      margin-bottom: 16px;
+      padding: 8px 12px;
+      margin-bottom: 12px;
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 4px 24px;
+      gap: 2px 24px;
     }
     .info-row { display: flex; gap: 6px; align-items: baseline; }
     .info-lbl {
@@ -347,8 +347,8 @@ export default function TravelGuidance() {
     .cards {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-bottom: 18px;
+      gap: 8px;
+      margin-bottom: 12px;
     }
     .card {
       border: 1px solid #e2e8f0;
@@ -375,7 +375,7 @@ export default function TravelGuidance() {
     .tbl { width: 100%; border-collapse: collapse; margin-bottom: 0; }
     .tbl thead tr { background: #0c2340; }
     .tbl thead th {
-      padding: 7px 10px;
+      padding: 5px 8px;
       font-size: 8px; font-weight: 700;
       text-transform: uppercase; letter-spacing: 0.8px;
       color: rgba(255,255,255,0.85);
@@ -385,7 +385,7 @@ export default function TravelGuidance() {
     .tbl thead th.td-c { text-align: center; }
     .tbl tbody tr { border-bottom: 1px solid #e8edf2; }
     .tbl tbody tr.alt { background: #f8fafc; }
-    .tbl tbody td { padding: 8px 10px; vertical-align: top; }
+    .tbl tbody td { padding: 5px 8px; vertical-align: top; }
     .td-r { text-align: right; }
     .td-c { text-align: center; }
     .dim { color: #cbd5e1; }
@@ -402,7 +402,7 @@ export default function TravelGuidance() {
     .totals-box { width: 260px; }
     .t-row {
       display: flex; justify-content: space-between;
-      padding: 5px 12px;
+      padding: 4px 10px;
       font-size: 10px; color: #475569;
       border-bottom: 1px solid #e8edf2;
     }
@@ -410,30 +410,30 @@ export default function TravelGuidance() {
     .t-row.grand {
       background: #0c2340;
       border-bottom: none; border-radius: 0 0 4px 4px;
-      padding: 9px 12px;
+      padding: 6px 10px;
     }
     .t-row.grand .lbl { color: rgba(255,255,255,0.7); font-size: 11px; font-weight: 600; }
     .t-row.grand .val { color: #fff; font-size: 15px; font-weight: 800; }
 
     /* ── NOTES ── */
     .notes {
-      margin-top: 20px;
+      margin-top: 14px;
       border-left: 3px solid #0e7490;
       background: #f0f9ff;
       border-radius: 0 6px 6px 0;
-      padding: 10px 14px;
+      padding: 8px 12px;
     }
     .notes-title {
       font-size: 8.5px; font-weight: 800;
       text-transform: uppercase; letter-spacing: 0.8px;
-      color: #0e7490; margin-bottom: 6px;
+      color: #0e7490; margin-bottom: 4px;
     }
     .notes ul { padding-left: 14px; }
-    .notes li { font-size: 9px; color: #475569; margin-bottom: 4px; line-height: 1.55; }
+    .notes li { font-size: 9px; color: #475569; margin-bottom: 2px; line-height: 1.4; }
 
     /* ── FOOTER ── */
     .doc-footer {
-      margin-top: 18px; padding-top: 10px;
+      margin-top: 12px; padding-top: 8px;
       border-top: 1px solid #e2e8f0;
       display: flex; justify-content: space-between;
       font-size: 8px; color: #94a3b8;
@@ -929,18 +929,38 @@ Quedo atento/a para coordinar la disponibilidad. ¡Muchas gracias!`;
                           <FileText className="h-8 w-8" />
                         </div>
                       </div>
-                      <div className="flex flex-col sm:grid sm:grid-cols-2 md:grid-cols-4 gap-2 sm:gap-4 md:gap-6 bg-white/10 p-2.5 sm:p-4 md:p-6 rounded-lg sm:rounded-2xl backdrop-blur-md border border-white/20 print:bg-gray-50 print:border-gray-300 print:text-black">
-                        <div className="min-w-0">
-                          <p className="text-white/60 text-[9px] sm:text-xs uppercase font-bold mb-0.5 print:text-gray-500">Mascota</p>
-                          <p className="font-bold text-sm sm:text-base truncate">{result.data.petName} · {result.data.breed}</p>
+                      <div className="flex flex-wrap gap-2 md:gap-4 mt-6 print:mt-4 print:gap-2">
+                        {/* Mascota Card */}
+                        <div className="flex items-center gap-3 bg-white/10 hover:bg-white/15 transition-colors backdrop-blur-md px-4 py-3 md:py-4 rounded-xl sm:rounded-2xl border border-white/20 flex-grow basis-[calc(50%-8px)] lg:basis-auto min-w-[140px] print:bg-gray-50 print:border-gray-300 print:text-black">
+                          <div className="bg-white/20 print:bg-gray-200 p-2 sm:p-2.5 rounded-lg sm:rounded-xl shrink-0 hidden sm:block">
+                            <PawPrint className="w-4 h-4 sm:w-5 sm:h-5 text-white print:text-gray-700" />
+                          </div>
+                          <div className="min-w-0">
+                            <p className="text-white/60 text-[9px] sm:text-[10px] uppercase font-extrabold mb-0.5 tracking-wider print:text-gray-500">Mascota</p>
+                            <p className="font-bold text-sm sm:text-base leading-tight truncate">{result.data.petName} <span className="opacity-70 font-normal">· {result.data.breed}</span></p>
+                          </div>
                         </div>
-                        <div className="min-w-0">
-                          <p className="text-white/60 text-[9px] sm:text-xs uppercase font-bold mb-0.5 print:text-gray-500">Propietario</p>
-                          <p className="font-bold text-sm sm:text-base truncate">{result.data.ownerName}</p>
+
+                        {/* Propietario Card */}
+                        <div className="flex items-center gap-3 bg-white/10 hover:bg-white/15 transition-colors backdrop-blur-md px-4 py-3 md:py-4 rounded-xl sm:rounded-2xl border border-white/20 flex-grow basis-[calc(50%-8px)] lg:basis-auto min-w-[140px] print:bg-gray-50 print:border-gray-300 print:text-black">
+                          <div className="bg-white/20 print:bg-gray-200 p-2 sm:p-2.5 rounded-lg sm:rounded-xl shrink-0 hidden sm:block">
+                            <User className="w-4 h-4 sm:w-5 sm:h-5 text-white print:text-gray-700" />
+                          </div>
+                          <div className="min-w-0">
+                            <p className="text-white/60 text-[9px] sm:text-[10px] uppercase font-extrabold mb-0.5 tracking-wider print:text-gray-500">Propietario</p>
+                            <p className="font-bold text-sm sm:text-base leading-tight truncate">{result.data.ownerName}</p>
+                          </div>
                         </div>
-                        <div className="sm:col-span-2 min-w-0">
-                          <p className="text-white/60 text-[9px] sm:text-xs uppercase font-bold mb-0.5 print:text-gray-500">Inicio de Trámite</p>
-                          <p className="font-bold text-sm sm:text-base md:text-lg">{result.info.estimatedTime}</p>
+
+                        {/* Tiempo Card (Highlighted) */}
+                        <div className="flex items-center gap-3 bg-white/25 hover:bg-white/30 transition-colors backdrop-blur-xl px-4 sm:px-6 py-3 md:py-4 rounded-xl sm:rounded-2xl border border-white/40 flex-grow basis-[100%] lg:basis-auto shadow-xl shadow-black/10 print:bg-white print:border-2 print:border-gray-400 print:text-black print:shadow-none">
+                          <div className="bg-white print:bg-transparent p-2 sm:p-2.5 rounded-lg sm:rounded-xl shrink-0">
+                            <CalendarIcon className="w-5 h-5 sm:w-6 sm:h-6 text-primary print:text-black" />
+                          </div>
+                          <div className="min-w-0">
+                            <p className="text-white/80 text-[10px] sm:text-[11px] uppercase font-black mb-0.5 tracking-widest print:text-gray-500">Cuándo empezar el trámite</p>
+                            <p className="font-black text-lg sm:text-xl md:text-2xl leading-tight truncate drop-shadow-sm">{result.info.estimatedTime}</p>
+                          </div>
                         </div>
                       </div>
                     </div>

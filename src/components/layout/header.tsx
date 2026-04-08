@@ -5,7 +5,6 @@ import { useState, useEffect, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { NAV_LINKS } from '@/lib/constants';
-import { ThemeToggle } from '@/components/ui/theme-toggle';
 import Link from 'next/link';
 import Image from 'next/image';
 
@@ -81,7 +80,6 @@ export default function Header() {
 
             {/* Desktop Actions */}
             <div className="hidden md:flex items-center gap-2 ml-4">
-              <ThemeToggle />
               <Button asChild className="rounded-full shadow-glow hover:shadow-glow-lg transition-all duration-300">
                 <Link href="/contacto">Pedir Cita</Link>
               </Button>
@@ -150,9 +148,6 @@ export default function Header() {
           </nav>
 
           <div className="border-t border-border/50 pt-6 space-y-4">
-            <div className="flex justify-center">
-              <ThemeToggle />
-            </div>
             <Button asChild size="lg" className="w-full rounded-full shadow-glow">
               <Link href="/contacto" onClick={handleLinkClick}>Pedir Cita</Link>
             </Button>
