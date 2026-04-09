@@ -8,11 +8,14 @@ import { CLINIC_INFO } from '@/lib/constants';
 import { WhatsAppIcon } from '@/components/ui/icons/whatsapp-icon';
 
 export const metadata: Metadata = {
-    title: 'Servicios de Referencia | Centro Veterinario Zoé Caracas',
-    description: 'Consultas generales, vacunación para perros y gatos, laboratorio, chips y desparasitación. Los mejores servicios veterinarios en La Campiña, Caracas.',
+    title: 'Servicios Veterinarios en Caracas — Consultas, Vacunas, Laboratorio y Cirugía',
+    description: 'Consultas generales, vacunación para perros y gatos, laboratorio clínico, cirugía, hospitalización y peluquería canina. Servicios veterinarios de referencia en La Campiña, Caracas.',
+    alternates: {
+      canonical: 'https://centrovetzoe.com/servicios',
+    },
     openGraph: {
-      title: 'Consultas, Perfiles y Vacunas | Centro Veterinario Zoé',
-      description: 'Cuidamos a tu mejor amigo con la prevención médica más avanzada. Visita nuestra clínica en la calle Mirador, Caracas.',
+      title: 'Servicios Veterinarios | Centro Veterinario Zoé — Caracas',
+      description: 'Consultas, vacunas, laboratorio, cirugía y peluquería canina. Cuidamos a tu mejor amigo con la prevención médica más avanzada en La Campiña, Caracas.',
     }
 };
 

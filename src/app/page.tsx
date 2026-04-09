@@ -2,11 +2,14 @@ import Image from 'next/image';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Veterinaria en Caracas | Centro Veterinario Zoé',
-  description: 'Descubre nuestra clínica veterinaria en La Campiña, Caracas. Medicina general, vacunación, desparasitación y tramitación de viajes internacionales para perros y gatos.',
+  title: 'Clínica Veterinaria en Caracas La Campiña — Consultas, Vacunas, Cirugía y Viajes de Mascotas',
+  description: 'Centro Veterinario Zoé en La Campiña, Caracas. Consultas veterinarias, vacunación para perros y gatos, laboratorio clínico, cirugía, hospitalización y gestión de viajes internacionales INSAI. Agenda tu cita hoy.',
+  alternates: {
+    canonical: 'https://centrovetzoe.com',
+  },
   openGraph: {
-    title: 'Centro Veterinario Zoé | Tu Clínica Veterinaria en Caracas',
-    description: 'Atención integral, trámites internacionales INSAI y más. Visita nuestra sede en La Campiña.',
+    title: 'Centro Veterinario Zoé | Clínica Veterinaria en Caracas — Vacunas, Cirugía y Viajes',
+    description: 'Atención veterinaria integral en La Campiña, Caracas. Consultas, vacunación, laboratorio, cirugía y trámites INSAI para viajes internacionales de mascotas.',
   }
 };
 import { Button } from '@/components/ui/button';
@@ -101,10 +104,11 @@ export default function Home() {
         <div className="absolute inset-0">
           <Image
             src={HERO_IMAGE}
-            alt="Perros felices jugando en el parque"
+            alt="Perros felices jugando en el parque — Centro Veterinario Zoé, Caracas"
             fill
             className="object-cover object-center"
             priority
+            fetchPriority="high"
             sizes="100vw"
           />
           {/* Multi-layer gradient overlay for depth */}
@@ -129,7 +133,7 @@ export default function Home() {
 
             {/* Heading */}
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-extrabold font-headline text-foreground tracking-tight leading-[1.08] animate-fade-up delay-100">
-              Cuidado experto{' '}
+              Clínica veterinaria{' '}
               <br className="hidden sm:block" />
               para tus{' '}
               <span className="text-gradient-animated">
@@ -139,7 +143,7 @@ export default function Home() {
 
             {/* Subtitle */}
             <p className="text-sm sm:text-base md:text-lg lg:text-xl text-muted-foreground max-w-[52ch] leading-relaxed animate-fade-up delay-200">
-              Combinamos pasión y tecnología de vanguardia para ofrecer la mejor atención veterinaria. Tu tranquilidad y su bienestar son nuestra prioridad.
+              Consultas, vacunación, cirugía y viajes internacionales para perros y gatos en Caracas. Tu tranquilidad y su bienestar son nuestra prioridad.
             </p>
 
             {/* CTAs */}
@@ -206,7 +210,7 @@ export default function Home() {
               Nuestros Servicios
             </span>
             <h2 className="text-2xl sm:text-3xl md:text-5xl font-bold font-headline text-foreground mb-3 sm:mb-4 md:mb-6">
-              Todo lo que necesitan en un solo lugar
+              Servicios veterinarios en Caracas
             </h2>
             <p className="text-muted-foreground text-sm sm:text-base md:text-lg leading-relaxed">
               Desde chequeos rutinarios hasta intervenciones complejas, contamos con las instalaciones y el equipo humano para cuidar de ellos.
